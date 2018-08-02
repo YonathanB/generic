@@ -1,0 +1,253 @@
+//*************************************************************************************************** Functions *********************************************************************************************
+
+.f_transition(@transString: 0) when not (@transString = 0) {
+  transition: @transString;
+  -moz-transition: @transString; /* Firefox 4 */
+  -webkit-transition: @transString; /* Safari and Chrome */
+  -o-transition: @transString; /* Opera */
+}
+
+//.f_transition(...) {
+//  //@props: ~`"@{arguments}".replace(/[\[\]]/g, '')`;
+//    @props: ~`"@{arguments}".replace(/[\[\]]|\,\sX/g, '')`;
+//  -webkit-transition: @props;
+//  -moz-transition: @props;
+//  -o-transition: @props;
+//  -ms-transition: @props;
+//  transition: @props;
+//}
+
+.f_gradient(...) {
+  @props: ~`"@{arguments}".replace(/[\[\]]/g, '')`;
+  background-image: -webkit-linear-gradient(@props);
+  background-image: -moz-linear-gradient(@props);
+  background-image: -o-linear-gradient(@props);
+  background-image: -ms-linear-gradient(@props);
+  background-image: linear-gradient(@props);
+}
+
+.f_radialgradient(...) {
+  @props: ~`"@{arguments}".replace(/[\[\]]/g, '')`;
+  background-image: -webkit-radial-gradient(@props);
+  background-image: -moz-radial-gradient(@props);
+  background-image: -o-radial-gradient(@props);
+  background-image: -ms-radial-gradient(@props);
+  background-image: radial-gradient(@props);
+}
+
+.f_radius(@p1) {
+  -webkit-border-radius: @p1;
+  -moz-border-radius: @p1;
+  border-radius: @p1;
+}
+
+.f_box-shadow(@p1 , @p2 , @p3 , @p4 ) {
+  box-shadow: @p1 , @p2 , @p3 , @p4;
+  -moz-box-shadow: @p1 , @p2 , @p3 , @p4;
+  -webkit-box-shadow: @p1 , @p2 , @p3 , @p4;
+}
+
+.f_box-shadow(@p1) {
+  box-shadow: @p1;
+  -moz-box-shadow: @p1;
+  -webkit-box-shadow: @p1;
+}
+
+//.f_box-shadow(...) {
+//  @props: ~`"@{arguments}".replace(/[\[\]]/g, '')`;
+//  box-shadow: @props;
+//  -moz-box-shadow: @props;
+//  -webkit-box-shadow: @props;
+//}
+
+
+.f_transform(@p1) {
+  -ms-transform: @p1; /* IE 9 */
+  -webkit-transform: @p1; /* Chrome, Safari, Opera */
+  transform: @p1;
+}
+
+.f_allow-text-select(@allow) when (@allow = false) {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.f_allow-text-select(@allow) when (@allow = true) {
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+.f_scale(...) {
+  @props: ~`"@{arguments}".replace(/[\[\]]/g, '')`;
+  -ms-transform: scale(@props); /* IE 9 */
+  -webkit-transform: scale(@props); /* Chrome, Safari, Opera */
+  transform: scale(@props);
+}
+
+.f_flex() {
+  display: -webkit-box; /* OLD: Safari,  iOS, Android browser, older WebKit browsers.  */
+  display: -moz-box; /* OLD: Firefox (buggy) */
+  display: -ms-flexbox; /* MID: IE 10 */
+  display: -webkit-flex; /* NEW, Chrome 21�28, Safari 6.1+ */
+  display: flex; /* NEW: IE11, Chrome 29+, Opera 12.1+, Firefox 22+ */
+}
+
+.f_flex_align_items(@p1) {
+  -webkit-box-align: @p1;
+  -moz-box-align: @p1; /* OLD� */
+  -ms-flex-align: @p1; /* You know the drill now� */
+  -webkit-align-items: @p1;
+  align-items: @p1;
+}
+
+.f_flex_justify_content(@p1) {
+  -webkit-box-pack: @p1;
+  -moz-box-pack: @p1;
+  -ms-flex-pack: @p1;
+  -webkit-justify-content: @p1;
+  justify-content: @p1;
+}
+/*! Prefix flex for IE10 and Safari / iOS in LESS
+* https://gist.github.com/codler/2148ba4ff096a19f08ea
+* Copyright (c) 2014 Han Lin Yap http://yap.nu; MIT license */
+
+.display(@value) when (@value = flex) {
+  display: -ms-flexbox; // IE10
+  display: -webkit-flex; // Safari / iOS
+}
+
+.display(@value) when (@value = inline-flex) {
+  display: -ms-inline-flexbox; // IE10
+  display: -webkit-inline-flex; // Safari / iOS
+}
+
+.display(@value) {
+  display: @value;
+}
+
+.flex(@value) {
+  -ms-flex: @value;
+  -webkit-flex: @value;
+  flex: @value;
+}
+
+.flex-justify-content(@justifyContent) {
+  .ms-flex-justify-content(@justifyContent); // IE10
+  -webkit-justify-content: @justifyContent; // Safari / iOS
+  justify-content: @justifyContent;
+}
+
+.flex-align-content(@alignContent) {
+  .ms-flex-align-content(@alignContent); // IE10
+  -webkit-align-content: @alignContent; // Safari / iOS
+  align-content: @alignContent;
+}
+
+.flex-align-items(@alignItems) {
+  .ms-flex-align-items(@alignItems); // IE10
+  -webkit-align-items: @alignItems; // Safari / iOS
+  align-items: @alignItems;
+}
+
+.flex-align-self(@alignSelf) {
+  .ms-flex-align-self(@alignSelf); // IE10
+  -webkit-align-self: @alignSelf; // Safari / iOS
+  align-self: @alignSelf;
+}
+
+.flex-direction(@direction) {
+  -ms-flex-direction: @direction; // IE10
+  -webkit-flex-direction: @direction; // Safari / iOS
+  flex-direction: @direction;
+}
+
+.flex-order(@order) {
+  -ms-flex-order: @order; // IE10
+  -webkit-order: @order; // Safari / iOS
+  order: @order;
+}
+
+.flex-wrap(@wrap) {
+  .ms-flex-wrap(@wrap); // IE10
+  -webkit-flex-wrap: @wrap; // Safari / iOS
+  flex-wrap: @wrap;
+}
+
+/* These are the conditional mixins for the different syntax for IE10 Flexbox */
+.ms-flex-justify-content(@justifyContent) when (@justifyContent = space-between) {
+  -ms-flex-pack: justify;
+}
+
+.ms-flex-justify-content(@justifyContent) when (@justifyContent = space-around) {
+  -ms-flex-pack: distribute;
+}
+
+.ms-flex-justify-content(@justifyContent) when (@justifyContent = flex-start) {
+  -ms-flex-pack: start;
+}
+
+.ms-flex-justify-content(@justifyContent) when (@justifyContent = flex-end) {
+  -ms-flex-pack: end;
+}
+
+.ms-flex-justify-content(@justifyContent) when (@justifyContent = center) {
+  -ms-flex-pack: center;
+}
+
+.ms-flex-align-content(@alignContent) when (@alignContent = space-between) {
+  -ms-flex-line-pack: justify;
+}
+
+.ms-flex-align-content(@alignContent) when (@alignContent = space-around) {
+  -ms-flex-line-pack: distribute;
+}
+
+.ms-flex-align-content(@alignContent) when (@alignContent = flex-start) {
+  -ms-flex-line-pack: start;
+}
+
+.ms-flex-align-content(@alignContent) when (@alignContent = flex-end) {
+  -ms-flex-line-pack: end;
+}
+
+.ms-flex-align-content(@alignContent) when (@alignContent = center), (@alignContent = stretch) {
+  -ms-flex-line-pack: @alignContent;
+}
+
+.ms-flex-align-items(@alignItems) when (@alignItems = flex-start) {
+  -ms-flex-align: start;
+}
+
+.ms-flex-align-items(@alignItems) when (@alignItems = flex-end) {
+  -ms-flex-align: end;
+}
+
+.ms-flex-align-items(@alignItems) when (@alignItems = center), (@alignItems = baseline), (@alignItems = stretch) {
+  -ms-flex-align: @alignItems;
+}
+
+.ms-flex-align-self(@alignSelf) when (@alignSelf = flex-start) {
+  -ms-flex-item-align: start;
+}
+
+.ms-flex-align-self(@alignSelf) when (@alignSelf = flex-end) {
+  -ms-flex-item-align: end;
+}
+
+.ms-flex-align-self(@alignSelf) when (@alignSelf = auto), (@alignSelf = center), (@alignSelf = baseline), (@alignSelf = stretch) {
+  -ms-flex-item-align: @alignSelf;
+}
+
+.ms-flex-wrap(@wrap) when (@wrap = nowrap) {
+  -ms-flex-wrap: none;
+}
+
+.ms-flex-wrap(@wrap) when (@wrap = wrap), (@wrap = wrap-reverse) {
+  -ms-flex-wrap: @wrap;
+}

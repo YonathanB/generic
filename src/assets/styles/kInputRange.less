@@ -1,0 +1,33 @@
+.kInputRange {
+    position: relative;
+    display:inline-block;
+    vertical-align: top;
+    input{
+        height:@app-element-height;
+        border:1px solid @app-border-element;
+    }
+    .kUnit {
+        position: absolute;
+        bottom: 0px;
+        left: 50px;
+        color: #000;
+        font-size: 10px;
+        line-height:@app-element-height;
+    }
+}
+
+.kInputRange.error{
+    .kUnit {
+        color: @app-error-color;
+    }
+    input{
+        color:@app-error-color;
+        border-color:@app-error-color;
+    }
+}
+
+.kInputRange.disabled{
+    .kUnit {
+        color: @app-disabled-color;
+    }
+}

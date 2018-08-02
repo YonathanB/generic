@@ -1,0 +1,221 @@
+<div class="first-column port-settings">
+    <form name="nameForm" ng-if="port.hasOwnProperty('name')">
+        <div class="field" ng-repeat="component in display.textbox track by $index">
+            <label style="margin-right: 20px; font-weight: bolder">{{component.label}}</label>
+            <input type="text" ng-maxlength="15" placeholder="{{port.name}}"
+                    ng-keyup="updatePortlabel(component.cmdKey, portLabel.value)" ng-model="portLabel.value"
+                    ng-pattern="portLabel.pattern">
+        </div>
+        <div style="position: relative; height: 15px">
+            <div class="error-messages">
+                <p ng-if="nameForm.$error.pattern">Spaces aren't allowed</p>
+                <p ng-show="nameForm.$error.maxlength" class="help-block">Port label can't exceed 15 characters.</p>
+            </div>
+        </div>
+    </form>
+    <div class="field" style="" ng-if="display.routingState.value">
+        <label style="margin-right: 20px; font-weight: bolder">{{display.routingState.label}}</label>
+        <div class="routing">
+            <div ng-repeat="(signalType, portType) in display.routingState.value"
+                    style="    margin-right: 7px; margin-bottom: 10px;">
+                <div style="font-weight: bold; color: gray">{{signalType}}</div>
+                <div>{{portType.join(', ')}}</div>
+            </div>
+        </div>
+    </div>
+    <!--Checkboxes-->
+    <div class="flex-container  around">
+        <div style="margin-right: 10px" ng-repeat="component in display.checkbox track by $index" ng-if="port.hasOwnProperty(component.cmdKey)">
+            <label >
+                <input type="checkbox"
+                        ng-model=" port[component.cmdKey]" ng-change="update(component.cmdKey)"
+                        ng-checked="port[component.cmdKey]">{{component.label}}</label>
+        </div>
+    </div>
+     <style>
+
+        .poe-status .on{
+            color: green;
+        }
+        .poe-status .off{
+            color: red;
+        }
+    </style>
+    <div class="field poe-status" style="" ng-if="port.id.indexOf('HDBT') > -1">
+        <label style="margin-right: 20px; font-weight: bolder">{{display.poeState.label}}</label>
+        <div>
+            <span ng-class="{'on': port.POE_Status, 'off': !port.POE_Status}">{{port.POE_Status ? 'ON': 'OFF'}}</span>
+            <br>
+            <b>*Configured in Global Settings</b>
+        </div>
+    </div>
+    <div class="field" ng-if="port.hasOwnProperty('AFV')">
+        <label style="margin-right: 20px; font-weight: bolder">AFV</label>
+        <k-on-off show-value-on-disable="true"
+                init-val="{{port['AFV']}}"
+                is-waiting-for-response="false"
+                on-click="toggleAFV(insideVal)"
+                active-text="ON" inactive-text="OFF"></k-on-off>
+        <!--enabled="!port.hasOwnProperty('X_AUD_ONLY') || port['X_AUD_ONLY'] == 0"-->
+    </div>
+
+     <div class="field" ng-if="port.hasOwnProperty('X_LONG_REACH')">
+        <label style="margin-right: 20px; font-weight: bolder">Extra Range</label>
+        <k-on-off show-value-on-disable="true"
+                init-val="{{port['X_LONG_REACH']}}"
+                is-waiting-for-response="false"
+                on-click="toggleLONG_REACH(insideVal)"
+                active-text="ON" inactive-text="OFF"></k-on-off>
+                <!--enabled="!port.hasOwnProperty('X_AUD_ONLY') || port['X_AUD_ONLY'] == 0"-->
+    </div>
+
+    <div class="field" ng-if="port.hasOwnProperty('X_AUD_ONLY')">
+        <label style="margin-right: 20px; font-weight: bolder">Audio only</label>
+        <k-on-off show-value-on-disable="true"
+                init-val="{{port['X_AUD_ONLY']}}"
+                on-click="toggleAudioOnly(insideVal)"
+                active-text="ON"
+                inactive-text="OFF"
+                is-waiting-for-response="false"
+                enabled="true"></k-on-off>
+    </div>
+    <!--Combo-->
+    <div class="field" ng-repeat="component in display.combo track by $index" ng-if="component.cmdKey !== 'X_FOLLOWERS' && port.hasOwnProperty(component.cmdKey)
+         || (port.direction == 'output' && port.masterSignal == 'VIDEO' && component.cmdKey == 'X_VIDEO_PATTERN')
+          || (port.direction == 'input' && port.masterSignal == 'VIDEO' && component.cmdKey == 'SELECTED_PORT') ">
+        <label style="margin-right: 20px; font-weight: bolder">{{component.label}}</label>
+        <k-combo-box label="label" value="value" on-change="updateCombo(component.cmdKey,insideVal)"
+                options="component.options" enabled="component.cmdKey != 'X_VIDEO_PATTERN' ||  (component.cmdKey == 'X_VIDEO_PATTERN'  && !port.hasOwnProperty('X_AUD_ONLY')  || audioOnlyStatus != 1)"
+                init-val="{{port[component.cmdKey]}}" value-to-listen="port[component.cmdKey]">
+        </k-combo-box>
+    </div>
+
+
+
+
+
+
+    <!--Connection-->
+
+
+
+    <!--ON / OFF-->
+    <div class="field" ng-if="port.hasOwnProperty('X_MIC_TYPE')">
+        <label style="margin-right: 20px; font-weight: bolder">Microphone Type</label>
+
+        <k-on-off show-value-on-disable="true"
+                is-waiting-for-response="false"
+                init-val="{{port['X_MIC_TYPE']}}"
+                on-click="toggleMicType(insideVal)"
+                active-text="Dynamic" inactive-text="Condenser"
+                enabled="!port.hasOwnProperty('X_AUD_ONLY')  || port['X_AUD_ONLY'] == 0"></k-on-off>
+    </div>
+
+
+
+     <div  ng-if="port.remoteDevice">
+         <div class="step-in field" style="height: auto;">
+                                  <label style="margin-right: 20px; font-weight: bolder">Step In</label>
+                                <div class="no-remote-device" ng-if="!port.remoteDevice.connected">
+                                    No device connected
+                                </div>
+                                <div class="" ng-if="port.remoteDevice.connected">
+                                    <div style="text-align: center; font-weight: bold; color: gray;">{{port.remoteDevice.device}}</div>
+                                    <div class="flex-container center middle">
+                                        <button ng-repeat="input in port.remoteDevice.inputs " class="btn"
+                                                ng-class="{'selected': (port.remoteDevice.current -1 == $index || port.remoteDevice.next -1 == $index),
+                                                'passing': passing == $index}"
+                                                ng-click="tunnelCtrl(port, input.index)">
+                                            <span>{{input.name}}</span>
+                                            <span>{{(input.index)}}</span>
+                                        </button></div>
+                                </div>
+
+                   </div>
+           <div class="flex-container end middle" style="margin-bottom: 10px">
+                <span style="font-weight: bold;color: gray; margin-right: 10px">Outputs</span>
+               <div  style="margin-right: 3px">
+               <label>
+                <input type="checkbox" ng-model="port.remoteDevice.outputs[0]" ng-change="updateProgAction(0)" >echo</label>
+               </div>
+               <div data-ng-repeat="i in stepinPorts" style="margin-right: 3px">
+               <label>
+                   <!--ng-model=" port[component.cmdKey]" ng-change="update(component.cmdKey)"-->
+                   <!--ng-checked="port[component.cmdKey]"-->
+                <input type="checkbox" ng-model="port.remoteDevice.outputs[i.portIndex]"  ng-change="updateProgAction(i)">{{i.name}}</label>
+               </div>
+             </div>
+
+
+</div>
+
+
+    <div class="field" ng-if="port.hasOwnProperty('followers') && port.followers">
+        <label style="margin-right: 20px; font-weight: bolder">Followers</label>
+        <div class="routing">
+            <div class="combo-sub" ng-repeat="component in display.comboSub track by $index">
+                <label style="font-weight: bold; color: gray">{{component.label}}</label>
+                <k-combo-box label="label" value="value"
+                        on-change="updateFollower(component.cmdKey, component.label, insideVal)"
+                        options="component.options"
+                        enabled="!port.hasOwnProperty('X_AUD_ONLY')  || port['X_AUD_ONLY'] == 0"
+                        init-val="{{ (!port.followers[component.label].selected ? (component.label == 'AUDIO' ? port.id: 0) : port.followers[component.label].selected)}}"
+                        value-to-listen="port.followers[component.label].selected">
+                </k-combo-box>
+            </div>
+        </div>
+    </div>
+
+    <!--PRIORITY DIRECTIVE TODO-->
+    <!--|| (port.hasOwnProperty('X_AUD_ONLY') && port['X_AUD_ONLY'] == 1)-->
+    <div ng-show="port.hasOwnProperty('AUTO_SWITCH')">
+        <div class="flex-container row  around scan-priority"
+                ng-class="{'disabled': port['AUTO_SWITCH'] == 0 }">
+            <div class="flex-container column priority-form">
+                <label style="font-weight: bold; ">Priority</label>
+                <div style="margin-top: 20px">
+                    <div ng-repeat="priority in selectedAutoSwitch track by $index" class="priority-index">
+                        <div ng-class="">
+                            <label>{{$index+1}}</label>
+                            <i class="remove-autoswitch icon-cross"
+                                    ng-click="removePriority(port, priority.id, $index)"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!--|| (port.hasOwnProperty('X_AUD_ONLY') && port['X_AUD_ONLY'] == 1)-->
+                <select style="width: 100%;height: 30px;margin-top: 5px;"
+                        ng-class="{'disabled': port['AUTO_SWITCH'] == 0 }"
+                        ng-options="item as item.name for item in selectableAutoSwitch track by item.id"
+                        ng-model="current" ng-change="addPriority(port, current.id)"></select>
+                <!--<div class="field add-switch">Add an input:-->
+                <!--<k-combo-box label="id"-->
+                <!--value="id"-->
+                <!--on-change="addPriority(port, insideVal)"-->
+                <!--options="selectableAutoSwitch"-->
+                <!--enabled="port['AUTO_SWITCH'] != 0 && !(port.hasOwnProperty('X_AUD_ONLY') && port['X_AUD_ONLY'] == 1)"-->
+                <!--init-val="{{current.id}}"-->
+                <!--style="margin: auto; margin-top: 10px"></k-combo-box>-->
+                <!--value-to-listen="current.id"-->
+
+                <!--</div>-->
+            </div>
+            <div class="auto-switch-content">
+                <label class="input-title">Input</label>
+                <p class="description">drag & drop to prioritize</p>
+                <ul class="cards card-list" as-sortable="dragControlListeners" data-ng-model="selectedAutoSwitch">
+                    <li class="as-sortable-item" ng-repeat="input  in selectedAutoSwitch" as-sortable-item>
+                        <div as-sortable-item-handle class="full-handle as-sortable-item-handle">
+                            <span class="card-title">{{input.name}}</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="second-column">
+
+</div>
+

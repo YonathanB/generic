@@ -1,0 +1,96 @@
+//***********************************************
+// File Name: kCollapse.less
+// Created by: fassous
+// On: 14/03/2017 18:01
+// Last Modified:
+// Modified by:
+//***********************************************
+@kCollapse-transition-time:0.35s;
+.kCollapse {
+    margin:5px;
+    .f_radius(5px);
+    //overflow:hidden;
+    &.active{
+        .kCollapse-title{
+            background-color: @app-mainmenu-selected;
+        }
+    }
+    .kCollapse-title {
+        color: @app-main-color;
+        padding: 2px 3px 2px 3px;
+        text-align: left;
+        height: 40px;
+        line-height: 40px;
+        font-size: 13px;
+        font-weight: bold;
+        background-color: #f7f7f7;
+        display: block;
+        cursor: pointer;
+        .f_radius(5px 5px 0 0 );
+        /* min-height: 3rem; */
+        /* line-height: 3rem; */
+        //padding: 0 1rem;
+        //background-color: #fff;
+        //border-bottom: 1px solid #ddd;
+
+        .kCollapse-arrow{
+            display:inline-block;
+            width: 0px;
+            height:0px;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-left: 7px solid @app-main-background-color;
+            .f_transition( @kCollapse-transition-time );
+            margin-right:5px;
+
+            &.open{
+                //border-left: 6px solid transparent;
+                //border-right: 6px solid transparent;
+                //border-top: 7px solid @app-main-background-color;
+                .f_transform( rotate(90deg) );
+            }
+            &.close{
+            }
+        }
+        .kCollapse-title-text{
+            display:inline-block;
+        }
+
+    }
+
+    .kCollapse-content-container {
+        border-right: 1px solid #f7f7f7;
+        border-bottom: 1px solid #f7f7f7;
+        border-left: 1px solid #f7f7f7;
+        box-sizing: border-box;
+        height:auto;
+        &.closed {
+            height:0;
+        }
+        //&.opened {
+        //  height:auto;
+        //}
+
+        //padding: 2rem;
+        .f_radius(0 0 5px 5px);
+        overflow: hidden;
+        //.f_transition(height @kCollapse-transition-time);
+        .kCollapse-content {
+            //.f_transition(height @kCollapse-transition-time);
+            // ---->height:auto;
+            //border: 1px solid green;
+            //height:0;
+
+        }
+
+    }
+
+    &.disabled {
+        .kCollapse-title {
+            background-color: @app-disabled-background-color;
+            color: @app-disabled-color;
+            cursor: default;
+
+        }
+    }
+}

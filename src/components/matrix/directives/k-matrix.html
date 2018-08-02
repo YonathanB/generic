@@ -1,0 +1,155 @@
+<div class="k-matrix">
+    <div class="upper">
+        <div class="header title">
+            <div>Outputs</div>
+            <div>Inputs</div>
+        </div>
+        <!--OUTPUTS-->
+        <div class="outputs header">
+            <table>
+                <thead>
+                <tr>
+                    <!-- TODO ng-mouseover="getSignals(outputConnector.id)"
+                     matrixFilter:MatrixVM.filter.value:matrixFilters.selected.key-->
+                    <th class="output-header animate-repeat"
+                            ng-repeat="outputConnector in portsList | filter:{'direction': 'output'} track by $index">
+                        <k-port port="outputConnector" port-type="{{'output'}}" matrix="MatrixVM" ports-list="portsList"
+                                on-click="openInfo(outputConnector)"></k-port>
+                    </th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+<div class="matrix-wrapper">
+    <div class="inputs-body">
+        <!--INPUTS
+         <!-- matrixFilter:MatrixVM.filter.value:matrixFilters.selected.key track by $index"-->
+        <!--ng-if="inputConnector.selectedPort">-->
+        <table class="inputs header">
+            <thead ng-repeat="inputConnector in portsList | filter: {'direction': 'input'} track by $index ">
+
+            <tr ng-init="inputConnector.collapsed = true; ">
+                <td class="td-square">
+                    <div ng-if=" inputConnector.supportedSignals.length > 1  && matrixFilters.length > 1" class="square"
+                            ng-class="{'selected': !inputConnector.collapsed}"
+                            ng-click=" inputConnector.collapsed = !inputConnector.collapsed;"
+                            style="max-width: 30px; cursor: pointer; color: #57a1e2;">
+                        <span class="plus">+</span>
+                        <span class="minus">-</span>
+                    </div>
+                    <!--ng-class="{'clickable': inputConnector.configurablePort}"-->
+                    <div style="height: 100%; flex:1" ng-click="openPortInfo(inputConnector, 'Input')">
+                        <k-port port="inputConnector" on-click="openInfo(inputConnector)" matrix="MatrixVM"
+                                ports-list="portsList" k-port-id="{{inputConnector.id}}"></k-port>
+                    </div>
+                </td>
+            </tr>
+            <!--&& MatrixVM.filter.value.length > 1-->
+            <tr ng-repeat="signal in inputConnector.supportedSignals | signalFilter:matrixFilters track by $index"
+                    ng-if="!inputConnector.collapsed  && matrixFilters.length > 1">
+                <td class="collapsed">{{:: signal}}</td>
+            </thead>
+        </table>
+
+        <!--ROUTING-->
+        <div id="routing-matrix">
+             <!--matrixFilter:MatrixVM.filter.value:matrixFilters.selected.key track by $index-->
+            <div ng-repeat="inputConnector in  portsList | filter: {'direction': 'input'} track by $index"
+                    class="label">
+                <div class="k-matrix-row">
+                    <!--MatrixVM.output  |  matrixFilter:MatrixVM.filter.value:matrixFilters.selected.key -->
+                    <div ng-repeat="outputConnector in portsList | filter: {'direction': 'output'} track by $index"
+                            ng-mouseover="overCell()" ng-mouseleave="removeOverCell()"
+                            ng-click="(MatrixVM.noRouting[inputConnector.id].indexOf(outputConnector.id) > -1 ? null: routeSignal(inputConnector, outputConnector, inputConnector.supportedSignals))"
+                            class="animate-repeat over-cell">
+                        <div class="cell"
+                                ng-class="{'disabled': MatrixVM.noRouting[inputConnector.id].indexOf(outputConnector.id) > -1}">
+                            <div class="signal-status {{MatrixVM.routes[inputConnector.id] | isFullConnected:outputConnector:MatrixVM.filter.value:outputConnector.supportedSignals:inputConnector.id}}">
+                                <i id={{inputConnector.id+'-'+outputConnector.id}} ng-class="{
+                                'routing-process loader-btn': saveProcess[inputConnector.id+'-'+outputConnector.id],
+                                'icon-checkmark':!saveProcess[inputConnector.id+'-'+outputConnector.id] && outputConnector.isFullConnected ,
+                                'icon-music':!saveProcess[inputConnector.id+'-'+outputConnector.id] &&  !outputConnector.isFullConnected && outputConnector.connections['AUDIO'] ==  inputConnector.id,
+                                'icon-video-camera':!saveProcess[inputConnector.id+'-'+outputConnector.id] &&  !outputConnector.isFullConnected && outputConnector.connections['VIDEO'] == inputConnector.id}">
+                                </i>
+                                <span class="auto-switch"
+                                        title="{{outputConnector['AUTO_SWITCH'] == 2 ? 'Auto-switch Last Connected': 'Auto-switch Priority'}}"
+                                        ng-if="outputConnector.hasOwnProperty('AUTO_SWITCH')
+                                && outputConnector['AUTO_SWITCH'] !== '0'
+                                && outputConnector.hasOwnProperty('SWITCH_PRIORITY')
+                                && outputConnector['SWITCH_PRIORITY'].indexOf(inputConnector.id) > -1">
+                                    {{(outputConnector['AUTO_SWITCH'] == 2 ? 'LC': outputConnector['SWITCH_PRIORITY'].indexOf(inputConnector.id)+1)}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    <!--ng-if="!inputConnector.collapsed && matrixFilters.length > 1"-->
+                <div ng-repeat="signal in inputConnector.supportedSignals | signalFilter:matrixFilters  track by $index"
+                        ng-if="!inputConnector.collapsed  && matrixFilters.length > 1"
+                        class="k-matrix-row collapsed over-row">
+                    <div ng-repeat="outputConnector in portsList |  filter: {'direction': 'output'}  track by $index"
+                            class="over-cell" ng-mouseover="overCell()" ng-mouseleave="removeOverCell()">
+                        <div class="cell" ng-class="{'disabled': outputConnector.supportedSignals.indexOf(signal) == -1 }"
+                                ng-click="(MatrixVM.noRouting[inputConnector.id].indexOf(outputConnector.id) > -1 ? null: routeSignal(inputConnector, outputConnector,  [signal]))">
+                        <div class="signal-status" ng-class="{
+                                   'routing-process loader-btn': saveProcess[inputConnector.id+'-'+outputConnector.id] && saveProcessSignal.indexOf(signal) > -1,
+                                 'full-connected': !saveProcess[inputConnector.id+'-'+outputConnector.id] && MatrixVM.routes[inputConnector.id][signal].indexOf(outputConnector.id) > -1}">
+                                <i class="icon-checkmark"></i>
+                            </div>
+                        </div>
+                    </div> <!--foreach output-->
+                </div>
+                <!--end foreach output SIGNAL-->
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div ng-show="settingWindow" class="dialog-box io-settings">
+    <div class="dialog zoom-in" ng-if="settingWindow">
+        <div class="header">
+            <i class="close-dialog icon-cross" ng-click="closePortInfo()"></i>
+            <div class="flex-container">
+                <h2>{{port.direction +' '+ port.name}}</h2>
+                <div class="led-box" ng-if="['HDMI', 'HDBT'].indexOf(port.portType) > -1"
+                        style="    margin-left: 16px;">
+                    <div class="signal" ng-class="{'on': port.signal}"
+                            title="{{port.signal? 'Active Signal': 'No Signal'}}"></div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="body flex-container column" style="font-size: 13px">
+            <k-port-info port-copy="{{port}}" callback-on-close="closeSettingWindow" ports-list="portsList"
+                    routes="MatrixVM.routes" on-close="closePortInfo"></k-port-info>
+        </div>
+        <div class="footer" style="margin-top: 15px; text-align: right">
+            <!--<button ng-click="closeSettingWindow(false)" class="btn flat">cancel</button>-->
+            <button class="btn flat" ng-click="closePortInfo(false)">Cancel</button>
+            <button class="btn" ng-class="{'selected': settingWindowIsDirty, 'disabled': !settingWindowIsDirty}"
+                    ng-click="closePortInfo(true)">Save</button>
+        </div>
+
+    <div ng-if="(port.portType == 'MIC' || port.portType == 'ANALOG_AUDIO' || port.portType == 'AMPLIFIED_AUDIO') && port['X_AUDIO_RANGE'].min != port['X_AUDIO_RANGE'].max"
+            class="footer" style="    border-top: 1px solid #c5c5c5;">
+        <div class="field">
+            <label style="margin-right: 20px; font-weight: bolder">Volume</label>
+            <div></div>
+        </div>
+        <div class="field">
+            <k-slider style="margin-left: 18px" unit="dB" min="{{port['X_AUDIO_RANGE'].min}}"
+                    max="{{port['X_AUDIO_RANGE'].max}}" decimals="1" show-progress="true" rounding-to="0.1"
+                    validate-on-enter="true" orientation="H" timeout="500" show-input="true"
+                    on-value-to-listen-changed="updateVolume(insideVal)" init-val="{{port.AUDIO_VOLUME}}"></k-slider>
+            <div class="sound-icon-slider" style="margin-bottom: 10px">
+                <i ng-if="port.X_MUTE['AUDIO']" class="icons icon-ic_audio_signal_off" title="click to unmute"
+                        ng-click="toggleCommand('X_MUTE', 'AUDIO')" style="font-size: 50px"></i>
+                <i ng-if="!port.X_MUTE['AUDIO']" class="icons icon-ic_audio_signal_on" title="click to mute"
+                        ng-click="toggleCommand('X_MUTE', 'AUDIO')" style="font-size: 50px"></i>
+            </div>
+        </div>
+    </div>
+
+    </div>
+</div>

@@ -1,0 +1,109 @@
+<div class="k-waves">
+    <!--Icons-->
+    <i class="waves-icons"
+       ng-class="{
+            'icon-wave': currentRack.type == 'OFF',
+            'icon-Microphone_icon': currentRack.type == 'MICROPHONE',
+            'icon-Sound_icon': currentRack.type == 'SOUND',
+            'icon-Music_icon': currentRack.type == 'MUSIC'
+               }"
+       ng-click="toggleRack()">
+    </i>
+
+    <!--RACK-->
+    <div ng-show="isRackOpen" class="dialog-box">
+        <div class="rack dialog flip-in" ng-if="isRackOpen">
+    <!--<div class="rack" ng-if="isRackOpen">-->
+        <div class="rack-header">
+            <i class="icon-wave"></i>
+            <div class="btn " ng-class="{'on': !currentRack.BYPASS}"
+                 ng-click="rackChange('BYPASS', !currentRack['BYPASS'] )">IN</div>
+            <div class="btn " ng-class="{'muted': currentRack.MUTE}"
+                 ng-click="rackChange('MUTE', !currentRack['MUTE'] )">MUTE</div>
+            <div><span class="rack-type"> Kramer sound </span><span class="powered-by">Powered by Waves Audio</span>
+            </div>
+            <div class="rack-close ">
+                <i class="icon-X_Green_icon"
+                ng-click="toggleRack()"></i> </div>
+        </div>
+        <div style="    display: flex; background: #424242; padding: 10px 0px;">
+            <div class="rack-menu">
+                <div class="item" ng-class="{'selected': currentRack.type == 'MICROPHONE'}"
+                     ng-click="selectRack(1)">
+                    <i class="icon icon-Microphone_icon"></i>Microphone
+                </div>
+                <div class="item" ng-class="{'selected': currentRack.type == 'MUSIC'}"
+                     ng-click="selectRack(2)">
+                    <i class="icon icon-Music_icon"></i>Music
+                </div>
+                <div class="item" ng-class="{'selected': currentRack.type == 'SOUND'}"
+                     ng-click="selectRack(3)">
+                    <i class="icon icon-Sound_icon"></i>Sound
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; width: 100%;margin-left: 10px;">
+                <div class="rack-content" ng-if="currentRack.type !== 'OFF'">
+                    <div class="rack-volume">
+                        <k-slider
+                                style="margin-left: 18px"
+                                unit="dB"
+                                max="18"
+                                min="-18"
+                                decimals="1"
+                                show-progress="true"
+                                rounding-to="0.1"
+                                validate-on-enter="true"
+                                orientation="V"
+                                show-input="true"
+                                on-value-to-listen-changed="rackChange('VOLUME', currentRack.VOLUME)"
+                                enabled="!currentRack['MUTE']"
+                                init-val="{{currentRack['VOLUME']}}"
+                                value-to-listen="currentRack.VOLUME"></k-slider>
+                    </div>
+                    <div class="rack-plugins">
+                        <div class="plugin"  ng-repeat="plugin in currentRack.plugins track by $index">
+                            <div class="by-pass-plugin"
+                                 ng-class="{'on': !plugin.BYPASS, 'off': plugin.BYPASS}"
+                                 ng-click="pluginChange($index, 'BYPASS', !plugin['BYPASS'])">IN</div>
+                            <div class="plugin-content">
+                                <div   class="plugin-btn"
+                                       ng-if="WavesMeta.plugins[plugin.type].operations.indexOf('SUGGEST')> -1"
+                                       ng-mousedown="pluginChange($index, 'SUGGEST', true)"
+                                       ng-mouseup="pluginChange($index, 'SUGGEST', false)"
+                                       ng-class="{'on': plugin.SUGGEST}"
+                                       style="color: white">SUGGEST</div>
+                                <div  class="plugin-btn"
+                                      ng-if="WavesMeta.plugins[plugin.type].operations.indexOf('SETUP') > -1"
+                                      ng-class="{'on': plugin.SETUP}"
+                                      ng-click="pluginChange($index, 'SETUP', !plugin['SETUP'])"
+                                     style="color: white">SETUP</div>
+                                <div style="margin-bottom: 10px;">
+                                    <div class="plugin-name"
+                                    title="{{plugin.type}}">{{plugin.type}}</div>
+                                    <hr class="plugin-border"/>
+                                    <div class="plugin-description"
+                                         title="{{WavesMeta.plugins[plugin.type].description}}">{{WavesMeta.plugins[plugin.type].description}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="rack-footer">
+            <div class="item" ng-class="{'selected': currentRack.type == 'OFF'}"
+                 style="cursor: pointer"
+                 ng-click="selectRack(0)">
+                <i class="icon icon-Direct_icon" ng-class="{'selected': currentRack.type == 'MUSIC'}"
+                   ></i>Direct</div>
+            <div class="rack-preset" ng-if="currentRack.type !== 'OFF'">
+                <i class="icon-LeftArrow_White_icon"
+                   ng-click="changePreset('-1')"></i>
+                <div>{{currentRack.preset}}</div>
+                <i class="icon-RightArrow_White_icon"
+                ng-click="changePreset('+1')"></i>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

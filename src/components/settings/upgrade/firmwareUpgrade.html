@@ -1,0 +1,20 @@
+<div style="padding-top: 10px; background: white">
+<section style="padding: 10px" >
+    <div class="field">
+        <label>Firmware version</label>
+        <label class="answer">{{::$ctrl.firmwareVersion}}</label>
+    </div>
+
+    <div class="field">
+        <label>Update Firmware</label>
+        <k-browse
+                control-class="factory-button selected"
+                accept=".kptw,.kpt"
+                button-text="Upgrade..."
+                on-file-data-ready="startUpgrade(insideVal)"
+                file-text="fileText"
+                file-data="upload.fileDataToUpload"
+                file-name="upload.fileName"></k-browse>
+    </div>
+</section>
+</div>

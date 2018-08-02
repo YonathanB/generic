@@ -1,0 +1,64 @@
+//***********************************************
+// File Name: kVolume.less.less
+// Created by: fassous
+// On: 21/07/2015 10:34
+// Last Modified: 
+// Modified by: 
+//***********************************************
+
+.kVolume {
+    display: inline-block;
+    .kVolume-header {
+        font-size: @font-size-xmedium;
+        margin-bottom: 10px;
+        display:inline-block;
+    }
+    //.kVolume-slider {
+    //    width:100px;
+    //}
+
+    .kVolume-icon {
+        //margin-top: 10px;
+        display: inline-block;
+        //.kStateButton {
+        //    margin-left: 8px;
+        //}
+        .button-mute{
+            color: @app-main-input-color;
+            font-size:24px;
+        }
+    }
+
+    &.volume-vertical {
+        .kVolume-header {
+            font-size: @font-size-xmedium;
+            //margin-bottom: 10px;
+            display:block;
+        }
+        //.kVolume-slider {
+        //    width:auto;
+        //}
+
+        .kVolume-icon {
+            margin-top: 10px;
+            display: block;
+            vertical-align: middle;
+            //.kStateButton {
+            //    margin-left: 8px;
+            //}
+        }
+
+    }
+
+
+    &.disabled {
+        .kVolume-icon {
+            .button-mute{
+                color: @app-disabled-color;
+            }
+            .kStateButton.StateButtonDefaultStyle {
+                cursor: default;
+            }
+        }
+    }
+}

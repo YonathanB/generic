@@ -1,0 +1,95 @@
+//***********************************************
+// File Name: kInput.less
+// Created by: fassous
+// On: 27/02/2017 09:18
+// Last Modified: 
+// Modified by: 
+//***********************************************
+.kInput {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    overflow: hidden;
+    input {
+        height: @app-element-height;
+        border: 1px solid @app-border-element;
+    }
+    .kUnit {
+        position: absolute;
+        bottom: 0px;
+        left: 50px;
+        color: #000;
+        font-size: 10px;
+        line-height: @app-element-height;
+    }
+
+    .kInput-arrows {
+        position: absolute;
+        right: 1px;
+        width: 13px;
+        top: 1px;
+        height: ~"calc(100% - 2px)";
+        box-sizing: content-box;
+        //border: 2px solid #fff;
+        .f_radius(0 5px 5px 0);
+        //border: 2px solid @app-main-input-background-color;
+        background-color: @app-main-input-background-color;
+        .kInput-arrows-up, .kInput-arrows-down {
+            position:absolute;
+            width: 0px;
+            height:0px;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            //margin: 0px auto 2px auto;
+            //height: 50%;
+            right:1px;
+            cursor:pointer;
+            &:hover{
+                //opacity:0.7;
+            }
+        }
+        .kInput-arrows-up {
+            border-bottom: 7px solid @app-main-background-color;
+            top:3px;
+        }
+
+        .kInput-arrows-down {
+            border-top: 7px solid @app-main-background-color;
+            bottom:3px;
+        }
+
+    }
+
+    &.error {
+        .kUnit {
+            color: @app-error-color !important;;
+        }
+        input {
+            color: @app-error-color !important;
+            border-color: @app-error-color !important;
+        }
+
+    }
+
+    &.disabled{
+        .kUnit {
+            color: @app-disabled-color;
+        }
+        input{
+            background: @app-disabled-background-color;
+            color: @app-disabled-color;
+        }
+        .kInput-arrows {
+            background-color: @app-main-input-background-color;
+            .kInput-arrows-up {
+                border-bottom: 7px solid @app-disabled-color;
+                top:3px;
+            }
+
+            .kInput-arrows-down {
+                border-top: 7px solid @app-disabled-color;
+                bottom:3px;
+            }
+        }
+    }
+}

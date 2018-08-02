@@ -1,0 +1,63 @@
+//***********************************************
+// File Name: kRadioButton.less
+// Created by: fassous
+// On: 25/05/2015 15:00
+// Last Modified: 
+// Modified by: 
+//***********************************************
+
+.kRadioButton {
+    display:table;
+    .kRadioButton-col1 , .kRadioButton-col2 {
+        display:table-cell;
+        &.kRadioButton-top{
+            vertical-align: top;
+        }
+        &.kRadioButton-middle{
+            vertical-align: middle;
+        }
+        &.kRadioButton-bottom{
+            vertical-align: bottom;
+        }
+    }
+    .kRadioButton-col1 {
+
+        input {
+            display: none;
+        }
+
+        input:checked + .kRadioButton-button {
+            background-color: @app-main-background-color;
+        }
+        input:disabled + .kRadioButton-button {
+            background-color: @app-disabled-background-color;
+            border-color: @app-disabled-background-color;
+            cursor:default;
+        }
+
+        .kRadioButton-button {
+            border:1px solid red;
+            vertical-align: top;
+            display: inline-block;
+            width: 13px;
+            height: 13px;
+            .f_radius(60px);
+            background-color: @app-main-color;
+            border: 2px solid  @app-main-color;
+            cursor: pointer;
+            .f_transition(background-color 0.3s;);
+            .f_radius(60px);
+            margin: 0px 5px 0 0;
+            padding: 0;
+        }
+    }
+
+
+    .kRadioButton-col1 {
+        display:table-cell;
+    }
+    //.kRadioButton-text {
+    //    display: inline-block;
+    //    vertical-align: top;
+    //}
+}

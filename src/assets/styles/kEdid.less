@@ -1,0 +1,121 @@
+//***********************************************
+// File Name: kEdid.less
+// Created by: fassous
+// On: 14/05/2015 15:14
+// Last Modified: 
+// Modified by: 
+//***********************************************
+.kEdid{
+    position:relative;
+    vertical-align: top;
+    //background-color:@app-main-background-secondary;
+    //.f_radius(5px;);
+    //padding:5px;
+    //font-size:15px;
+    width:145px;
+    height:90px;
+    padding:0px;
+//    border:2px solid @app-main-color-hover;
+    border:2px solid @app-disabled-background-color;
+    overflow: hidden;
+
+    .icon_edidLocked{
+        display:none;
+        position: absolute;
+        top: 2px;
+        right: 5px;
+        float:none;
+    }
+    .lock-edid{
+        position: absolute;
+        top: 2px;
+        right: 5px;
+        float:none;
+    }
+    .edid-signal{
+        position: absolute;
+        top: 4px;
+        right: 5px;
+        float:none;
+        background-color: @app-content-background-color;
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        .f_radius(60px;);
+        &.on {
+            background-color: #76FF03;
+        }
+    }
+
+    p{
+        font-size:10px;
+        margin:0px ;
+        text-align: left;
+        padding-left:5px;
+        padding-right:5px;
+        line-height: 14px;
+    }
+    p.edid-type{
+        //font-size:12px;
+        background-color: @app-main-color-hover;
+        .f_radius(3px 3px 0px 0px);
+        padding-top:1px;
+        padding-bottom:3px;
+    }
+    p.edid-model , p.edid-noedid{
+        margin-top:5px;
+    }
+    p.edid-size{
+        position:absolute;
+        bottom:0px;
+        right:0px;
+    }
+    .check{
+        background-image: @CHECK_ICON;
+        width: 10px;
+        height: 10px;
+        position:absolute;
+        right:5px;
+        top:5px;
+    }
+}
+
+
+//.kEdid.active{
+//    box-shadow: 1px 1px 20px 1px rgba(255,255,255,0.75);
+//    p:first-child {
+//        &,span{
+//            color:#000;
+//        }
+//
+//    }
+//}
+//.kEdid.disabled{
+//    cursor:pointer;
+//    background-color:@app-disabled-background-color;
+//}
+
+
+
+.kEdid.isLockable{
+    .lock_button{
+        display:inline-block;
+    }
+}
+
+.kEdid.dragover{
+    border:2px dotted #fff;
+    opacity:0.5;
+}
+
+.kEdid.connected{
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAiUlEQVQ4je2P4QnCMBBG30kHcARH6AbtJq7gBjqCG1knECfQEdzg+aeFEAslBKQ/+iCQ75J73MHGulE79eUv3XhyHrljN+M9FMzQ5oVGPSaSEhkA6jmJQ6g3oF/om96HhX+XuZWrWL+wAU7AfswtcC109Mn93UTEc0pq8UQRcU9z7cqfyv6Nf/AFYWFG3dRZdVwAAAAASUVORK5CYII=);
+    background-repeat: no-repeat;
+    background-position: right 5px top 17px;
+}
+
+.kEdid.disconnected{
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAB0UlEQVQ4je2TsWsTYRjGf1+gDsGSw606JC4ZXJJUcE3skEEoGe3URqGz+g/YuAvGrdAhNSikm20mK7TpqJWcBYdaUC4KVq30YiKhscPjcjnjJWnd9YFv+J7ne3937/fewX8BSEpISkuKjMjTkqJ/C5vrui192dyWpFIgi0iyD+1dHR249qlQSbmu29Kz1HWthFJ6kb8rT2lJOUl6v7yqlVBK1YvX1H730ZWU62eEAsyk82iN5s4eAE65yvrkDN1vzSKwbN+5z/bNAgCdxj6dD58tIN8PMJLmgJi3zwCZlzcWcMpV/5CViBOOnefTas33YrPTXCndA3gKvPbsmpG06YH+0PrkjP+mQVmJONl6ZVhUCLbsK7OxhJWID4VlNpZGlQ3c4an62WyfmI8E1qbmh7bcaexTm5ofCTSSEoDl7ZNAMTiUcHSC42ab4+8/fK9vKHnA8WwnZIzZMcZsGWO2AOtr7dXAhLP1Cunni82xyFnfd8pV9h4+AUj26o0xjWDLzpg1Tq8wNjtNtl7hjDV++9zlS/lsveIPKhyd4ELuKvz+ZIZLUunQ3tXb4mNJcr0r6WWRowPXflNYVNdtSdKDE2F9hbe8NfCvSopKWuh/0D+uX17d/CbFzBE+AAAAAElFTkSuQmCC);
+    background-repeat: no-repeat;
+    background-position: right 5px top 17px;
+}

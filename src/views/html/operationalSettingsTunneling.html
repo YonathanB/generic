@@ -1,0 +1,142 @@
+<div class="device-settings operational">
+
+
+        <div class="sectionContainer">
+            <div class="leftContainer">
+
+                <div class="portMenuItem"
+                     ng-class="{portMenuItemSelected:ioPortSelectedIndex==0}"
+                     ng-click="ioPortSelect(0);">
+                    Active Clients
+                </div>
+
+                <div class="portMenuItem"
+                         ng-class="{portMenuItemSelected:ioPortSelectedIndex==1}"
+                         ng-click="ioPortSelect(1);">
+                        Port 1
+                    </div>
+
+            </div>
+
+            <div  class="rightContainer">
+
+            <div ng-if="ioPortSelectedIndex==0" class="propertyColumn">
+
+                <div  ng-include="url"></div>
+            </div>
+
+
+            <div ng-if="ioPortSelectedIndex==1" class="propertyColumn">
+                <k-form ng-model="operationalTunnelingSettings"
+                        call-on-saved="CallOnSaved(data,update_success)"
+                        call-on-before-saved="CallOnBeforeSaved()"
+                        exclude-from-compare="excludeFromCompare">
+                <h4 class="section-title" >Ethernet Settings</h4>
+
+            <div class="field">
+                <label>Protocol</label>
+                <label>TCP</label>
+            </div>
+
+            <div class="field">
+                <label>IP Port</label>
+                <input string-to-number
+                       type="number" min="0" max="65535"
+                       ng-model="operationalTunnelingSettings.data.COM_ROUTE_1.port_number"
+                       set-click=""
+                       class="device-settings-input">
+
+            </div>
+
+            <div class="field">
+                <label>Device Serial Mode</label>
+                <label>
+                    RS232
+                </label>
+            </div>
+
+            <div class="field" ng-if="operationalTunnelingSettings.data.COM_ROUTE_1.port_type == 2">
+                <label>TCP Keep Alive (sec)</label>
+                <input string-to-number
+                       type="number" min="0" max="255"
+                       ng-model="operationalTunnelingSettings.data.COM_ROUTE_1.keep_alive_timing"
+                       set-click=""
+                       class="device-settings-input">
+
+            </div>
+
+
+                <h4 class="section-title" >Serial Configuration</h4>
+            <div class="field">
+                <label>Parity</label>
+                <k-combo-box value-to-listen="operationalTunnelingSettings.data.UART_1.parity"
+                             init-val="{{operationalTunnelingSettings.data.UART_1.parity}}"
+                             options="parityList"
+                             label="name" value="value"
+                             on-change="setModifyFlag()"
+                             enabled="true"
+                ></k-combo-box>
+
+            </div>
+            <div class="field">
+                <label>Data Bits</label>
+                <k-combo-box init-val="{{operationalTunnelingSettings.data.UART_1.data_bits}}"
+                             options="dataBitsList"
+                             on-change="setModifyFlag()"
+                             enabled="true"
+                             value-to-listen="operationalTunnelingSettings.data.UART_1.data_bits">
+                </k-combo-box>
+
+            </div>
+            <div class="field">
+                <label>Baud Rate</label>
+                <k-combo-box init-val="{{operationalTunnelingSettings.data.UART_1.baud_rate}}"
+                             options="baudRateList"
+                             on-change="setModifyFlag()"
+                             enabled="true"
+                             value-to-listen="operationalTunnelingSettings.data.UART_1.baud_rate">
+                </k-combo-box>
+
+                <!--<select ng-model="ioSerial.serial.baud_rate"-->
+                <!--ng-options="baudRate for baudRate in baudRateList">-->
+                </select>
+
+            </div>
+            <div class="field">
+                <label>Stops Bits</label>
+                    <k-combo-box init-val="{{operationalTunnelingSettings.data.UART_1.stop_bits}}"
+                                 options="stopBitsList"
+                                 on-change="setModifyFlag()"
+                                 enabled="true"
+                                 value-to-listen="operationalTunnelingSettings.data.UART_1.stop_bits">
+                    </k-combo-box>
+
+            </div>
+            <div class="field">
+                <label>Send Replies to new client by default</label>
+
+                <k-on-off
+                        value-to-listen="operationalTunnelingSettings.data.COM_ROUTE_1.replies"
+                        init-val="{{operationalTunnelingSettings.data.COM_ROUTE_1.replies}}"
+                        is-waiting-for-response="false"
+                        enabled="true" active-text="YES"
+                        inactive-text="NO"
+                        on-click="setModifyFlag()"
+                        show-value-on-disable="true">
+                </k-on-off>
+
+            </div>
+
+
+
+
+
+                </k-form>
+            </div>
+
+
+        </div>
+
+        </div>
+
+</div>

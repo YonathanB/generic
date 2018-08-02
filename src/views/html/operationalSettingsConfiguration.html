@@ -1,0 +1,148 @@
+<div class="device-settings">
+    <k-form ng-model="operationalConfigurationSettings"
+            call-on-saved="CallOnSaved(data,update_success)"
+            call-on-before-saved="CallOnBeforeSaved()"
+            exclude-from-compare="excludeFromCompare">
+
+        <section>
+            <div class="field">
+                <label ng-if="isEncoder" class="contentBox-property">Encoding Method</label>
+                <label ng-if="!isEncoder" class="contentBox-property">Decoding Method</label>
+
+                <k-combo-box options="operationalConfigurationSettings.encodingMethods"
+                             label="name"
+                             value-to-listen="operationalConfigurationSettings.data.STREAMER_ENCODING_METHOD"
+                             init-val="{{operationalConfigurationSettings.data.STREAMER_ENCODING_METHOD}}"
+                             value="id"
+                             enabled="false"
+                ></k-combo-box>
+            </div>
+
+            <div class="field">
+                <label class="contentBox-property">Audio Mode</label>
+
+                <k-combo-box
+                        options="operationalConfigurationSettings.audio_modes"
+                        label="name"
+                        value-to-listen="operationalConfigurationSettings.data.AUDIO_SRC_DEST"
+                        init-val="{{operationalConfigurationSettings.data.AUDIO_SRC_DEST}}"
+                        value="id"
+                        enabled="true"
+
+                ></k-combo-box>
+            </div>
+
+
+            <div class="field"  ng-if="!isEncoder">
+                <label class="contentBox-property">Latency</label>
+
+
+                <k-slider min="10"
+                          max="25000"
+                          init-val="{{operationalConfigurationSettings.data.LATENCY}}"
+                          unit="ms"
+                          orientation="H"
+                          show-arrows="true"
+                          show-input="false"
+                          show-value="true"
+                          value-to-listen="operationalConfigurationSettings.data.LATENCY"
+                ></k-slider>
+            </div>
+
+            <div ng-if="isEncoder &&
+                        operationalConfigurationSettings.data.BITRATE &&
+                        (operationalConfigurationSettings.data.STREAMER_ENCODING_METHOD == 0)" class="field">
+                <label class="contentBox-property">Bitrate</label>
+                <input disabled="true"
+                       ng-model="operationalConfigurationSettings.data.BITRATE"
+                       set-click=""
+                       class="device-settings-input">
+
+            </div>
+
+            <div ng-if="isEncoder &&
+                        operationalConfigurationSettings.data.GOP_SIZE &&
+                        (operationalConfigurationSettings.data.STREAMER_ENCODING_METHOD == 0)" class="field">
+                <label class="contentBox-property">GOP</label>
+                <input disabled="true"
+                       ng-model="operationalConfigurationSettings.data.GOP_SIZE"
+                       set-click=""
+                       class="device-settings-input">
+
+            </div>
+
+            <div ng-if="isEncoder" class="field">
+                <label class="contentBox-property">Framerate</label>
+                <input disabled="true"
+                       ng-model="operationalConfigurationSettings.data.FRAMERATE"
+                       set-click=""
+                       class="device-settings-input">
+            </div>
+        </section>
+
+        <hr class="horizontal-separator"/>
+        <section>
+            <h3 class="section-title" >Working Mode</h3>
+
+            <div class="field">
+                <label >Mode</label>
+                <k-combo-box options="operationalConfigurationSettings.modes"
+                             label="name"
+                             value-to-listen="operationalConfigurationSettings.data.STREAMER_WORKING_MODE"
+                             init-val="{{operationalConfigurationSettings.data.STREAMER_WORKING_MODE}}"
+                             value="id"
+                             enabled="false"
+                ></k-combo-box>
+
+            </div>
+
+            <div class="field"  ng-if="!isEncoder">
+                <label >Scale mode</label>
+                <k-combo-box-set options="operationalConfigurationSettings.scale_modes"
+                        control-combo-class="kds-dec"
+                                 label="name"
+                                 value-to-listen="operationalConfigurationSettings.data.SCALE_PARAMS.mode"
+                                 init-val="{{operationalConfigurationSettings.scaleMode}}"
+                                 value="id"
+                                 enabled="true"
+                                 set-click = "toggleSpecialModes(insideVal,0)"
+
+                ></k-combo-box-set>
+
+            </div>
+
+        </section>
+
+        <section>
+            <div role="alert" class="error">
+                <div style="white-space: pre-line" ng-if="showErrorOnUpdate">
+                    <p>{{errorUpdateMessage}}</p>
+                </div>
+            </div>
+
+        </section>
+
+        <div ng-show="inWarningMode" class="dialog-box">
+            <div class="dialog flip-in-x" ng-if="inWarningMode">
+                <div class="body">
+                    <h2>{{warningMessageTitle}}</h2>
+                    <div style="display: flex">
+                        <div class="kMessageBox-icon icon_MBwarning" style="margin-top: 24px;"></div>
+                        <ul style="font-size: 15px; list-style-type: none;">
+                            <li>{{warningMessage}}</li>
+                            <li>In order to proceed Click OK.</li>
+                        </ul>
+                    </div>
+                    <p style="font-size: 15px;">Do you want to continue?</p>
+                    <div style="margin-top: 15px; text-align: right">
+                        <button ng-click="toggleSpecialModes()" class="btn flat">Cancel</button>
+                        <button class="btn blue selected" ng-click="proceedSave(true)">OK</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </k-form>
+
+</div>

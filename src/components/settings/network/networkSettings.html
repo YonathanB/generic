@@ -1,0 +1,173 @@
+<div class="network-settings">
+    <!--<div class="contentBox-title">{{$root.pageTitle}}</div>-->
+    <k-form ng-model="$ctrl.properties" control="resetDHCP"
+            call-on-before-saved="checkNetwork(data, before)"
+            exclude-from-compare="[$ctrl.properties.data.ETH_PORT_TCP]">
+        <section>
+            <div class="field" id="dhcp">
+                <label>DHCP</label>
+                <k-on-off show-value-on-disable="true"
+                        is-waiting-for-response="false"
+                        value-to-listen="dhcpStatus"
+                          init-val="{{$ctrl.properties.data.NET_DHCP}}"
+                        name="dhcp"
+                        ng-model="dhcpStatus"
+                          on-click="toggleDHCP(insideVal)"
+                          height="30"
+                          width="153"
+                          enabled="true"></k-on-off>
+            </div>
+            <div class="field">
+                <label>IP Address</label>
+                <k-ip
+                        name="ip"
+                        ng-model="$ctrl.properties.data.NET_IP"
+                        enabled="dhcpStatus == 0"
+                        value="$ctrl.properties.data.NET_IP"
+                        init-val="{{$ctrl.properties.data.NET_IP}}"></k-ip>
+            </div>
+            <div class="field">
+                <label>Mask</label>
+                <k-ip
+                        name="mask"
+                        ng-model="$ctrl.properties.data.NET_MASK"
+                        enabled="dhcpStatus == 0"
+                        value="$ctrl.properties.data.NET_MASK"
+                        init-val="{{$ctrl.properties.data.NET_MASK}}"></k-ip>
+            </div>
+            <div class="field">
+                <label>Gateway</label>
+                <k-ip
+                        name="gateway"
+                        ng-model="$ctrl.properties.data.NET_GATE"
+                        enabled="dhcpStatus == 0"
+                        value="$ctrl.properties.data.NET_GATE"
+                        init-val="{{$ctrl.properties.data.NET_GATE}}"></k-ip>
+            </div>
+        </section>
+        <hr class="horizontal-separator"/>
+        <section>
+            <div class="field">
+                <label>Mac address</label>
+                <label style="font-size: 14px;">{{$ctrl.properties.data.NET_MAC}}</label>
+            </div>
+            <!--<div class="field">-->
+                <!--<label>UDP port</label>-->
+                <!--<input type="text" ng-model="$ctrl.properties.data.UDP" name="UDP">-->
+            <!--</div>-->
+            <div class="field">
+                <label>TCP port</label>
+                <input type="text"  ng-model="$ctrl.properties.data.ETH_PORT['TCP']" name="tcp" />
+            </div>
+        </section>
+    </k-form>
+
+    <ng-form ng-show="isNewIPDialogVisible" class="dialog-box" name="dhcpForm">
+        <div class="dialog flip-in-x" ng-if="isNewIPDialogVisible">
+            <div class="body">
+                <h2>Switch DHCP OFF</h2>
+                <div class="table">
+                    <div class="tableRow">
+                        <div class="tableCell" style="font-size: 15px ">
+                            <div>Following this you will lose your connection to the device.</div>
+                            <div>You'll be redirected to the new IP address in your Web browser.</div>
+                            <br>
+                        </div>
+                    </div>
+                    <div class="tableRow">
+                        <div class="tableCell">
+                                <div class="table dhcpDialogRadioButtonTable">
+                                    <div class="tableRow">
+                                        <div class="tableCell">
+                                            <div class="contentBox-property">IP</div>
+                                        </div>
+                                        <div class="tableCell">
+                                            <k-ip
+                                                    name="ip"
+                                                    ng-model="newIP.customIP"
+                                                    value="newIP.customIP"
+                                                    enabled="newIP.DHCPOffSelectedOption == 1"
+                                                    init-val="{{null}}"></k-ip>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="text"
+                       name="ip-valid"
+                       pattern="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
+                       ng-model="newIP.customIP"
+                       required style="display: none"/>
+                <div ng-messages="dhcpForm.$error" role="alert" class="error" style="height: 35px">
+                    <div ng-message="same-host">Gateway and IP must be in the same subnet</div>
+                    <div ng-message="ip-mask">IP cannot be a mask address</div>
+                    <div ng-message="ip-localhost">IP cannot be a localhost address range</div>
+                    <div ng-message="ip-multicast">Invalid IP address (reserved address)</div>
+                    <div ng-message="all-zero">Invalid IP address</div>
+                    <div ng-message="ip-network">IP cannot be network address</div>
+                    <div ng-message="ip-broadcast">IP cannot be broadcast address</div>
+                    <div ng-message="ip-valid">invalid IP</div>
+                </div>
+                <div style="margin-top: 15px; text-align: right">
+                    <button ng-click="closeNewIPDialog($event)" class="btn flat">cancel</button>
+                    <button ng-class="{'disabled': !dhcpForm.$dirty || dhcpForm.$invalid}" class="btn blue selected"
+                            ng-click="disableDHCP($event)">OK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </ng-form>
+
+    <div ng-show="isCommunicationWarningMBVisible" class="dialog-box">
+        <div class="dialog flip-in-x" ng-if="isCommunicationWarningMBVisible">
+            <div class="body">
+                <h2>Would you like to switch DHCP to ON?</h2>
+                <div class="content flex-container" style="font-size: 15px">
+                    <div class="kMessageBox-icon icon_MBwarning" style="margin-right: 15px;"></div>
+                    <div style="width: 450px; text-align: left">
+                        After this action, current WEB session
+                        <span ng-show="selectedCommunicationMBRefernce == 'ip' || selectedCommunicationMBRefernce == 'dhcp'">
+                will be
+            </span>
+                        <span ng-show="selectedCommunicationMBRefernce == 'mask' || selectedCommunicationMBRefernce == 'gw' || selectedCommunicationMBRefernce == 'factory'">
+                may be
+            </span>
+                        disconnected.
+                        <span ng-show="selectedCommunicationMBRefernce == 'ip' || selectedCommunicationMBRefernce == 'dhcp' || selectedCommunicationMBRefernce == 'factory'">
+                <br>
+                In order to proceed
+                <span ng-show="selectedCommunicationMBRefernce!= 'factory'">
+                    you need to reload the page with the new URL.
+                </span>
+                <span ng-show="selectedCommunicationMBRefernce == 'factory'">
+                    Click OK to reload the web with the default URL.
+                </span>
+            </span>
+                    </div>
+                    <br>
+                </div>
+                <p style="font-size: 15px">Do you want to continue?</p>
+                <div style="margin-top: 15px; text-align: right">
+                    <button ng-click="closeDHCPDialog()" class="btn flat">No</button>
+                    <button class="btn blue selected" ng-click="setDHCP_ON()">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <k-message-box
+            cancel-visible="false"
+            middle-click="errorNewIPMBVisible = false" visible="errorNewIPMBVisible"
+            type="error"
+            is-animate="true"
+            hide-background="false"
+            show-buttons-section="true"
+            show-title-section="true"
+            title-text="New IP Error">
+        <div style="max-width: 450px">
+            <div>{{DHCPOffnewIPErrorMessage}}</div>
+        </div>
+    </k-message-box>
+
+</div>

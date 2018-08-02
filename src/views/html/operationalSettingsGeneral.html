@@ -1,0 +1,119 @@
+<div class="device-settings">
+    <k-form ng-model="operationalGeneralSettings"
+            call-on-saved="CallOnSaved(data,update_success)"
+            call-on-before-saved="CallOnBeforeSaved()"
+            exclude-from-compare="excludeFromCompare">
+
+    <section>
+        <div style="align-items: center;" class="flex-container">
+            <h3 class="section-title" style="width: 230px;" >Device</h3>
+
+            <k-on-off show-value-on-disable="true"
+                    active-text="Start"
+                    inactive-text="Stop"
+                    value-to-listen="operationalGeneralSettings.data.STREAMER_ACTION"
+                    init-val="{{operationalGeneralSettings.data.STREAMER_ACTION}}"
+                    on-click="changeStartStop()" height="30" width="153"
+                    enabled="true"></k-on-off>
+
+        </div>
+
+        <div class="field" >
+            <label >Status</label>
+
+
+            <label >{{streaming_statuses[operationalGeneralSettings.data.STREAMING_OPERATIONAL_STATUS].name}}</label>
+
+            <!--<label data-ng-model="operationalGeneralSettings.data.RECORDING_STATUS">{{status in recording_operational_statuses | filter : operationalGeneralSettings.data.RECORDING_STATUS}}</label>-->
+
+
+        </div>
+
+        <!--<div class="field" ng-if="isEncoder">-->
+        <!--<label>Streaming</label>-->
+
+        <!--<k-combo-box options="streaming_methods"-->
+        <!--label="name"-->
+        <!--data-ng-model="operationalGeneralSettings.data.FEATURE_STREAMING"-->
+        <!--value-to-listen="operationalGeneralSettings.data.FEATURE_STREAMING"-->
+        <!--init-val="{{operationalGeneralSettings.data.FEATURE_STREAMING}}"-->
+        <!--value="id"-->
+        <!--enabled="true"-->
+        <!--name="streaming_status"-->
+        <!--&gt;</k-combo-box>-->
+        <!--</div>-->
+
+
+        <!--<div class="field" ng-if="isEncoder">-->
+        <!--<label>Recording</label>-->
+
+        <!--<k-combo-box options="recording_methods"-->
+        <!--label="name"-->
+        <!--data-ng-model="operationalGeneralSettings.data.FEATURE_RECORDING"-->
+        <!--value-to-listen="operationalGeneralSettings.data.FEATURE_RECORDING"-->
+        <!--init-val="{{operationalGeneralSettings.data.FEATURE_RECORDING}}"-->
+        <!--value="id"-->
+        <!--enabled="true"-->
+        <!--name="recording_status"-->
+        <!--&gt;</k-combo-box>-->
+
+
+        <!--</div>-->
+
+
+        <div class="field" ng-if="isEncoder">
+            <label >Recording status</label>
+            <!--<k-combo-box options="recording_operational_statuses"-->
+            <!--label="name"-->
+            <!--data-ng-model="operationalGeneralSettings.data.RECORDING_STATUS"-->
+            <!--value-to-listen="operationalGeneralSettings.data.RECORDING_STATUS"-->
+            <!--init-val="{{operationalGeneralSettings.data.RECORDING_STATUS}}"-->
+            <!--value="id"-->
+            <!--enabled="false"-->
+
+            <!--&gt;</k-combo-box>-->
+
+            <label >{{recording_operational_statuses[operationalGeneralSettings.data.RECORDING_STATUS].name}}</label>
+
+            <!--<label data-ng-model="operationalGeneralSettings.data.RECORDING_STATUS">{{status in recording_operational_statuses | filter : operationalGeneralSettings.data.RECORDING_STATUS}}</label>-->
+
+
+        </div>
+
+    </section>
+
+
+
+        <section>
+            <div role="alert" class="error">
+                <div style="white-space: pre-line" ng-if="showErrorOnUpdate">
+                    <p>{{errorUpdateMessage}}</p>
+                </div>
+            </div>
+
+        </section>
+
+        <div ng-show="inWarningMode" class="dialog-box">
+            <div class="dialog flip-in-x" ng-if="inWarningMode">
+                <div class="body">
+                    <h2>{{warningMessageTitle}}</h2>
+                    <div style="display: flex">
+                        <div class="kMessageBox-icon icon_MBwarning" style="margin-top: 24px;"></div>
+                        <ul style="font-size: 15px; list-style-type: none;">
+                            <li>{{warningMessage}}</li>
+                            <li>In order to proceed Click OK.</li>
+                        </ul>
+                    </div>
+                    <p style="font-size: 15px;">Do you want to continue?</p>
+                    <div style="margin-top: 15px; text-align: right">
+                        <button ng-click="toggleSpecialModes()" class="btn flat">Cancel</button>
+                        <button class="btn blue selected" ng-click="proceedSave(true)">OK</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </k-form>
+
+</div>

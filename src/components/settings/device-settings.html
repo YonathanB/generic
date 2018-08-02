@@ -1,0 +1,221 @@
+<div class="device-settings">
+    <div class="contentBox-title flex-container middle">
+        <div>{{::$root.pageTitle}}</div>
+        <div style="flex:1"></div>
+        <div class="btn flex-container around middle" style=" color: #b71c1c; background: white; margin-right: 10px;"
+                title="Restart device" ng-click="restartDevice()">
+            <i class="icon-power-off"></i>
+            <div style="margin-left: 5px">Restart</div>
+        </div>
+
+        <button class="btn danger" ng-click="$ctrl.toggleFactoryReset()">Factory reset</button>
+    </div>
+    <div style="margin-top: 12px;">
+    <div class="setting-tab-section">
+        <div class="setting-tab" ng-if="$root.stateExist('generalSettings')" ui-sref-active="selected"
+                ui-sref="generalSettings">
+            <div class="tab-title">
+                <i class="icon-cog"></i><span>General</span>
+            </div>
+        </div>
+        <div class="setting-tab" ng-if="$root.stateExist('networkSettings')" ui-sref-active="selected"
+                ui-sref="networkSettings">
+            <div class="tab-title">
+                <i class="icon-network-settings"></i>
+                <span>Communication</span>
+            </div>
+        </div>
+        <div class="setting-tab" ng-if="$root.stateExist('upgrade')" ui-sref-active="selected"
+                ng-class="{'hidden': !$ctrl.fileSystemEnable()}" ui-sref="upgrade">
+            <div class="tab-title">
+                <i class="icon-firmware-upgrade"></i>
+                <span>Upgrade</span>
+            </div>
+        </div>
+        <div class="setting-tab" ng-if="$root.stateExist('ntp')" ui-sref-active="selected"
+                ng-class="{'disabled': tabNotReady}" ui-sref="ntp">
+            <div class="tab-title">
+                <i class="icon-calendar"></i>
+                <span>Time And Date</span>
+            </div>
+        </div>
+    </div>
+        <div ui-view></div>
+    </div>
+        <form ng-show="$ctrl.disableSecurityDialogVisible" class="dialog-box"
+                ng-submit="closeDisableSecurityDialogBox(true)">
+            <div class="dialog flip-in-x" ng-if="disableSecurityDialogVisible">
+                <div class="body">
+                    <h2>Would you like to disable security?</h2>
+                    <p>Type the password to disable authentication.</p>
+                    <input type="password" placeholder="password" ng-model="securityDialog.pwd"
+                            style="margin-top: 10px">
+                    <div class="error " ng-show="passwordOK">
+                        <p>Password is incorrect!</p>
+                    </div>
+                    <div style="margin-top: 15px; text-align: right">
+                        <button ng-click="closeDisableSecurityDialogBox(false)" class="btn flat">cancel</button>
+                        <button class="btn blue selected" ng-click="closeDisableSecurityDialogBox(true)">Save</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div ng-show="$ctrl.enableSecurityDialogVisible" class="dialog-box">
+            <div class="dialog flip-in-x" ng-if="enableSecurityDialogVisible">
+                <div class="body">
+                    <h2>Would you like to enable security?</h2>
+                    <div class="flex-container">
+                        <div class="kMessageBox-icon icon_MBwarning" style="margin-right: 15px;"></div>
+                        <p>This action will enable the authentication.</p>
+                    </div>
+                    <div style="margin-top: 15px; text-align: right">
+                        <button ng-click="closeEnableSecurityDialogBox(false)" class="btn flat">cancel</button>
+                        <button class="btn blue selected" ng-click="closeEnableSecurityDialogBox(true)">Ok</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+    <factory-reset-dialog
+        ng-if="$ctrl.factoryReset"
+        on-cancel="$ctrl.toggleFactoryReset()"
+        on-factory-reset="$ctrl.ProceedFactoryReset()">
+
+    </factory-reset-dialog>
+
+        <k-dialog show-shadow="false" middle-visible="false" right-visible="false" left-visible="false"
+                is-animate="true" allow-drag="false" show-title-section="true" hide-background="false"
+                show-buttons-section="false" title-text="Uploading new firmware" visible="isUploading">
+
+            <div class="table" style="width: 320px">
+                <div class="tableRow">
+                    <div class="tableCell" style="padding: 15px; width: 10%">
+                        <div ng-class="{'icon_ProcessIdle': fu_uploading_progress == 'idle', 'icon_ProcessDone': fu_uploading_progress == 'done', 'icon_ProcessCurrent fuBlink': fu_uploading_progress != 'done' && fu_uploading_progress != 'idle'}"></div>
+                    </div>
+                    <div class="tableCell" style="padding: 15px;">Uploading File</div>
+                    <div class="tableCell firm-status">
+                        {{fu_uploading_progress}}
+                    </div>
+
+                </div>
+
+                <div class="tableRow">
+                    <div class="tableCell" style="padding: 15px;">
+                        <div ng-class="{'icon_ProcessIdle': fu_updating_progress == 'idle', 'icon_ProcessDone': fu_updating_progress == 'done', 'icon_ProcessCurrent fuBlink': fu_updating_progress != 'done' && fu_updating_progress != 'idle'}"></div>
+                    </div>
+                    <div class="tableCell" style="padding: 15px;">Updating Firmware</div>
+                    <div class="tableCell firm-status">
+                        {{fu_updating_progress}}
+                    </div>
+                </div>
+
+                <div class="tableRow">
+                    <div class="tableCell" style="padding: 15px;">
+                        <div ng-class="{'icon_ProcessIdle': fu_restart_progress == 'idle', 'icon_ProcessDone': fu_restart_progress == 'done', 'icon_ProcessCurrent fuBlink': fu_restart_progress != 'done' && fu_restart_progress != 'idle'}"></div>
+                    </div>
+                    <div class="tableCell" style="padding: 15px;">Restart Device</div>
+                    <div class="tableCell firm-status">
+                        {{fu_restart_progress}}
+                    </div>
+                </div>
+            </div>
+        </k-dialog>
+        <k-dialog show-shadow="false" middle-visible="false" right-visible="false" left-visible="false"
+                is-animate="true" allow-drag="false" show-title-section="true" hide-background="false"
+                show-buttons-section="false" title-text="Uploading web files" visible="isKptUploadFile">
+            <div>
+
+                <div style="margin-bottom: 5px">Progress ({{currentFileIndex}}/{{numberOfWebFiles}})</div>
+                <div>
+                    <k-progress control-class="webUploadProgress" backtozero="false"
+                            progressval="currentFileProgress"></k-progress>
+                </div>
+                <!--<div class="tableCell">-->
+                <!--{{currentFileName}}-->
+                <!--</div>-->
+            </div>
+
+        </k-dialog>
+
+        <k-message-box type="{{action.type}}" cancel-visible="false" hide-background="false" is-animate="true"
+                show-buttons-section="true" visible="action.command=='firmware-message'" show-title-section="true"
+                title-text="Firmware upgrade" middle-click="action.command='';$event.stopPropagation()">
+            <div ng-bind-html="action.message "></div>
+        </k-message-box>
+
+        <div ng-show="!$ctrl.isState(action.step, STEPS.INACTIVE) && !$ctrl.isState(action.step, STEPS.CONFIRMATION)"
+                class="dialog-box">
+            <div class="dialog flip-in-x"
+                    ng-if="!isState(action.step, STEPS.INACTIVE) && !isState(action.step, STEPS.CONFIRMATION)">
+                <h4 class="error-box-title alert">Firmware upgrade</h4>
+                <div class="body">
+                    <div class="container">
+                        <ul class="progressbar">
+                            <li ng-class="{'active ': action.step == STEPS.UPLOAD,'done': action.step > STEPS.UPLOAD}">
+                                <div ng-class="{'loader-btn': action.step == STEPS.UPLOAD}"></div>
+                                <span>Uploading File</span></li>
+                            <li ng-class="{'active ': action.step == STEPS.UPDATE,'done': action.step > STEPS.UPDATE}">
+                                <div ng-class="{'loader-btn': action.step == STEPS.UPDATE}"></div>
+                                <span>Updating Firmware</span></li>
+                            <li ng-class="{'active': action.step == STEPS.RESET,'done':  action.step > STEPS.RESET}">
+                                <div ng-class="{'loader-btn': action.step == STEPS.RESET}"></div>
+                                <span>Restarting Device</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div ng-show="fu_showicon-forwardErrorMessage" class="dialog-box">
+            <div class="dialog flip-in-x" ng-if="fu_showErrorMessage">
+                <div class="body" style="flex-flow: row">
+                    <div style="width: 450px; text-align: left">
+                        <div class="kMessageBox-icon icon_MBError"
+                                style="margin-top: 24px;display: inline-block;"></div>
+                        <span>This is not a valid driver for this device</span>
+                        <span ng-show="fw_error_msg_ref == 'invalid'">This is not a valid driver for this device</span>
+                        <span ng-show="fw_error_msg_ref == 'filetype'">This file type is not supported on this device</span>
+                        <span ng-show="fw_error_msg_ref == 'error'">Error was happened while uploading the file<br/>ERR: {{fu_err_reference}}</span>
+                    </div>
+                    <div style="margin-top: 15px; text-align: right">
+
+                        <button class="btn" ng-click="fu_closeError()">Ok</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="isState(action.step, STEPS.CONFIRMATION)" class="dialog-box">
+            <div class="dialog flip-in-x" ng-if="isState(action.step, STEPS.CONFIRMATION)">
+                <div class="body">
+                    <h2>Upgrade your device firmware</h2>
+                    <div class="content flex-container">
+                        <div class="kMessageBox-icon icon_MBwarning" style="margin-top: 24px;"></div>
+                        <ul style="font-size: 15px; list-style-type: none;">
+
+                            <li><span style="color:red">Do not interrupt </span> the file transfer</li>
+                            <li> or close this windows before
+                                completion.
+                            </li>
+                            <li>Doing so may damage the device.</li>
+                        </ul>
+
+                    </div>
+                    <p style="font-size: 15px;">Do you want to continue?</p>
+                    <div style="margin-top: 15px; text-align: right">
+                        <button class="btn flat" ng-click="action.step = STEPS.INACTIVE">Cancel</button>
+                        <button class="btn blue selected" ng-click="uploadFirmware()">Ok</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+

@@ -1,0 +1,160 @@
+<div class="edid">
+    <div class="contentBox-title">{{$root.pageTitle}}</div>
+    <p style="font-size: 14px; color: #585858;">Select an EDID card in the <i>read from</i> section and one or multiple
+        EDID card(s) in the <i>Copy to</i> section</p>
+    <div class="page-content">
+        <section class="first-column">
+            <div class="edid-subtitle">Read from</div>
+            <div class="column-content EDID-from-list">
+                <div ng-repeat="edidGroup in edidCollectionObj track by $index"
+                     class="EDID-from-group" ng-class="{
+                      'edid-input': edidGroup.type == 0,
+                     'edid-output': edidGroup.type == 1,
+                     'edid-default': edidGroup.type == 2}"
+                     title="click to select EDID source to copy to selected inputs">
+                    <!--ng-if="edidGroup.type!=FILE_TYPE" TODO -->
+                    <p ng-init="$group=$index; "
+                       ng-click="openAccordion($index)"
+                       ng-switch on="edidGroup.type">
+                        <span ng-switch-when=0>Input</span>
+                        <span ng-switch-when=1>Output</span>
+                        <span ng-switch-when=2>Default</span>
+                        <span ng-switch-default></span>
+                        <i class="accordion-caret icon-angle-down" ng-if="accordionVisible[$index]"></i>
+                        <i class="accordion-caret icon-angle-right" ng-if="!accordionVisible[$index]"></i>
+                    </p>
+                    <div class="accordion-content" ng-show="accordionVisible[$index]">
+                        <k-edid
+                                ng-repeat="edid in edidGroup.channels | orderBy:'channel' track by edid.channel"
+                                set-click="edidSelectFrom( edidGroup.type , edid.channel)"
+                                enabled="edid.data && edid.data.binaryData.length >= 128"
+                                selected="EDID.source.select[$group][edid.channel]"
+                                type="{{edidGroup.type}}"
+                                channel="{{edid.channel}}"
+                                data="edid.data"
+                                k-drag-and-drop="false"
+                                dad-is-draggable="false"
+                                dad-is-drop-target="false"
+                                dad-family="EDID"
+                                dad-on-drag-start="EDIDdragStart(eventObject)">
+                        </k-edid>
+
+                        <!--enabled="edid.data.signalType ==2 || edidGroup.type != 1"-->
+                    </div>
+                </div>
+
+                <div class="EDID-from-group">
+                    <p>
+                        <span>{{SUPPORT_EXTERNAL ? "External" : "File"}}</span>
+                    </p>
+                    <label ng-class="{disabled:!EDID.source.select[3][1]}" class="edid-safemode">
+                        <input ng-disabled="!EDID.source.select[3][1]"
+                               ng-model="uploadSafeMode"
+                               type='checkbox'
+                               ng-true-value="'0'"
+                               ng-false-value="'1'" />
+                        Prevent device modification data
+                    </label>
+                    <br>
+                    <k-edid
+                            set-click="edidSelectFrom( 3 , 1 )"
+                            enabled="EDIDfile.isReady || SUPPORT_EXTERNAL"
+                            selected="EDID.source.select[3][1]"
+                            control-class="edid-file {{EDIDfile.isReady || SUPPORT_EXTERNAL? '' : 'empty'}}"
+                            type="3"
+                            channel="1"
+                            data="EDIDfile.data"
+                            ng-attr-data-edid-type="3"
+                            k-drag-and-drop="false"
+                            dad-is-draggable="false"
+                            dad-is-drop-target="false"
+                            dad-family="EDID"
+                            dad-on-drag-start="EDIDdragStart(eventObject)"
+                            title="click to select EDID source to copy to selected inputs">
+                        <k-browse type="button"
+                                  enabled="true"
+                                  control-class="edid-openfile"
+                                  button-text="..."
+                                  file-text="EDIDfile.fileText"
+                                  file-data="EDIDfile.edidFileToUpload"
+                                  file-read-type="buffer"
+                                  file-name="EDIDfile.inputFileName"></k-browse>
+
+
+                        <!--on-file-data-ready="checkEdid(insideVal)"-->
+                    </k-edid>
+                </div>
+            </div>
+        </section>
+        <k-edid-copy-button
+                style="align-self: center"
+                enabled="edidReadyToCopy && !copyInProgress && !uploadFileInProgress">
+        </k-edid-copy-button>
+        <section class="second-column">
+            <div class="tableRow2 ">
+                <div class="edid-subtitle">Copy to</div>
+            </div>
+            <p>
+                <label>Un/Select All<input class="select-all" type="checkbox"
+                                           ng-click="selectAllTarget(selectAllValue)"
+                                           ng-model="selectAllValue"></label>
+            </p>
+
+            <div class="EDID-to EDID-to-list">
+                <div ng-repeat="edidGroup in edidCollectionObj | filter:{type:0}"
+                     class="EDID-to-group ">
+                    <k-edid
+                            ng-repeat="edid in edidGroup.channels | orderBy:'channel' track by edid.channel"
+                            set-click="edidSelectTo(edidGroup.type , edid.channel) "
+                            selected="EDID.target.select[edid.channel]"
+                            type="{{edidGroup.type}}"
+                            channel="{{edid.channel}}"
+                            data="edid.data"
+                            k-drag-and-drop="true"
+                            dad-is-draggable="false"
+                            dad-is-drop-target="true"
+                            dad-on-drop="EDIDdrop(eventObject)"
+                            dad-on-drag-enter="EDIDdragEnter(eventObject)"
+                            dad-on-drag-leave="EDIDdragLeave(eventObject)"
+                            dad-hover-class="dragover"
+                            dad-family-accepted="edid"
+                            title="CLick to select/unselect input">
+                    </k-edid>
+                </div>
+                <div class="EDID-to-hide" ng-if="uploadFileInProgress">
+                    <div class="EDID-to-hide-mask"></div>
+                    <div>
+                        <!--TODO set it back<img src="ajax-loader.gif"/>-->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    </div>
+    <div class="EDID-binaryData" ng-init="isOpened=false" ng-class="{open:isOpened}">
+        <div class="EDID-binaryDataButton" ng-click="isOpened=!isOpened"
+             title="Click to {{isOpened ? 'hide' : 'show'}} EDID bytemap details">Bytemap
+        </div>
+        <p class="EDID-binaryDataTitle">{{binaryDataTitle}}</p>
+        <div class="EDID-binaryDataArray">
+            <div ng-repeat="octet in binaryDataArray track by $index">
+                <span ng-show="$index == 128">&nbsp;</span>
+                <div><span>{{$index}}</span><span>{{octet}}</span></div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<div ng-show="edidWasCopiedShow" class="dialog-box">
+    <div class="dialog fade-in" ng-if="edidWasCopiedShow">
+        <h4 class="success-box-title">Edid copied</h4>
+        <div class="body">
+            <p>The EDID was copied successfully</p>
+        </div>
+        <button class="btn flat" ng-click="closeDialog()">OK</button>
+    </div>
+</div>

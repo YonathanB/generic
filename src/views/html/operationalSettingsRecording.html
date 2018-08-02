@@ -1,0 +1,281 @@
+<div class="device-settings">
+  <style>
+      .quickdate-popup.open{
+          margin-top: -110px;
+          margin-left: -115px;
+      }
+      input.kTime.show-seconds{
+          width: 67px;
+      }
+  </style>
+    <k-form ng-model="operationalRecordingSettings"
+            call-on-saved="CallOnSaved(data,update_success)"
+            call-on-before-saved="CallOnBeforeSaved()"
+            exclude-from-compare="excludeFromCompare"
+            call-before-destroy="RemoveTimeChecker()"
+            control="refreshForm">
+
+        <section>
+
+            <div class="field" ng-if="isEncoder">
+                <label>Recording</label>
+
+                <k-combo-box options="recording_methods"
+                             label="name"
+                             data-ng-model="operationalRecordingSettings.data.FEATURE_1"
+                             value-to-listen="operationalRecordingSettings.data.FEATURE_1"
+                             init-val="{{operationalRecordingSettings.data.FEATURE_1}}"
+                             value="id"
+                             enabled="true"
+                             on-change="setScheduleMessage(insideVal)"
+                             name="recording_status"
+                ></k-combo-box>
+            </div>
+
+
+            <div class="field" style="display: none">
+                <label>Streaming</label>
+
+                <k-combo-box options="streaming_methods"
+                             label="name"
+                             data-ng-model="operationalRecordingSettings.data.FEATURE_0"
+                             value-to-listen="operationalRecordingSettings.data.FEATURE_0"
+                             init-val="{{operationalRecordingSettings.data.FEATURE_0}}"
+                             value="id"
+                             enabled="true"
+                             name="streaming_status"
+                ></k-combo-box>
+            </div>
+
+
+            <div class="field" ng-if="isEncoder">
+                <label >Recording status</label>
+                <!--<k-combo-box options="recording_operational_statuses"-->
+                <!--label="name"-->
+                <!--data-ng-model="operationalGeneralSettings.data.RECORDING_STATUS"-->
+                <!--value-to-listen="operationalGeneralSettings.data.RECORDING_STATUS"-->
+                <!--init-val="{{operationalGeneralSettings.data.RECORDING_STATUS}}"-->
+                <!--value="id"-->
+                <!--enabled="false"-->
+
+                <!--&gt;</k-combo-box>-->
+
+                <label >{{recording_operational_statuses[operationalRecordingSettings.data.RECORDING_STATUS].name}}</label>
+
+                <!--<label data-ng-model="operationalGeneralSettings.data.RECORDING_STATUS">{{status in recording_operational_statuses | filter : operationalGeneralSettings.data.RECORDING_STATUS}}</label>-->
+
+
+            </div>
+
+            <h4 class="section-title">Schedule recording</h4>
+
+            <div class="field">
+
+                <div>
+                <span ng-class="getScheduleMessageClass()">{{scheduleMessage}}</span>
+                <span class="recordingScheduleMessageDate">{{scheduleMessageDate}}</span>
+                </div>
+
+                <k-button enabled="operationalRecordingSettings.data.FEATURE_1 == 2" visible="true" click="openRecordingSchedule()" style="width: 190px; text-align: right;" text="{{getScheduleMessageButton()}}" ></k-button>
+
+            </div>
+
+           
+            <h4 class="section-title" >Storage configuration</h4>
+
+            <div class="field" >
+                <label>URI</label>
+                <input
+                        ng-maxlength="1024"
+                        ng-model="operationalRecordingSettings.data.STORAGE_PARAMS.uri"
+                        set-click=""
+                        class="device-settings-input"
+                title="{{getTitle()}}"
+                ng-disabled="operationalRecordingSettings.data.FEATURE_1 == 0">
+                <!--<i class="icon-question"></i>-->
+
+
+            </div>
+
+
+            <!--<div class="field">-->
+                <!--<label >Domain</label>-->
+                <!--<input-->
+                        <!--ng-maxlength="1024"-->
+                        <!--ng-model="operationalRecordingSettings.data.STORAGE_PARAMS.domain"-->
+                        <!--set-click=""-->
+                        <!--class="device-settings-input"-->
+                        <!--ng-disabled="operationalRecordingSettings.data.FEATURE_1 == 0">-->
+
+            <!--</div>-->
+
+            <div class="field">
+                <label >Username</label>
+                <input
+                        ng-maxlength="256"
+                        ng-model="operationalRecordingSettings.data.STORAGE_PARAMS.username"
+                        set-click=""
+                        class="device-settings-input"
+                        ng-disabled="operationalRecordingSettings.data.FEATURE_1 == 0">
+
+            </div>
+
+
+            <div class="field">
+                <label >Password</label>
+                <input
+                        type="password"
+                        ng-maxlength="127"
+                        ng-model="operationalRecordingSettings.data.STORAGE_PARAMS.password"
+                        set-click=""
+                        class="device-settings-input"
+                        ng-disabled="operationalRecordingSettings.data.FEATURE_1 == 0">
+
+            </div>
+
+            <div class="field">
+                <label >File prefix</label>
+                <input
+                        name="storage_file_prefix"
+                        ng-maxlength="100"
+                        ng-model="operationalRecordingSettings.data.STORAGE_FILE_PREFIX"
+                        set-click=""
+                        class="device-settings-input"
+                        ng-disabled="operationalRecordingSettings.data.FEATURE_1 == 0">
+
+            </div>
+
+            <div class="field">
+                <label >Storage file time limit</label>
+                <k-time name="storage_file_limit"
+                        ng-model="operationalRecordingSettings.data.STORAGE_FILE_LIMIT"
+                        init-val="{{operationalRecordingSettings.data.STORAGE_FILE_LIMIT}}"
+                        value="operationalRecordingSettings.data.STORAGE_FILE_LIMIT"
+                        show-seconds="true"
+                        max-hours="23"
+                        min-hours="0"
+                        allow-empty="true"
+                        enabled="!(operationalRecordingSettings.data.FEATURE_1 == 0)"></k-time>
+
+            </div>
+
+            <div class="field">
+                <label >Storage maximum files</label>
+
+                    <input string-to-number
+                           type="number" min="0" max="60000"
+                           ng-model="operationalRecordingSettings.data.STORAGE_MAX_FILE"
+                           set-click=""
+                           ng-change="setUnlimitedNumOfFiles()"
+                           class="device-settings-input"
+                           style="width: 70px; margin-left: 50px;"
+                           ng-disabled="(operationalRecordingSettings.data.FEATURE_1 == 0) || unlimitedNumberOfFiles">
+                <div>
+                    <input type="checkbox" ng-model="unlimitedNumberOfFiles" ng-change="changeUnlimitedNumOfFiles()"
+                           ng-disabled="operationalRecordingSettings.data.FEATURE_1 == 0">
+                    <label style="width: 70px;">Unlimited</label>
+                </div>
+            </div>
+
+
+
+        </section>
+
+        <section>
+
+
+
+            <div role="alert" class="error">
+                <div style="white-space: pre-line" ng-if="showErrorOnUpdate">
+                    <p>{{errorUpdateMessage}}</p>
+                </div>
+            </div>
+
+        </section>
+
+    </k-form>
+
+
+
+    <div ng-show="showRecordingSchedule"  class="dialog-box">
+        <div class="dialog flip-in-x" ng-if="showRecordingSchedule">
+            <div class="body">
+                <h4 class="section-title" >Schedule recording</h4>
+
+
+                <div class="field" style="justify-content: space-between">
+                    <label >Start recording date</label>
+
+                    <div  >
+                        <quick-datepicker style="width:200px;"
+
+                                disable-timepicker="true" disable-clear-button="true" date-format='dd-MM-yyyy' isddmmaa="true"
+                                ng-model='operationalRecordingSettings.data.RECORD_SCHEDULE.date'
+                                ng-class="{'disabledTab':!(operationalRecordingSettings.data.FEATURE_1 == 2)}"
+                                          ng-click="removeErrorMessage()">
+                        </quick-datepicker>
+                    </div>
+
+                </div>
+
+                <div class="field" >
+                    <label >Start recording time</label>
+                    <k-time init-val="{{operationalRecordingSettings.data.RECORD_SCHEDULE.time}}"
+                            value="operationalRecordingSettings.data.RECORD_SCHEDULE.time"
+                            show-seconds="true"
+                            max-hours="23"
+                            min-hours="0"
+                            allow-empty="true"
+                            enabled="operationalRecordingSettings.data.FEATURE_1 == 2"
+                            ng-click="removeErrorMessage()"
+                    ></k-time>
+
+                </div>
+
+
+                <div class="field">
+                    <label >Total duration</label>
+                    <k-time name="storage_file_duration"
+                            ng-model ="operationalRecordingSettings.data.RECORD_DURATION"
+                            init-val="{{operationalRecordingSettings.data.RECORD_DURATION}}"
+                            value="operationalRecordingSettings.data.RECORD_DURATION"
+                            show-seconds="true"
+                            max-hours="23"
+                            min-hours="0"
+                            allow-empty="true"
+                            enabled="operationalRecordingSettings.data.FEATURE_1 == 2"
+                            ng-click="removeErrorMessage()"></k-time>
+
+                </div>
+
+                <div ng-if="showSetScheduleError" style="color: #b71c1c; line-height: 30px; font-size: 15px; padding-left: 10px; margin-top: -15px;">{{setScheduleError}}</div>
+
+                <div style="white-space: pre-line; width: 100%" ng-if="showErrorUpdateSchedule">
+                    <div ng-if="showErrorUpdateSchedule" style="color: white; background-color: #b71c1c; line-height: 30px; font-size: 15px; padding-left: 10px; margin-top: -15px;">{{errorUpdateSchedule}}</div>
+                </div>
+
+                <div>
+                <span style="text-align: right; float: left;">
+                            <button class="btn " ng-click="closeRecordingSchedule()">Cancel</button>
+                        </span>
+                <span style="text-align: right; float:right;">
+                            <button class="btn default blue" ng-click="saveRecordingSettings()">Save</button>
+                        </span>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <section>
+        <div role="alert" class="error">
+            <div style="white-space: pre-line" ng-if="showErrorOnUpdate">
+                <p>{{errorUpdateMessage}}</p>
+            </div>
+        </div>
+
+    </section>
+
+</div>

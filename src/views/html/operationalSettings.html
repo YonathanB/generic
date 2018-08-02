@@ -1,0 +1,93 @@
+<div class="device-settings">
+
+    <!--<k-form ng-model="operationalSettings"-->
+            <!--call-on-saved="CallOnSaved(data)"-->
+            <!--call-on-before-saved="CallOnBeforeSaved()"-->
+            <!--exclude-from-compare="excludeFromCompare">-->
+
+        <div class="setting-tab-section">
+            <div class="setting-tab"
+                 ui-sref-active="selected"
+                 ui-sref="main.operational.general">
+                <div class="tab-title">
+                    <i class="icon-general-info"></i><span>General</span>
+                </div>
+            </div>
+            <div class="setting-tab"
+                 ui-sref-active="selected"
+                 ui-sref="main.operational.configuration">
+                <div class="tab-title">
+                    <i class="icon-encoding-1"></i><span ng-if="isEncoder">Encoding</span><span ng-if="!isEncoder">Decoding</span>
+                </div>
+            </div>
+            <div class="setting-tab"
+                 ui-sref-active="selected"
+                 ui-sref="main.operational.streaming">
+                <div class="tab-title">
+                    <i class="icon-streaming"></i>
+                    <span>Streaming</span>
+                </div>
+            </div>
+            <div class="setting-tab"
+                 ui-sref-active="selected"
+                 ng-class="{'hidden': !isEncoder}"
+                 ui-sref="main.operational.recording"
+                disabled="true">
+                <div class="tab-title">
+                    <i class="icon-recording"></i>
+                    <span>Recording</span>
+                </div>
+            </div>
+            <div class="setting-tab"
+                 ui-sref-active="selected"
+                 ng-class="{'hidden': !isEncoder}"
+                 ui-sref="main.operational.tunneling" >
+                <div class="tab-title">
+                    <i class="icon-tuneling"></i>
+                    <span>Tunneling</span>
+                </div>
+            </div>
+        </div>
+        <div ui-view="general"></div>
+        <div ui-view="configuration"></div>
+        <div ui-view="streaming" ></div>
+        <div ui-view="recording" ></div>
+        <div ui-view="tunneling" ></div>
+
+        <!--ng-show="activeTab == 'Communication'"-->
+        </div>
+
+        <section>
+            <div role="alert" class="error">
+                <div style="white-space: pre-line" ng-if="showErrorOnUpdate">
+                    <p>{{errorUpdateMessage}}</p>
+                </div>
+            </div>
+
+        </section>
+
+        <div ng-show="inWarningMode" class="dialog-box">
+            <div class="dialog flip-in-x" ng-if="inWarningMode">
+                <div class="body">
+                    <h2>{{warningMessageTitle}}</h2>
+                    <div style="display: flex">
+                        <div class="kMessageBox-icon icon_MBwarning" style="margin-top: 24px;"></div>
+                        <ul style="font-size: 15px; list-style-type: none;">
+                            <li>{{warningMessage}}</li>
+                            <li>In order to proceed Click OK.</li>
+                        </ul>
+                    </div>
+                    <p style="font-size: 15px;">Do you want to continue?</p>
+                    <div style="margin-top: 15px; text-align: right">
+                        <button ng-click="toggleSpecialModes()" class="btn flat">Cancel</button>
+                        <button class="btn blue selected" ng-click="proceedSave(true)">OK</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+<!--</k-form>-->
+
+</div>

@@ -1,0 +1,50 @@
+{
+  "name": "generic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "build": "webpack",
+    "build-VS-88UT": "cross-env path_for_build=devices/VS-88UT/dist webpack --mode production",
+    "dev": "cross-env NODE_ENV=dev webpack-dev-server --mode development --open",
+    "gendoc": "node ./node_modules/jsdoc/jsdoc.js -c ./node_modules/angular-jsdoc/common/conf.json -d docs -t ./node_modules/angular-jsdoc/default -r src/root  src/model src/core/ src/core/parsers src/core/communication"
+  },
+  "author": "Yonathan Benitah",
+  "license": "ISC",
+  "devDependencies": {
+    "angular-jsdoc": "^1.5.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-stage-3": "^6.24.1",
+    "cross-env": "^5.2.0",
+    "css-loader": "^0.28.7",
+    "expose-loader": "^0.7.5",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.4",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0",
+    "jsdoc": "^3.5.5",
+    "less": "^3.0.4",
+    "less-loader": "^4.1.0",
+    "mini-css-extract-plugin": "^0.4.0",
+    "oclazyload": "^1.1.0",
+    "resolve-url-loader": "^2.3.0",
+    "style-loader": "^0.20.3",
+    "uglifyjs-webpack-plugin": "^1.2.5",
+    "webpack": "^4.15.0",
+    "webpack-bundle-analyzer": "^2.13.1",
+    "webpack-cli": "^3.0.8",
+    "webpack-dev-server": "^3.1.4",
+    "webpack-shell-plugin": "^0.5.0"
+  },
+  "dependencies": {
+    "@uirouter/angularjs": "^1.0.18",
+    "angular": "^1.7.2",
+    "angular-messages": "^1.7.2",
+    "babel-polyfill": "^6.26.0",
+    "jquery": "^3.3.1",
+    "underscore": "^1.9.0",
+    "x2js": "^3.2.1"
+  }
+}

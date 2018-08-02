@@ -1,0 +1,72 @@
+//***********************************************
+// File Name: kZoom.less
+// Created by: fassous
+// On: 02/09/2015 15:47
+// Last Modified: 
+// Modified by: 
+//***********************************************
+.kZoom {
+    //border: 1px solid @app-border-element;
+    .f_radius(5px);
+    padding: 5px;
+    display: inline-block;
+    //margin-left:10px;
+    //margin-right:10px;
+    //margin-bottom:10px;
+    //    height:@font-size-small*2;
+    //    border:1px solid red;
+    font-size: @font-size-small;
+    line-height: @font-size-small;
+
+    .kZoom-button, .kZoom-value, .kZoom-title {
+        vertical-align: top;
+        //border:1px solid green;
+    }
+
+    .kZoom-button, .kZoom-value {
+        display: inline-block;
+    }
+    .kZoom-title {
+        display: block;
+        margin: auto;
+        text-align: center;
+    }
+    .kZoom-button, .kZoom-value {
+        cursor: pointer;
+    }
+
+    .kSlider .slider-line {
+        display: inline-block;
+        position: relative;
+        height: 1px;
+        width: 100px;
+        background-color: #000;
+        background-image: none;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+
+        .slider-button {
+            top:-4px;
+            position: absolute;
+            height: 8px;
+            margin: 0;
+            width: 8px;
+            /* background-repeat: repeat; */
+            background-image: none;
+            /* border-width: 4px; */
+            /* border-color: #00857a; */
+            /* border-style: solid; */
+            background-color: #00857a;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            border: 1px solid #fff;
+            &:after{
+                display:none;
+            }
+        }
+
+    }
+
+}

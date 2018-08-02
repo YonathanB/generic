@@ -1,0 +1,57 @@
+<div class="roomCtrl" k-loader="kLoader">
+     <div class="flex-container" style="align-items: end">
+         <div class="contentBox-title">{{$root.pageTitle}}</div>
+     <div class="flex-container around middle" style="width: 400px; margin-bottom: 15px" ng-if="uniBuilderIP">
+         <div class="btn-group " style="margin-left: 15px">
+             <button class="btn" ng-click="toggleRoomCtrl('panel')"
+                     ng-class="{'selected': panelActive == 'panel'}">Panel</button>
+           <button class="btn icon" title="Reload room controller"
+                   ng-click="reloadRC()"
+                   ng-class="{'selected': panelActive == 'panel'}"><i class="icon-replay"></i>
+    </button>
+         </div>
+
+
+    <div class="btn-group ">
+    <button class="btn" ng-click="toggleRoomCtrl('uniBuilder')"
+            ng-class="{'selected': panelActive == 'uniBuilder'}">Kramer Control integration</button>
+    <button class="btn icon" title="Open Kramer Control website in new tab"
+            onclick="window.open('https://kramercontrol.com/#/','_blank')"
+            ng-class="{'selected': panelActive == 'uniBuilder'}"><i class="icon-external-link"></i>
+    </button>
+    </div>
+         <div title="Kramer Control integration limitation"  class="icon-info" style="    font-size: 17px;
+    background: #383838;
+    color: white;
+    padding: 0px;
+    border-radius: 50px; cursor: pointer" ng-click="openKramerControlLimitation()"></div>
+     </div>
+     </div>
+    <p style="margin-left: 20px;margin-top: -10px ;font-size:15px ">Download the <b>K-config</b> configurator software from <a
+            href="https://k.kramerav.com/support/download.asp?f=52882" target="_blank">here</a> </p>
+    <room-controller ip="{{roomControllerIP }}" on-ready="showFrame()"
+            ng-show="!kLoader.active && panelActive == 'panel'"></room-controller>
+    <iframe ng-src="{{uniBuilderIP}}"
+            ng-show=" !kLoader.active && panelActive == 'uniBuilder' && uniBuilderIP"></iframe>
+
+
+
+
+    <div ng-show="KramerControlLimitation" class="dialog-box">
+        <div class="dialog flip-in-x" ng-if="KramerControlLimitation">
+            <div class="body">
+                <h3>Please note the following limitations</h3>
+                <ul style="max-width: 555px;">
+                    <li style="padding: 5px 0px;">Devices that communicate using HTTP, include Lua code, use fractional number states, or require logging-in may not operate correctly.</li>
+                    <li style="padding: 5px 0px;">Not all UI elements are fully supported: Partial support for the slider, frames/overlays/pages, lists, and non-interactive foreground elements; Background does not support text and cannot be changed during runtime; Foreground element texts and fonts cannot be modified. Button background alpha channel cannot be used. </li>
+                    <li style="padding: 5px 0px;">Kramer Control Dashboard is not currently supported</li>
+                    <li style="padding: 5px 0px;">The following system device states are supported: "TIME_STATE", "DATE_STATE", "HOUR_STATE", "MINUTE_STATE", "SECOND_STATE", "DAY_OF_WEEK_STATE", "DAY_OF_MONTH_STATE", "MONTH_STATE", "YEAR_STATE".</li>
+                    <li style="padding: 5px 0px;">The number of utilized <span>{{$root.model}}</span> ports is not reflected in the Builder</li>
+                </ul>
+                <div style="margin-top: 15px; text-align: right">
+                    <button class="btn blue selected" ng-click="closeKramerControlLimitation()">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

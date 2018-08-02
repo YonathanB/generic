@@ -1,0 +1,135 @@
+<div class="device-settings">
+
+    <k-form ng-model="operationalStreamingSettings"
+            call-on-saved="CallOnSaved(data,update_success)"
+            call-on-before-saved="CallOnBeforeSaved()"
+            exclude-from-compare="excludeFromCompare">
+
+    <section>
+        <div class="field" ng-if="isEncoder">
+            <label>Streaming</label>
+
+            <k-combo-box options="streaming_methods"
+                         label="name"
+                         data-ng-model="operationalStreamingSettings.data.FEATURE_0"
+                         value-to-listen="operationalStreamingSettings.data.FEATURE_0"
+                         init-val="{{operationalStreamingSettings.data.FEATURE_0}}"
+                         value="id"
+                         enabled="true"
+                         name="streaming_status"
+            ></k-combo-box>
+        </div>
+
+        <div class="field"style="display: none">
+            <label>Recording</label>
+
+            <k-combo-box options="recording_methods"
+                         label="name"
+                         data-ng-model="operationalStreamingSettings.data.FEATURE_RECORDING"
+                         value-to-listen="operationalStreamingSettings.data.FEATURE_RECORDING"
+                         init-val="{{operationalStreamingSettings.data.FEATURE_RECORDING}}"
+                         value="id"
+                         enabled="true"
+                         name="recording_status"
+            ></k-combo-box>
+
+
+        </div>
+
+
+
+        <div class="field">
+            <label >Streaming Protocol</label>
+            <k-combo-box options="operationalStreamingSettings.streamingProtocols"
+                         label="name"
+                         value-to-listen="operationalStreamingSettings.data.STREAMING_PROTOCOL"
+                         init-val="{{operationalStreamingSettings.data.STREAMING_PROTOCOL}}"
+                         value="id"
+                         enabled="false"
+            ></k-combo-box>
+
+        </div>
+        <div class="field">
+            <label>IP</label>
+            <k-ip   name="ip"
+                    ng-model="operationalStreamingSettings.data.CONNECTION_PARAMS.IP"
+                    enabled="!isEncoder"
+                    value="operationalStreamingSettings.data.CONNECTION_PARAMS.IP"
+                    init-val="{{operationalStreamingSettings.data.CONNECTION_PARAMS.IP}}"></k-ip>
+
+        </div>
+        <div class="field">
+            <label >Port</label>
+            <input name="streaming_port"
+                   string-to-number
+                   type="number" min="1" max="65535"
+                   ng-model="operationalStreamingSettings.data.CONNECTION_PARAMS.port"
+                   set-click=""
+                   class="device-settings-input"
+                   ng-disabled="!(operationalStreamingSettings.data.FEATURE_0 == 1)&& isEncoder">
+
+        </div>
+        <div class="field">
+            <label >Folder Name</label>
+            <input name="streaming_folder_name"
+                    ng-maxlength="512"
+                    ng-disabled="isEncoder"
+                    ng-model="operationalStreamingSettings.data.CONNECTION_PARAMS.folderName"
+                    set-click=""
+                    class="device-settings-input">
+
+
+        </div>
+
+        <div class="field" ng-if="isEncoder" >
+            <label >Streaming Method</label>
+            <k-combo-box options="operationalStreamingSettings.streaming_methods"
+                         label="name"
+                         value-to-listen="operationalStreamingSettings.data.STREAMING_METHOD"
+                         init-val="{{operationalStreamingSettings.data.STREAMING_METHOD}}"
+                         value="id"
+                         enabled="(operationalStreamingSettings.data.FEATURE_0 == 1)"
+            ></k-combo-box>
+        </div>
+
+        <h4 class="section-title" ng-if="isEncoder" >Multicast settings</h4>
+
+        <div class="field" ng-if="isEncoder">
+            <label >Group Address</label>
+            <k-ip
+                    name="multicast_group_address"
+                    enabled="(operationalStreamingSettings.data.FEATURE_0 == 1)"
+                    ng-model="operationalStreamingSettings.data.MULTICAST_PARAMS.address"
+                    value="operationalStreamingSettings.data.MULTICAST_PARAMS.address"
+                    init-val="{{operationalStreamingSettings.data.MULTICAST_PARAMS.address}}"
+                    upper_pattern="239.255.255.255"
+                    lower_pattern="224.0.0.0"></k-ip>
+        </div>
+
+        <div class="field" ng-if="isEncoder">
+            <label >Time To Live</label>
+            <input string-to-number
+                   type="number" min="0" max="65535"
+                   ng-model="operationalStreamingSettings.data.MULTICAST_PARAMS.time_to_live"
+                   set-click=""
+                   class="device-settings-input"
+                    ng-disabled="!(operationalStreamingSettings.data.FEATURE_0 == 1)">
+
+        </div>
+
+
+
+    </section>
+
+        <section>
+            <div role="alert" class="error">
+                <div style="white-space: pre-line" ng-if="showErrorOnUpdate">
+                    <p>{{errorUpdateMessage}}</p>
+                </div>
+            </div>
+
+        </section>
+
+
+    </k-form>
+</div>

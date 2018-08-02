@@ -1,0 +1,54 @@
+.kTabs{
+    margin-bottom: -2px;
+}
+
+.k-tab-title-text {
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+}
+
+//.k-tabs-active-color {
+//    background-color: @app-main-background-color;
+//}
+//
+//.k-tabs-non-active-color {
+//    background-color: @app-main-background-secondary;
+//}
+
+.k-tab-style {
+    padding: 8px;
+    margin-right: 2px;
+    display: inline-block;
+    .f_radius( 0px 12px 0px 0px);
+    background-color: @app-main-background-secondary;
+    cursor:pointer;
+    .f_transition(background-color 0.25s ease );
+    /*width: 50px;*/
+}
+.k-tab-style.selected {
+    background-color: @app-main-background-color;
+    cursor:default;
+}
+.k-tab-style:not(.selected):hover {
+    background-color: @app-main-color-hover;
+}
+.k-tab-content {
+    border: 3px solid @app-grey-background-color;
+    .f_radius( 0px 3px 3px 3px);
+    padding: 8px;
+}
+
+.change-content-animate-show {
+    opacity: 1;
+}
+
+.change-content-animate-show.ng-hide-remove.ng-hide-remove-active {
+    //-webkit-transition: all linear 0.4s;
+    .f_transition( all linear 0.4s);
+}
+.change-content-animate-show.ng-hide-add.ng-hide-add-active,
+.change-content-animate-show.ng-hide {
+    opacity: 0;
+}
+

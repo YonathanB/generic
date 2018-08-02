@@ -1,0 +1,112 @@
+<div class="k-port">
+    <div class="port-display" ng-class="{'port-has-label': port.label}">
+        <div class="port-label">{{port.label}}</div>
+        <div title="{{port.title}}" class="port-name">
+            <span ng-click="openPortInfo(port)" class="clickable">{{port.name}}</span>
+            <div class="dropdown" ng-if="port.switchablePort" id="{{port.id}}" title="Switch Port">
+                <div ng-click="openDropdown($event, port.id)" class="dropbtn">
+                    <span ng-if="!saveProcess" class="port-options icon-angle-down"></span>
+                    <span ng-if="!saveProcess" class="port-options icon-angle-right"></span>
+                    <span class="port-options loader-btn" ng-if="saveProcess"></span>
+                </div>
+                <div class="dropdown-content">
+                    <a ng-repeat="p in combo.options" ng-if="p.label.indexOf(port.name) == -1"
+                            title="switch port to {{p.label}}"
+                            ng-click="switchPort(p.value, $event)">{{p.label}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="led-box" >
+        <div ng-class="{
+        'on': port.signal && (!port.hasOwnProperty(Commands.X_5V.key) || (port.hasOwnProperty(Commands.X_5V.key) && port[Commands.X_5V.key])),
+        'signal': ['HDMI', 'HDBT'].indexOf(port.portType) > -1,
+        'five-v': port.signal && port.hasOwnProperty(Commands.X_5V.key) && !port[Commands.X_5V.key]}"
+                title="{{port.signal? (port.hasOwnProperty(Commands.X_5V.key)? (port[Commands.X_5V.key]? '5V ON': '5V OFF'):'Active Signal' ): 'No Sink'}}"></div>
+    </div>
+</div>
+<div class="matrix-icons">
+   <!--// If port is in AUDIO ONLY MODE-->
+    <i ng-if="port.hasOwnProperty(Commands.X_AUD_ONLY.key)" class="span-icon icons icon-ic_audio_only"
+            ng-class="{'enabled': port[Commands.X_AUD_ONLY.key], 'disabled': !port[Commands.X_AUD_ONLY.key]}"
+            title="Audio Only mode is {{port[Commands.X_AUD_ONLY.key]? 'enabled': 'disabled'}}"
+            ng-click="toggleCommand(Commands.X_AUD_ONLY.key);"></i>
+    <!--// If port is set to Audio Follow Video-->
+    <i ng-if="port.hasOwnProperty(Commands.AFV.key)" class="span-icon icons icon-ic_afw"
+            ng-class="{'enabled': port[Commands.AFV.key], 'disabled': !port[Commands.AFV.key]}"
+            title="Audio Follow Video"
+            ng-click="toggleCommand(Commands.AFV.key);"></i>
+    <!--//Video pattern-->
+    <i ng-if="port.hasOwnProperty(Commands.X_VIDEO_PATTERN.key)"
+            ng-class="{'enabled': port[Commands.X_VIDEO_PATTERN.key] != 0, 'disabled': port[Commands.X_VIDEO_PATTERN.key] == 0}"
+            class="span-icon icons icon-ic_video_patern"
+            title="Video Pattern {{ port[Commands.X_VIDEO_PATTERN.key] ? videoPatterns.options[port[Commands.X_VIDEO_PATTERN.key]].label: ''}}"
+            ng-click="toggleMouseOver($event, Commands.X_VIDEO_PATTERN.key, 'Video Pattern')"></i>
+    <!--//If signal is HDCP-->
+    <span ng-if="port[Commands.HDCP_STAT.key]" class="span-icon icons info" title="HDCP">HDCP</span>
+
+    <!--// if is Video Mute-->
+    <i ng-if="port[Commands.X_MUTE.key].hasOwnProperty('VIDEO') && port.masterSignal == 'VIDEO' && port.direction == 'output' "
+            class="port-icon icons" ng-class="{'icon-ic_video_signal_on': !port[Commands.X_MUTE.key]['VIDEO'], 'icon-ic_video_signal_off disabled': port[Commands.X_MUTE.key]['VIDEO']}"
+            title="{{'HDMI '+ (!port[Commands.X_MUTE.key]['VIDEO'] ? 'ON': 'OFF')}}"
+            ng-click="toggleCommand(Commands.X_MUTE.key, 'VIDEO')"></i>
+    <!--// If Audio is muted-->
+    <i ng-if="(port[Commands.X_MUTE.key].hasOwnProperty('AUDIO') || port.hasOwnProperty(Commands.X_MUTE.key))
+    && port.direction == 'output' || ( port.direction == 'input' && port.masterSignal == 'AUDIO' )"
+            class="port-icon  icons "
+            ng-class="{'icon-ic_audio_signal_on': !port[Commands.X_MUTE.key]['AUDIO'], 'disabled icon-ic_audio_signal_off': port[Commands.X_MUTE.key]['AUDIO']}"
+            title="{{'Audio '+ (!port[Commands.X_MUTE.key]['AUDIO']? 'ON'+ (port.hasOwnProperty(Commands.AUDIO_VOLUME.key) && port[Commands.X_AUDIO_RANGE.key].min !== port[Commands.X_AUDIO_RANGE.key].max ? ' ['+ port[Commands.AUDIO_VOLUME.key] +']': ''): 'OFF')}}"
+            ng-click="port.masterSignal == 'AUDIO' && port[Commands.X_AUDIO_RANGE.key].min !== port[Commands.X_AUDIO_RANGE.key].max? toggleMouseOver($event, Commands.X_MUTE.key, 'Volume', 'AUDIO'): toggleCommand(Commands.X_MUTE.key , 'AUDIO')"></i>
+</div>
+<div class="online-settings"
+        ng-show="command.hasOwnProperty('name')"
+        ng-mouseleave="toggleMouseOver($event)"
+        ng-mouseenter="toggleMouseOver($event)">
+    <div
+            class="content {{command.key}}"
+            ng-class="{'open': sliderIsOpen}">
+        <div style="min-width: 115px; text-align: center">
+            <p>{{command.name}}</p>
+            <k-combo-box ng-if="command.key == Commands.X_VIDEO_PATTERN.key"
+                    label="label"
+                    value="value"
+                    on-change="updateCombo(command.key,insideVal)"
+                    options="videoPatterns.options"
+                    enabled="!port.hasOwnProperty('X_AUD_ONLY')  || port['X_AUD_ONLY'] != 1"
+                    init-val="{{port[command.key]}}"
+                    value-to-listen="port[command.key]">
+            </k-combo-box>
+            <p class="description" style="margin: 0px;font-size: 10px;"
+                    ng-if="port[Commands.X_AUD_ONLY.key]">When <i>Audio only mode</i> is active no pattern can be set</p>
+            <div ng-if="command.key == Commands.X_MUTE.key">
+                <k-slider
+                        style="margin-left: 18px"
+                        unit="dB"
+                        min="{{port['X_AUDIO_RANGE'].min}}"
+                        max="{{port['X_AUDIO_RANGE'].max}}"
+                        decimals="1"
+                        show-progress="true"
+                        rounding-to="0.1"
+                        validate-on-enter="true"
+                        orientation="V"
+                        timeout="500"
+                        show-input="true"
+                        show-arrows="true"
+                        steps="0.5"
+                        on-value-to-listen-changed="updateVolume(insideVal)"
+                        init-val="{{port.AUDIO_VOLUME}}"></k-slider>
+                        <!--enabled="!port.X_MUTE['AUDIO']"-->
+                <div class="sound-icon-slider">
+                    <i ng-if="port[command.key]['AUDIO']"
+                            class="slider icon-ic_audio_signal_off"
+                            title="click to unmute"
+                            ng-click="toggleCommand(command.key, 'AUDIO')"></i>
+                    <i ng-if="!port[command.key]['AUDIO']"
+                            class="slider icon-ic_audio_signal_on"
+                            title="click to mute"
+                            ng-click="toggleCommand(command.key, 'AUDIO')"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

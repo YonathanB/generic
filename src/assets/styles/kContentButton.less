@@ -1,0 +1,83 @@
+.kContentButton {
+  display: inline-block;
+  width: auto;
+  height: auto;
+  padding: 5px;
+  //border: 2px solid @app-border-element;
+  .f_radius(5px);
+  .f_box-shadow(1px 1.5px 3px #171717);
+  color: @app-main-color;
+  font-size: @font-size-medium;
+  cursor: pointer;
+  background-color: @app-main-background-secondary;
+}
+
+/*Button when disabled*/
+.kContentButton.disabled {
+  background-color: @app-disabled-background-color;
+  cursor: default;
+  * {
+    color: @app-disabled-color;
+  }
+}
+
+/*Button Hover when enabled*/
+.kContentButton:not(.disabled):hover {
+  background-color: @app-main-color-hover;
+  .f_transition(background-color 0.25s ease);
+}
+
+.kContentButton.selected {
+  background-color: #888888;
+  color: @app-disabled-color;
+}
+
+.kContentButton.active {
+  background-color: @app-main-background-color;
+  color: @app-disabled-color;
+}
+
+
+//
+//
+//.kContentButton{
+//  width: auto;
+//  height: @app-button-height;
+//  //padding: 5px;
+//  background-color: @app-main-background-color;
+//  color:@app-main-color;
+//}
+//.kContentButton:{
+//
+//.k-content-button-inner-style {
+//  width: auto;
+//  height: auto;
+//  padding: 5px;
+//  border-width: 2px;
+//  border-style: solid;
+//  border-color: #484646 #2B2A2A #2B2A2A #484646;
+//  .f_radius(5px);
+//  .f_box-shadow(1px 1.5px 3px #171717);
+//  //box-shadow: 1px 1.5px 3px #171717;
+//  //-moz-box-shadow: 1px 1.5px 3px #171717;
+//  //-webkit-box-shadow: 1px 1.5px 3px #171717;
+//
+//
+//}
+//
+//.k-content-button-click-effect {
+//  .f_transform(scale(0.98, 0.98));
+//  //-ms-transform: scale(0.98, 0.98); /* IE 9 */
+//  //-webkit-transform: scale(0.98, 0.98); /* Chrome, Safari, Opera */
+//  //transform: scale(0.98, 0.98);
+//
+//  .f_box-shadow(inset 0 0 5px #171717);
+//  //box-shadow: inset 0 0 5px #171717;
+//  //-moz-box-shadow: inset 0 0 5px #171717;
+//  //-webkit-box-shadow: inset 0 0 5px #000000;
+//}
+//
+//.k-content-button-hover:hover {
+//  background-color: @app-main-color-hover;
+//}
+//

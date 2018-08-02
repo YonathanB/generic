@@ -1,0 +1,476 @@
+<div class="switcher">
+    <div class="contentBox-title">{{$root.pageTitle}}
+        <button ng-click="toggleSettings()" style="margin-left: 7px" title="Priority & Video switch timeout settings"
+                class="btn">Global Settings
+        </button></div>
+    <div class="inline-flex start">
+        <!--<div class="switcher-mode">-->
+        <!--<div style="position: absolute">-->
+        <!--<span>Mode:</span><span>{{switchMode.options[portsList.outputs['OUT.HDMI.1']['AUTO_SWITCH']].label}}</span>-->
+        <!--</div>-->
+        <!--</div>-->
+
+        <section class="inputs">
+            <div class="header flex-container  middle between">
+                <span class="title">Inputs</span>
+            </div>
+            <flip flip-width="33vw" flip-height="calc(100% - 70px)">
+                <flip-panel style="background-color: whitesmoke">
+                    <div class="content">
+                        <div class="port-cards">
+                        
+                            <div class="switcher-mode">
+                                {{switchMode.options[portsList.outputs['OUT.HDMI.1']['AUTO_SWITCH']].label}} mode
+                            </div>
+                           <div class=" multiple flex-container around"
+                                   ng-class="{'column': (portsList.inputs | toArray |  filter:{masterSignal: 'VIDEO'}).length < 5}">
+                            <div class="card " ng-repeat="input in portsList.inputs"
+                                    ng-if="input.masterSignal == 'VIDEO'">
+                                <div class="port-card"
+                                        ng-class="{'selected': portsList.data.MATRIX_STATUS['OUT.HDMI.1']['VIDEO'][0] == input.id}">
+                                    <div class="setting" title="Port Settings" ng-click="toggleInputConfig(input)">
+                                        <i class="icon-cog"></i>
+                                    </div>
+                                    <div class="port-card-content" ng-click="route(input)">
+                                        <div class="flex-container column" style="margin: auto">
+                                            <div ng-class="{'name-first': input.label}">{{input.label}}</div>
+                                            <div ng-class="{'name-second': input.label}">{{input.name}}</div>
+                                        </div>
+
+                                        <div class="led-box signal"
+                                                title="{{input.signal? 'Signal active': 'No signal'}}"
+                                                ng-class="{'on': input.signal}">{{input.status}}
+                                              <div ng-if="saveProcess[input.id]" class="routing-process loader-btn"
+                                                      style="width: 10px; height: 10px; margin-top: 15px"></div>
+                                        </div>
+                                        <div class="priority-badge"
+                                                title="Video Priority: {{portsList.outputs['OUT.HDMI.1']['SWITCH_PRIORITY'].indexOf(input.id)+1}}"
+                                                ng-if="portsList.outputs['OUT.HDMI.1']['AUTO_SWITCH'] == 1 && portsList.outputs['OUT.HDMI.1']['SWITCH_PRIORITY']">
+                                            <span class="badge">{{portsList.outputs['OUT.HDMI.1']['SWITCH_PRIORITY'].indexOf(input.id)+1}}</span>
+                                            <!--<span  class="last-connected" ng-if="portsList.outputs['OUT.HDMI.1']['AUTO_SWITCH'] == 2">lc</span>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                           </div>
+                        </div>
+                    </div>
+                </flip-panel>
+                <flip-panel style="background-color: white">
+                    <!--{{currentInput}}-->
+                    <div class="content flex-container between back" ng-repeat="input in portsList.inputs"
+                            ng-if="input.masterSignal == 'VIDEO' && currentInput.id == input.id">
+                        <div class="setting-content">
+                            <div class="flex-container center" style="margin: 15px">
+                                <div style="font-weight: bold; font-size: 20px">{{currentInput.name+' Settings'}}</div>
+                                <div class="led-box signal" style="margin-top: -5px;margin-left: 15px;"
+                                        title="{{currentInput.signal? 'Signal active': 'No signal'}}"
+                                        ng-class="{'on': currentInput.signal}">{{currentInput.status}}
+                                </div>
+                            </div>
+                            <form name="nameForm">
+                            <div class="label">
+                                <div class="field">
+                                    <label>Port label</label>
+                                    <input type="text" ng-maxlength="15" class="line"
+                                            placeholder="{{currentInput.name}}"
+                                            ng-keyup="updatePortlabel('X_PORT_LABEL', portLabel.value)"
+                                            ng-model="portLabel.value" ng-pattern="portLabel.pattern">
+                                </div>
+                            </div>
+                                <div style="position: relative; height: 15px">
+                                    <div class="error-messages">
+                                        <p ng-if="nameForm.$error.pattern">Spaces aren't allowed</p>
+                                        <p ng-show="nameForm.$error.maxlength"
+                                                class="help-block">Port label can't exceed 15 characters.</p>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="audio-follower">
+                                <h4>Audio follower</h4>
+                                <div class="field">
+                                    <label>Priority</label>
+                                    <k-on-off show-value-on-disable="true"
+                                            init-val="{{currentInput.followerMode['AUDIO']}}"
+                                            on-click="togglePriorityFollower(insideVal)" active-text="Enable"
+                                            inactive-text="Disable" enabled="true"></k-on-off>
+                                </div>
+
+                                <div class="field">
+                                    <label>Follower</label>
+                                    <div class="auto-switch-content" ng-show="currentInput.followerMode['AUDIO'] == 1">
+                                        <p class="description">drag & drop to prioritize</p>
+                                        <ul class="cards card-list" as-sortable="dragControlFollowers"
+                                                data-ng-model="AudioFollowers">
+                                            <li class="as-sortable-item" ng-repeat="follower  in AudioFollowers"
+                                                    as-sortable-item>
+                                                <div as-sortable-item-handle
+                                                        class="full-handle as-sortable-item-handle">
+                                                    <span class="card-title">{{follower.name}}</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="auto-switch-content" ng-show="currentInput.followerMode['AUDIO'] == 0">
+                                        <k-combo-box label="name" value="id" on-change="updateFollower(insideVal)"
+                                                ignore-init-value="false" options="AudioFollowers"
+                                                init-val="{{currentInput.followers['AUDIO'].selected}}">
+                                            <!--value-to-listen="currentInput.followers['AUDIO'].selected">-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hdcp">
+                                <h4>HDCP</h4>
+                                <div class="field">
+                                    <label>Support</label>
+                                    <k-on-off show-value-on-disable="true" init-val="{{currentInput['HDCP_MOD']? 1: 0}}"
+                                            on-click="toggleHDCP(insideVal)" active-text="Enable"
+                                            inactive-text="Disable" enabled="true"></k-on-off>
+                                </div>
+                            </div>
+                            <div class="edid">
+                                <h4>Edid</h4>
+                                <div class="field">
+                                    <label>
+                                        <input type="checkbox" ng-model="currentInput['EDID_CS']"
+                                                ng-change="updateEdid('EDID_CS')" ng-checked="currentInput['EDID_CS']">Force RGB</label>
+                                    <label>
+                                        <input type="checkbox" ng-model="currentInput['EDID_AUDIO']"
+                                                ng-change="updateEdid('EDID_AUDIO')"
+                                                ng-checked="currentInput['EDID_AUDIO']">Force 2LPCM</label>
+                                    <label>
+                                        <input type="checkbox" ng-true-value="true" ng-false-value="false"
+                                                ng-model="currentInput['EDID_DC']" ng-change="updateEdid('EDID_DC')"
+                                                ng-checked="currentInput['EDID_DC']">Remove Deep Color</label>
+                                </div>
+                            </div>
+                            <div class="step-in">
+                                <h4>Step In</h4>
+                                <div class="no-remote-device" ng-if="!currentInput.remoteDevice.connected">
+                                    No device connected
+                                </div>
+                                <div class="" ng-if="currentInput.remoteDevice.connected">
+                                    <div style="text-align: center">{{currentInput.remoteDevice.device}}</div>
+                                    <div class="flex-container center middle">
+                                        <button ng-repeat="input in currentInput.remoteDevice.inputs " class="btn"
+                                                ng-class="{'selected': (currentInput.remoteDevice.current -1) == $index}"
+                                                ng-click="tunnelCtrl(currentInput, input.index)">
+                                            <span>{{input.name}}</span>
+                                            <span>{{(input.index)}}</span>
+                                        </button></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <button class="btn flat" ng-click="toggleInputConfig()">Close</button>
+                </flip-panel>
+        </section>
+
+        <!--OUTPUTS-->
+        <section class="outputs">
+            <div class="header flex-container  middle between">
+                <span class="title">Outputs</span>
+                <div class="switch-mode flex-container column middle center">
+
+                </div>
+            </div>
+            <div class="content flex-container" style="height: 87%">
+            <div class="content flex-container between" style="margin: auto 15px; width: 100%">
+
+                <div class="output-port-cards" style="margin: auto">
+                    <div class="ports-header ">
+                        <div class="port-name"
+                                ng-repeat="outputPort in portsList.outputs | toArray |filter:{masterSignal:'VIDEO'}:true">
+                            <div>{{ouputMechanicalName[outputPort.id] || outputPort.name}}</div>
+                            <div class="led-box signal" title="{{outputPort.signal? 'Signal active': 'No signal'}}"
+                                    ng-class="{'on': outputPort.signal}">
+                            </div>
+                        </div>
+                    </div>
+
+                   
+                    <div class="flex-container">
+                        <!--TODO - display EDID ? => ng-repeat-->
+                        <div class="edid-card"
+                                ng-repeat="outputPort in portsList.outputs | toArray | filter:{masterSignal:'VIDEO'}:true | filter:{edid: '!!'}">
+                            <div><span style="font-size: 10px" title="Model">{{outputPort.edid.data.model}}</span></div>
+                            <div><span style="font-size: 10px" title="Resolution">{{outputPort.edid.data.res}}</span>
+                            </div>
+                            <div><span style="font-size: 10px"
+                                    title="Deep color">{{outputPort.edid.data.deepColor}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="output-icons">
+                        <i ng-class="{'enabled': portsList.outputs['OUT.HDMI.1'].hasOwnProperty('X_VIDEO_PATTERN') && portsList.outputs['OUT.HDMI.1']['X_VIDEO_PATTERN'] != 0, 'disabled': portsList.outputs['OUT.HDMI.1']['X_VIDEO_PATTERN']  == 0}"
+                                class="span-icon icons icon-ic_video_patern"
+                                title="Video Pattern {{ ': '+ portsList.outputs['OUT.HDMI.1']['X_VIDEO_PATTERN'] ? videoPatterns[portsList.outputs['OUT.HDMI.1'].X_VIDEO_PATTERN].label: '(Click to select)'}}"
+                                ng-click="toggleMouseOver($event, 'X_VIDEO_PATTERN', 'Video Pattern')"></i>
+                        <i ng-class="{'icon-ic_video_signal_on': !portsList.outputs['OUT.HDMI.1']['X_MUTE']['VIDEO'], 'icon-ic_video_signal_off disabled': portsList.outputs['OUT.HDMI.1']['X_MUTE']['VIDEO']}"
+                                class="port-icon icons"
+                                title="{{(!portsList.outputs['OUT.HDMI.1']['X_MUTE']['VIDEO'] ? 'Click to mute audio & video': 'Click to unmute audio & video')}}"
+                                ng-click="toggleCommand('X_MUTE', 'VIDEO')"></i>
+                    </div>
+                    <div class="online-settings" ng-show="command.hasOwnProperty('name')"
+                            ng-mouseleave="toggleMouseOver($event)" ng-mouseenter="toggleMouseOver($event)"
+                            style=" position: relative; width: 100%;">
+                        <div class="content" ng-class="{'open': sliderIsOpen}">
+                            <div style="min-width: 115px; text-align: center">
+                                <span style="font-weight: bolder">Video Pattern</span>
+                                <k-combo-box label="label" value="value" on-change="updatePattern(insideVal)"
+                                        options="videoPatterns.options"
+                                        init-val="{{portsList.outputs['OUT.HDMI.1'].X_VIDEO_PATTERN}}"></k-combo-box>
+                                <!--value-to-listen-->
+                                <!--<p class="description" style="margin: 0px;font-size: 10px;"-->
+                                <!--ng-if="port[Commands.X_AUD_ONLY.key]">When <i>Audio only mode</i> is active no pattern can be set</p>-->
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="sources">
+                        <div style="font-weight: bolder; text-align: center;">Sources</div>
+                        <div class="flex-container column" style=" margin: 25px auto; ">
+                            <div style="margin-top: 3vh" class="flex-container"><span>Video:</span><span
+                                    style="margin-left: 3vh; color: #6c6c6c">
+                                {{ portsList.outputs['OUT.HDMI.1'].X_VIDEO_PATTERN == 0 ? portsList.inputs[portsList.data.MATRIX_STATUS['OUT.HDMI.1']['VIDEO'][0]].name: videoPatterns.options[portsList.outputs['OUT.HDMI.1'].X_VIDEO_PATTERN].label}}</span>
+                            </div>
+                            <div style="margin-top: 3vh" class="flex-container"><span>Audio:</span><span
+                                    style="margin-left: 3vh; color: #6c6c6c">
+                                {{portsList.outputs['OUT.HDMI.1'].X_VIDEO_PATTERN == 0 ? portsList.inputs[portsList.data.MATRIX_STATUS['OUT.HDMI.1']['AUDIO'][0]].name: '-'}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="separator">&nbsp;</div>-->
+                <div class="volume-slider flex-container column center">
+                    <label style="text-align: center;">Analog Audio <br>
+                        <span style="font-weight: bolder">Volume</span>
+                    </label>
+                    <k-volume unit="dB" min="{{portsList.outputs['OUT.ANALOG_AUDIO.1']['X_AUDIO_RANGE'].min}}"
+                            max="{{portsList.outputs['OUT.ANALOG_AUDIO.1']['X_AUDIO_RANGE'].max}}" decimals="1"
+                            show-progress="true" rounding-to="0.5" validate-on-enter="true" orientation="V"
+                            timeout="500" steps="0.5" show-input="true"
+                            init-val="{{portsList.outputs['OUT.ANALOG_AUDIO.1'].AUDIO_VOLUME}}"
+                            on-value-to-listen-changed="updateVolume(insideVal)"
+                            enabled="!portsList.outputs['OUT.ANALOG_AUDIO.1'].X_MUTE['AUDIO']"></k-volume>
+                </div>
+                <div class="mute-icons">
+                    <i ng-if="portsList.outputs['OUT.ANALOG_AUDIO.1'].X_MUTE['AUDIO']"
+                            class="icons icon-ic_audio_signal_off" title="click to unmute audio" ng-click="mute()"></i>
+                    <i ng-if="!portsList.outputs['OUT.ANALOG_AUDIO.1'].X_MUTE['AUDIO']"
+                            class="icons icon-ic_audio_signal_on" title="click to mute audio" ng-click="mute()"></i>
+                </div>
+            </div>
+            </div>
+        </section>
+
+        <!--<div class="setting-icon"-->
+        <!--ng-click="toggleSettings()"-->
+        <!--title="Auto Switch Settings"><i class="icon-cog"></i>-->
+        <!--</div>-->
+    </div>
+
+
+    <div ng-show="showSettings" class="dialog-box show-settings">
+        <div class="dialog flip-in-x" ng-if="showSettings">
+            <div class="header">
+                <i class="close-dialog icon-cross" ng-click="toggleSettings()"></i>
+                <h2 style="font-size: 20px;">Switcher Settings</h2>
+            </div>
+            <hr/>
+            <div class="body" >
+                <k-tabs tab-content-class="tabsClass" tab-selected="0">
+                    <k-tab tab-title="Mode">
+                        <div class="switch-mode flex-container column" style="text-align: center">
+                            <span style="font-weight: bolder;">Switcher mode</span>
+                            <k-combo-box label="label" value="value" on-change="updatePriorityMode(insideVal)"
+                                    options="switchMode.options"
+                                    init-val="{{portsList.outputs['OUT.HDMI.1']['AUTO_SWITCH']}}">
+                                <!--value-to-listen="port.followers[component.label].selected">-->
+                            </k-combo-box>
+                        </div>
+                        <div class="flex-container row  around scan-priority"
+                                ng-class="{'disabled': portsList.outputs['OUT.HDMI.1']['AUTO_SWITCH'] != 1 }">
+                            <div class="flex-container column" style="margin-top: 20px;width: 60px;">
+                                <label style="font-weight: bold; ">Priority</label>
+                                <div style="margin-top: 20px">
+                                    <div ng-repeat="priority in selectedAutoSwitch track by $index"
+                                            class="priority-index">
+                                        <div ng-class="">
+                                            <label>{{$index+1}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="auto-switch-content">
+                                <label class="input-title">Input</label>
+                                <p class="description">drag & drop to prioritize</p>
+                                <ul class="cards card-list" as-sortable="dragControlPriority"
+                                        data-ng-model="selectedAutoSwitch">
+                                    <li class="as-sortable-item" ng-repeat="input  in selectedAutoSwitch"
+                                            as-sortable-item>
+                                        <div as-sortable-item-handle class="full-handle as-sortable-item-handle">
+                                            <span class="card-title">{{input.name}}</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </k-tab>
+
+                    <k-tab tab-title="Auto-Switching Timeouts">
+                        <h4 style="margin-bottom: -10px">Video & Audio Timeouts</h4>
+                        <form class="field" name="timeout" novalidate>
+                            <div class="flex-container column" style="width: 100%">
+                                <div class="field">
+                                    <label>&nbsp;</label>
+                                    <div class="timeout-type">VIDEO</div>
+                                    <div class="timeout-type">AUDIO</div>
+                                </div>
+                                <div class="field">
+                                    <label>When the signal is lost, leave 5V power on and delay switching for x
+                                        sec</label>
+                                                <!--validate-on-arrow="true"-->
+                                    <div class="input-timeout ">
+                                        <k-input
+                                                title="Range [5-{{maxTimeout(0)}}]"
+                                                unit="sec"
+                                                min="5"
+                                                max="{{maxTimeout(0)}}"
+                                                is-error="timeout_0"
+                                                init-val="{{videoTimeout.AV_SW_TIMEOUT_0}}"
+                                                value="timeoutVM.AV_SW_TIMEOUT_0"
+                                                show-input-arrows="true"
+                                                validate-on-arrow="true"
+                                                on-value-to-listen-changed="updateVideoTimeout(insideVal, 'AV_SW_TIMEOUT_0')"></k-input>
+                                    </div>
+                                    <div class="input-timeout ">
+
+                                                <!--init-val="{{videoTimeoutAV_SW_TIMEOUT_2}}"-->
+                                        <k-input
+                                                title="Range [5-{{maxTimeout(0)}}]"
+                                                unit="sec"
+                                                min="5"
+                                                max="{{maxTimeout(0)}}"
+                                                is-error="timeout_2"
+                                                value="timeoutVMAV_SW_TIMEOUT_2"
+                                                init-val="{{videoTimeout.AV_SW_TIMEOUT_2}}"
+                                                show-input-arrows="true"
+                                                validate-on-arrow="true"
+                                                on-value-to-listen-changed="updateVideoTimeout(insideVal, 'AV_SW_TIMEOUT_2')"></k-input>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>When the cable is unplugged, delay switching for x sec</label>
+                                    <div class="input-timeout ">
+                                        <k-input
+                                                title="Range [0-{{maxTimeout(5)}}]"
+                                                unit="sec"
+                                                min="0"
+                                                max="{{maxTimeout(5)}}"
+                                                is-error="timeout_5"
+                                                value="timeoutVMAV_SW_TIMEOUT_5"
+                                                init-val="{{videoTimeout.AV_SW_TIMEOUT_5}}"
+                                                show-input-arrows="true"
+                                                validate-on-arrow="true"
+                                                on-value-to-listen-changed="updateVideoTimeout(insideVal, 'AV_SW_TIMEOUT_5')"
+                                                ></k-input>
+                                    </div>
+                                    <div class="input-timeout ">
+
+                                        <k-input
+                                                title="Range [0-{{maxTimeout(5)}}]"
+                                                unit="sec"
+                                                min="0"
+                                                max="{{maxTimeout(5)}}"
+                                                is-error="timeout_6"
+                                                value="timeoutVM.AV_SW_TIMEOUT_6"
+                                                init-val="{{videoTimeout.AV_SW_TIMEOUT_6}}"
+                                                show-input-arrows="true"
+                                                validate-on-arrow="true"
+                                                on-value-to-listen-changed="updateVideoTimeout(insideVal, 'AV_SW_TIMEOUT_6')"></k-input>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>When the signal is lost, delay 5V power off for x sec</label>
+                                    <div class="input-timeout ">
+                                        <k-input
+                                                title="Range [{{minTimeout()}}-60000]"
+                                                unit="sec"
+                                                min="{{minTimeout()}}"
+                                                max="60000"
+                                                is-error="timeout_4"
+                                                value="timeoutVM.AV_SW_TIMEOUT_4"
+                                                init-val="{{videoTimeout.AV_SW_TIMEOUT_4}}"
+                                                show-input-arrows="true"
+                                                validate-on-arrow="true"
+                                                on-value-to-listen-changed="updateVideoTimeout(insideVal, 'AV_SW_TIMEOUT_4')"></k-input>
+                                    </div>
+                                    <div class="input-timeout " style="width: 75px">
+                                        <!--<input-->
+                                        <!--title="Range [0-60000]"-->
+                                        <!--type="number"-->
+                                        <!--min="0"-->
+                                        <!--max="60000"-->
+                                        <!--string-to-number-->
+                                        <!--ng-blur="updateVideoTimeout()"-->
+                                        <!--ng-enter="updateVideoTimeout()"-->
+                                        <!--ng-model="videoTimeoutAV_SW_TIMEOUT_2"-->
+                                        <!--ng-value="videoTimeoutCopy['timeout_2']"/><span>sec</span>-->
+
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>When video is lost on a manual override action, delay switching for x
+                                        sec</label>
+                                    <div class="input-timeout ">
+
+                                                <!--init-val="{{videoTimeout.timeout_7}}"-->
+                                        <k-input
+                                                title="Range [{{minTimeout()}}-90]"
+                                                unit="sec"
+                                                min="{{minTimeout()}}"
+                                                max="90"
+                                                is-error="timeout_7"
+                                                value="timeoutVM.AV_SW_TIMEOUT_7"
+                                                init-val="{{videoTimeout.AV_SW_TIMEOUT_7}}"
+                                                show-input-arrows="true"
+                                                validate-on-arrow="true"
+                                                on-value-to-listen-changed="updateVideoTimeout(insideVal, 'AV_SW_TIMEOUT_7')"></k-input>
+                                    </div>
+                                    <div class="input-timeout " style="width: 75px"></div>
+                                </div>
+                                <div class="field">
+                                    <label></label>
+                                    <button class="btn btn-primary"
+                                            ng-disabled="timeout_0 || timeout_2 || timeout_4 || timeout_5 || timeout_6 || timeout_7 || isEmpty(timeoutToUpdate)"
+                                            style="width: 100%; flex: 1"
+                                            ng-click="updateTimer()">save</button>
+                                </div>
+                                <div ng-messages="timeout.$error" role="alert" class="error">
+                                    <div ng-if="timeout_0">Invalid Range for <i>leave 5V power ON VIDEO</i>. Range:[5 - {{maxTimeout(0)}}]</div>
+                                    <div ng-if="timeout_2">Invalid Range for <i>leave 5V power ON AUDIO</i>. Range:[5 - {{maxTimeout(0)}}]</div>
+                                    <div ng-if="timeout_4">Invalid Range for <i>delay 5V power OFF</i>. Range:[{{minTimeout()}} - 60000]</div>
+                                    <div ng-if="timeout_5">Invalid Range for <i>cable unplugged VIDEO</i>. Range:[0 - {{maxTimeout(5)}}]</div>
+                                    <div ng-if="timeout_6">Invalid Range for <i>cable unplugged AUDIO</i>. Range:[0 - {{maxTimeout(5)}}]</div>
+                                    <div ng-if="timeout_7">Invalid Range for <i>manual override</i>. Range:[90 - {{minTimeout()}}]</div>
+                                </div>
+                            </div>
+                        </form>
+                        <div style="position: relative; height: 15px">
+                            <div class="error-messages" style="position: absolute">
+                                <p ng-if="timeoutSaveFailed"
+                                        style="font-size: 12px;margin: 0px; padding: 0px; color: #b71c1c; white-space: pre-line">
+                                    Failed while updating the field. Check the range!</p>
+                            </div>
+                        </div>
+
+                    </k-tab>
+            </div>
+
+            <button ng-click="toggleSettings()" class="btn flat">Close</button>
+        </div>
+    </div>
+</div>

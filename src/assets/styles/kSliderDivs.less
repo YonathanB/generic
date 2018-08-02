@@ -1,0 +1,153 @@
+//***********************************************
+// File Name: kSliderDivs.less
+// Created by: fassous
+// On: 08/10/2015 10:57
+// Last Modified: 
+// Modified by: 
+//***********************************************
+
+.kSliderDivs {
+  margin-bottom: -2px;
+  display: block;
+  //border:3px solid #ccc;
+  //border:1px solid red;
+  position: relative;
+  padding-bottom: 25px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.kSliderDivs-home {
+  cursor: pointer;
+  opacity: 0.7;
+  z-index: 10;
+}
+
+.kSliderDivs-main {
+  display: block;
+  //border:1px solid green;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  &.isAnimated {
+    .f_transition(all 2s)
+  }
+
+  .kSliderDivs-left, .kSliderDivs-right {
+    position: absolute;
+    display: inline-block;
+    width: 20px;
+    height: 100%;
+    //right:10px;
+    //top:50%;
+    cursor: pointer;
+    &:hover {
+      background: #222;
+      box-shadow: 0px 0px 24px 0px #222;
+    }
+    .kSliderDivs-arrow {
+      top: calc(50% - 10px);
+      position: absolute;
+      text-align: center;
+    }
+  }
+
+  .kSliderDivs-left {
+    left: 0px;
+  }
+  .kSliderDivs-right {
+    right: 0px;
+  }
+
+  .kSliderDivs-main-content {
+    display: block;
+    position: absolute;
+    left: 20px;
+    display: inline-block;
+    overflow: hidden;
+    .kSliderDiv {
+      position: absolute;
+      display: inline-block;
+      vertical-align: middle;
+      //border: 1px solid red;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    &.isAnimated {
+      .f_transition(all 2s)
+    }
+  }
+
+}
+
+.kSliderDivs-menu {
+  position: absolute;
+  width: 100%;
+  height: 20px;
+  bottom: 0px;
+  left: 0px;
+  display: block;
+  //border:1px solid red;
+  text-align: center;
+}
+
+.kSliderDivs-link {
+  width: 15px;
+  height: 15px;
+  .f_radius(60px);
+  display: inline-block;
+  background-color: #31341C;
+  border: 1px solid #ccc;
+  margin-left: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+  vertical-align: middle;
+  &:hover {
+    background-color: #706f6e;
+    .f_transition(background-color 0.25s ease);
+  }
+  &.selected {
+    background-color: #8A9187;
+  }
+}
+
+.kSliderDivs {
+  &.fade {
+    .kSliderDiv {
+      opacity: 1;
+      &.ng-hide-add {
+        .f_transition(0.4s linear all);
+      }
+      &.ng-hide-remove {
+        .f_transition(0.4s linear all);
+      }
+      &.ng-hide {
+        opacity: 0;
+      }
+    }
+
+  }
+  &.swipe {
+    .kSliderDiv {
+      .f_transition(left 1s);
+      //&.ng-hide-add, &.ng-hide-remove {
+      //    /* this is required as of 1.3x to properly
+      //       apply all styling in a show/hide animation */
+      //    //transition: 0s linear all;
+      //    left:-100% !important;
+      //    border:3px solid red;
+      //    //opacity:1;
+      //}
+      //
+      //&.ng-hide-add-active, &.ng-hide-remove-active {
+      //    /* the transition is defined in the active class */
+      //    //transition: 1s linear all;
+      //    //transition: 0s linear all;
+      //    left:+100% !important;
+      //    border:3px solid green;
+      //    //opacity:0;
+      //}
+    }
+
+  }
+}

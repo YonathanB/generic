@@ -1,0 +1,48 @@
+k-form {
+  input:not([type ='checkbox']) {
+    border-color: @app-input-border;
+    &.ng-invalid-password-length, &.ng-invalid-confirm-password, &.ng-invalid-device-name, &.ng-invalid-device-name-length, &.ng-invalid-first-device-name {
+      border: 1px solid #ca8989;
+      box-shadow: 2px 1px 7px -3px #ca8989;
+      background-color: rgba(205, 92, 92, 0.08);
+      color: #980000;
+      outline: none;
+    }
+  }
+
+  .error {
+    //position: absolute;
+    div, p {
+      font-size: 12px;
+      margin: 0px;
+      padding: 0px;
+      color: @app-errormessage-color;
+      white-space: pre-line;
+    }
+  }
+
+  button {
+
+    &.btn.default {
+      width: 100%;
+      height: 45px;
+      font-size: 18px;
+      .f_flex();
+      .flex-justify-content(center);
+      background: @app-main-background-color;
+      color: @app-mainmenu-color;
+      &.disabled{
+        background: @app-disabled-background-color;
+        color: @app-disabled-color;
+      }
+    }
+  }
+
+  .failed-to-save{
+    color:white !important;
+    background-color: @app-errormessage-color;
+    font-size: 15px !important;;
+    padding-left: 20px !important;;
+    line-height: 35px !important;;
+  }
+}

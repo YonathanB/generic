@@ -1,0 +1,96 @@
+.kUpDownRange {
+    position: relative;
+    border: 1px solid @app-border-element; //@app-main-input-background-color;
+    display: inline-block;
+    vertical-align: top;
+    .f_radius(5px;);
+
+    .kInputRange {
+        border:0px;
+        display: inline-block;
+        vertical-align: middle;
+        input {
+            border:0px;
+            width: @app-element-width;
+        }
+    }
+
+    .kUpDownRange-arrows {
+        display: inline-block;
+        position: absolute;
+        vertical-align: middle;
+        right: 0px;
+        top: 0px;
+        //border:1px solid red;
+        height:100%;
+        width:20px;
+
+        .kUpDownRangeUp, .kUpDownRangeDown {
+            height: 50%;
+            cursor: pointer;
+        }
+        .kUpDownRangeUp {
+            padding-bottom: 1px;
+        }
+        .kUpDownRangeDown {
+            padding-top: 1px;
+        }
+        .kUpDownRange-arrowUp , .kUpDownRange-arrowDown {
+            width: 0px;
+            height:0px;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            margin: 0px auto 2px auto;
+            height: 50%;
+        }
+        .kUpDownRange-arrowUp {
+            border-bottom: 5px solid @app-main-background-color;
+        }
+
+        .kUpDownRange-arrowDown {
+            border-top: 5px solid @app-main-background-color;
+        }
+
+    }
+
+}
+
+.kUpDownRange.error {
+    border: 1px solid @app-error-color;
+
+    .kInputRange {
+        //border-color: @app-error-color;
+        input {
+            color: @app-error-color;
+        }
+    }
+    //.kUnit {
+    //  color: @app-error-color;
+    //}
+}
+
+.kUpDownRange.disabled {
+    border-color: @app-disabled-background-color;
+    background-color: @app-disabled-background-color;
+    .kInputRange {
+        input {
+            color: @app-disabled-color;
+        }
+    }
+    .kUpDownRange-arrows {
+        .kUpDownRangeUp, .kUpDownRangeDown {
+            cursor: default;
+        }
+        .kUpDownRange-arrowUp {
+            border-bottom: 5px solid @app-disabled-color;
+        }
+
+        .kUpDownRange-arrowDown {
+            border-top: 5px solid @app-disabled-color;
+        }
+
+    }
+    //.kRangeUnit {
+    //  color: @app-disabled-color;
+    //}
+}

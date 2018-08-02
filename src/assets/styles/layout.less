@@ -1,0 +1,433 @@
+/****************************************************************************/
+/*     L A Y O U T . L E S S                                                */
+/****************************************************************************/
+* {
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  font-family: arial, sans-serif;
+  //color: @app-second-color;
+}
+
+*:not(input):not(textarea) {
+  .f_allow-text-select(false);
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/*************************************************************************************************** General Layout *********************************************************************************************/
+.table {
+  display: table;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.tableRow {
+  display: table-row;
+}
+
+.tableCell {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.tableCellTop {
+  display: table-cell;
+  vertical-align: top;
+}
+
+.horizontalCenter {
+  margin: 0 auto;
+}
+
+/***************************************************************************************************   index Layout *********************************************************************************************/
+
+/********************************************** Title Area */
+#nav-bar {
+  .display(flex);
+  position: relative;
+  background-color: @app-main-background-color;
+  position: relative;
+  box-shadow: 1px 1px 9px 3px @app-disabled-color;
+  color: @app-second-color;
+  .flex-align-items(center);
+  padding: 1vh;
+  width: 100%;
+  #kramer-logo {
+    margin-right: 1vw;
+  }
+  #page-title {
+    display: block;
+    .flex(1);
+  }
+  #remote-mute{
+    position: absolute;
+    left: 42%;
+    span{
+      font-size: 17px;
+      padding: 7px;
+      background: #b71c1c;
+      .f_radius(4px);
+      i{
+        margin-right: 20px;
+      }
+    }
+  }
+  #resize-icon-area {
+    float: right;
+    margin-right: 20px;
+    .f_flex();
+  }
+  #security-icon-area {
+    font-size: 25px;
+    margin-right: 15px;
+    //display: none;
+  }
+}
+
+#app-content {
+  .f_flex();
+  height: 100%;
+  background-color: @app-content-background-color;
+}
+
+/********************************************** Main Area */
+
+#mainDiv {
+  position: fixed;
+  left: 0px;
+  width: 100%;
+  bottom: 0px;
+  top: 65px;
+}
+
+.main-view {
+  font-size: 13px;
+  padding: 1vh 4vw;
+  overflow: auto;
+  height: 94%;
+}
+
+#contentDiv {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  width: 100%;
+  //background-image: url(rightbottom.png);
+  background-repeat: no-repeat;
+  background-position: right bottom;
+}
+
+#contentBox {
+  //padding: 10px;
+  text-align: left;
+  border-width: 4px;
+  border-style: solid;
+  border-color: @app-border-element;
+  -moz-border-radius: 5px;
+  border-radius: 10px;
+  margin: 0 auto;
+
+  font-size: 12px;
+}
+
+.loading-dialog {
+  margin-left: 10px;
+  font-weight: bold;
+  font-size: @font-size-big;
+}
+
+.my-fade-animation.ng-enter,
+.my-fade-animation.ng-leave {
+  .f_transition(0.2s linear all);
+}
+
+.my-fade-animation.ng-enter {
+  opacity: 0;
+}
+
+.my-fade-animation.ng-enter.ng-enter-active {
+  opacity: 1;
+}
+
+.my-fade-animation.ng-leave {
+  opacity: 1;
+}
+
+.my-fade-animation.ng-leave.ng-leave-active {
+  opacity: 0;
+}
+
+/*ContentBox settings*/
+.contentBox-title {
+  margin-bottom: 0.7vh;
+  font-size: @font-size-big;
+  //width: 180px;
+}
+
+.contentBox-subtitle {
+  margin: 10px 10px 10px 0;
+  font-weight: bold;
+  font-size: @font-size-medium;
+}
+
+.contentBox-property {
+  font-size: @font-size-medium - 1;
+  margin-right: 10px;
+}
+
+/*General*/
+.mousePointer {
+  cursor: pointer;
+}
+
+.hide {
+  display: none;
+}
+
+.labelValue {
+  font-size: @font-size-middle-medium;
+  font-weight: bold;
+}
+
+/*icons calender*/
+
+.fa {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.fa-times:before {
+  content: "\f00d";
+}
+
+.fa-calendar:before {
+  content: "\f073";
+}
+
+.fa-chevron-right:before {
+  content: "\f054";
+}
+
+.fa-chevron-left:before {
+  content: "\f053";
+}
+
+#titleDiv {
+  background-color: @app-main-background-color;
+}
+
+.menuItem {
+  font-size: 14px;
+  //&.selected {
+  //  background-color: @app-main-background-color;
+  //  .f_gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1));
+  //}
+}
+
+#contentDiv, #contentBox {
+  background-color: @app-content-background-color;
+}
+
+.clearCacheMassage {
+  font-size: @font-size-middle-medium;
+  width: 340px;
+}
+
+.clearCacheMassageDontShow {
+  font-size: @font-size-small;
+}
+
+/*General Color (for canvas)*/
+.app-main-background-color {
+  background-color: @app-main-background-color;
+}
+
+.app-content-background-color {
+  background-color: @app-content-background-color;
+
+}
+
+.app-secondary-background-color {
+  background-color: @app-main-background-secondary;
+}
+
+.app-disable-background-color {
+  background-color: @app-disabled-background-color;
+}
+
+#contentBox {
+  padding: 15px;
+  margin-left: 220px;
+  margin-right: 10px;
+  .f_transition(margin 0.5s);
+}
+
+#contentBox.full {
+  margin-left: 0px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  //cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  border-color: @app-content-background-color;
+  &.btn-dark {
+    background-color: @app-main-background-secondary;
+  }
+  &.active {
+    background-color: @app-main-background-color;
+    color: white;
+  }
+  &.disabled {
+    background-color: @app-disabled-background-color;
+    color: #aaa;
+    cursor: default;
+  }
+  &.icon{
+    min-width: 30px;
+  }
+  &:hover{
+    cursor: pointer;
+  }
+}
+
+.btn-group-vertical > .btn, .btn-group > .btn {
+  position: relative;
+  float: left;
+}
+
+.btn-group {
+  position: relative;
+  .f_flex();
+  vertical-align: middle;
+  box-shadow: 0 1px 4px 0 #585858;
+  .btn {
+    &:first-child {
+      margin-left: 0;
+      &:not(:last-child) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
+    &:not(:first-child) {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+    &:not(:first-child):not(:last-child) {
+      border-radius: 0;
+    }
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-button { /* 2 */
+}
+
+::-webkit-scrollbar-track { /* 3 */
+}
+
+::-webkit-scrollbar-track-piece { /* 4 */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(88, 88, 88, 0.32);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: #e6e6e6;
+}
+
+::-webkit-resizer { /* 7 */
+}
+
+/**
+Flex Layout
+**/
+.inline-flex {
+  .display(inline-flex);
+}
+.flex-container {
+  .display(flex);
+  &.row {
+    .flex-direction(row);
+  }
+  &.column {
+    .flex-direction(column);
+  }
+  &.center {
+    .flex-justify-content(center);
+  }
+  &.middle {
+    .flex-align-items(center);
+  }
+  &.end {
+    .flex-justify-content(flex-end);
+  }
+  &.start {
+    .flex-justify-content(flex-start);
+  }
+  &.around {
+    .flex-justify-content(space-around);
+  }
+  &.between {
+    .flex-justify-content(space-between);
+  }
+}
+
+.led-box {
+  .flex-align-self(flex-start);
+  margin: 5px;
+  margin-top: 8px;
+}
+.signal {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: @app-content-background-color;
+  &.on {
+    background-color: #b2eaaa;
+    box-shadow: rgb(226, 248, 229) 0 -1px 7px 1px, inset #2f9321 0 -1px 9px, rgba(146, 211, 124, 0) 0 2px 12px;
+  }
+}
+
+k-ip .kIp{
+
+}
+
+
+

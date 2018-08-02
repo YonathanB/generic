@@ -1,0 +1,33 @@
+<div class="operational"  >
+    <div class="tunnelContainer">
+        <div class="tunnelTableDiv">
+
+            <!--TITLES -->
+            <div class="propertyRow" style="width: 95%;">
+                <div class="tableTitle borderItem" style="width: 30%;">IP</div>
+                <div class="tableTitle borderItem" style="width: 20%;">To</div>
+                <div class="tableTitle borderItem" style="width: 40%;">Through</div>
+                <div class="tableTitle" style="width: 10%;">S/R</div>
+            </div>
+
+            <div class="tunnelTableContentDiv">
+                <div ng-repeat="tunnel in operationalTunnelingSettings.data['ETH_TUNNEL_*']">
+                    <div class="propertyRow tableItemRow">
+                        <div class="tableItem borderItem" style="width: 30%; ">{{tunnel.ETH_IP}}</div>
+                        <div class="tableItem borderItem" style="width: 20%; ">Port {{tunnel.ETH_Port}}</div>
+                        <div class="tableItem borderItem" style="width: 40%; ">{{(tunnel.portType==1)?"UDP":"TCP"}}
+                            {{tunnel.Wired==1?"Wired":"Wireless"}} Ethernet
+                        </div>
+                        <div class="tableItem" style="width: 11%; ">{{tunnel.ETH_RepEn==1?"Yes":"No"}}</div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div style="text-align: center;margin-top: 2px;">
+            <k-button text="Refresh" enabled="true" visible="true"
+                      click="activeClientsRefresh();"></k-button>
+            </div>
+        </div>
+    </div>
+</div>

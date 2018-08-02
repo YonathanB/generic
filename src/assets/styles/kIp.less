@@ -1,0 +1,185 @@
+k-ip {
+  &.error {
+    .kIp{
+      border: 1px solid @app-error-border;
+      box-shadow: 2px 1px 7px -3px @app-error-border;
+      background-color: @app-errormessage-background;
+      color: @app-errormessage-color;
+      .kInputRange input{
+        background-color: rgba(205, 92, 92, 0);
+        color: @app-errormessage-color;
+      }
+    }
+  }
+  .kIp {
+    display: inline-block;
+    vertical-align: top;
+    border: 0px;
+    .f_radius(5px);
+    border: 1px solid @app-border-element;
+    display: inline-table;
+    //padding: 3px;
+    background-color: @app-main-input-background-color;
+    padding: 1px 2px 1px 2px;
+
+    width: @app-element-width + 4;
+    height: @app-element-height;
+    //overflow: hidden;
+    font-size: 0; //For Firefox and IE
+    .kInputRange {
+
+      //width:35px;//TODO
+
+      input {
+        border: 0px solid @app-border-element;
+        color: @app-main-input-color;
+        background-color: @app-main-input-background-color;
+        font-size: 15px;
+        width: ((@app-element-width - 32) / 4); //@control-ip-width;
+        padding: 1px 2px;
+        text-align: center;
+        display: inline-block;
+        line-height: @app-element-height;
+        outline: none;
+        //width:100%;
+      }
+    }
+
+    .inputIPLeft input {
+      .f_radius(5px 0px 0px 5px);
+    }
+
+    .inputIPMiddle input {
+      .f_radius(0px);
+    }
+
+    .inputIPRight input {
+      .f_radius(0px 5px 5px 0px);
+    }
+
+    .dotIp {
+      display: inline-block;
+      width: auto;
+      color: @app-main-input-color;
+      text-align: center;
+      font-size: 15px;
+      line-height: @app-element-height;
+      //line-height: 22px;
+    }
+  }
+
+  .kIp.disabled {
+    .inputIP {
+      input {
+        background: @app-disabled-background-color;
+        color: @app-disabled-color;
+      }
+    }
+    .dotIp {
+      color: @app-disabled-color;
+    }
+
+  }
+
+  .kIp.error:not(.disabled) {
+    border: 1px solid @app-error-color;
+    input {
+      color: @app-error-color;
+    }
+  }
+
+  .kIp.disabled {
+    background-color: @app-disabled-background-color;
+    //border-color:transparent;
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//.kIp {
+//    display:inline-block;
+//    vertical-align: top;
+//    border:0px;
+//    height:@app-element-height;
+//    .ipInner {
+//        border-radius: 5px;
+//        border: 1px solid @app-border-element;
+//        display: inline-table;
+//        //padding: 3px;
+//        background-color: @app-main-input-background-color;
+//        padding-left: 3px;
+//        padding-right: 3px;
+//
+//        width: @app-element-width;
+//        height:@app-element-height;
+//        //overflow: hidden;
+//        .inputIP {
+//            input {
+//                border: 0px solid @app-border-element;
+//                color: @app-main-input-color;
+//                background-color: @app-main-input-background-color;
+//                font-size: 15px;
+//                width: @control-ip-width;
+//                padding: 1px 2px;
+//                text-align: center;
+//            }
+//        }
+//
+//        .inputIPLeft input {
+//            .f_radius(5px 0px 0px 5px);
+//        }
+//
+//        .inputIPMiddle input {
+//            .f_radius(0px);
+//        }
+//
+//        .inputIPRight input {
+//            .f_radius(0px 5px 5px 0px);
+//        }
+//
+//        .dotIp {
+//            width: auto;
+//            color: @app-main-input-color;
+//            text-align: center;
+//            //line-height: 22px;
+//        }
+//
+//    }
+//
+//    .ipInner.disabled {
+//        .inputIP {
+//            input {
+//                background: @app-disabled-background-color;
+//                color: @app-disabled-color;
+//            }
+//        }
+//        .dotIp {
+//            color: @app-disabled-color;
+//        }
+//
+//    }
+//
+//}
+//
+//
+//.marginTop {
+//    margin-top: 1px;
+//}
+//
+//
+//.inline {
+//    display: inline-block;
+//
+//}
+//
+//.kIp.error .ipInner:not(.disabled) {
+//    border: 1px solid @app-error-color;
+//    input {
+//        color: @app-error-color;
+//    }
+//}
+//
+//.kIp .ipInner.disabled {
+//    background-color: @app-disabled-background-color;
+//    //border-color:transparent;
+//}

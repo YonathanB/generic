@@ -1,0 +1,70 @@
+<!--call-on-before-saved="UpdateAuthentication()"-->
+<k-form ng-model="timeProperties" control="refreshForm">
+    <section style="min-height: 340px">
+    <div class="field">
+        <label>Server Status</label>
+    <label> {{(timeProperties.data.SERVER_TIME.status==1)?"OK":"Unreachable"}}</label>
+    </div>
+        <div class="field">
+        <label>Device Date</label>
+        <quick-datepicker
+                class="time-date-picker"
+                ng-if="timeProperties.data.SERVER_TIME.useTimeSrv==0" required="true"
+                on-change="refreshForm.refresh(); updateTime()"
+                time-format="HH:mm"
+                disable-clear-button="true"
+                date-format='dd-MM-yyyy'
+                isddmmaa="true"
+                ng-model='timeProperties.data.TIME.date'>
+        </quick-datepicker>
+        <input ng-if="timeProperties.data.SERVER_TIME.useTimeSrv==1"
+                value="{{timeProperties.data.TIME.date | getDateString}}" disabled/>
+    </div>
+
+        <!--<k-time init-val="{{timeProperties.data.TIME.time}}"-->
+        <!--on-change="refreshForm.refresh()"-->
+        <!--value="timeProperties.data.TIME.time"-->
+        <!--show-seconds="false"-->
+        <!--enabled="timeProperties.data.SERVER_TIME.useTimeSrv==0"-->
+        <!--max-hours="23"-->
+        <!--min-hours="0"-->
+        <!--allow-empty="true"></k-time>-->
+        <!--</div>-->
+    <div class="field" ng-if="timeProperties.data.hasOwnProperty('TIME_LOCATION')">
+        <label>Time Zone</label>
+    <k-combo-box init-val="{{timeProperties.data.TIME_LOCATION.timeZone}}"
+            value-to-listen="timeProperties.data.TIME_LOCATION.timeZone" options="timeZones" label="name" value="value"
+            enabled="true" force-string-value="true"></k-combo-box>
+    </div>
+        <div class="field" ng-if="timeProperties.data.hasOwnProperty('TIME_ZONE')">
+        <label>Time Zone</label>
+   <k-combo-box init-val="{{timeProperties.data.TIME_ZONE}}"
+           value-to-listen="timeProperties.data.TIME_ZONE" options="timeZones"
+           enabled="true" force-string-value="true"></k-combo-box>
+    </div>
+
+
+    <div class="field" ng-if="timeProperties.data.hasOwnProperty('TIME_LOCATION')">
+        <label>Daylight Savings Time</label>
+    <k-on-off value-to-listen="timeProperties.data.TIME_LOCATION.dayLight"
+            init-val="{{timeProperties.data.TIME_LOCATION.dayLight }}" is-waiting-for-response="false" enabled="true"
+            active-text="YES" inactive-text="NO" show-value-on-disable="true">
+    </k-on-off>
+    </div>
+    
+    <div class="field">
+        <label>Use Time Server (NTP)</label>
+        <k-on-off value-to-listen="timeProperties.data.SERVER_TIME.useTimeSrv"
+                init-val="{{timeProperties.data.SERVER_TIME.useTimeSrv }}" is-waiting-for-response="false"
+                enabled="true" active-text="YES" inactive-text="NO" show-value-on-disable="true">
+        </k-on-off>
+    </div>
+
+    <div class="field">
+        <label>Time Server Address</label>
+        <k-ip enabled="timeProperties.data.SERVER_TIME.useTimeSrv==1" ng-model="timeProperties.data.SERVER_TIME.ip"
+                value="timeProperties.data.SERVER_TIME.ip" init-val="{{timeProperties.data.SERVER_TIME.ip}}"
+                title="ip address"></k-ip>
+    </div>
+    </section>
+</k-form>

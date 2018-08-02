@@ -1,0 +1,53 @@
+input.kButton {
+/*TEST*/
+    border:1px solid red;
+    text-decoration: none;
+    color: @app-main-color;
+    overflow: hidden;
+    display: inline-block;
+    text-align: center;
+    padding: 2px 3px 2px 3px;
+    width: auto;
+    min-width: 70px;
+    height: @app-element-height;
+    line-height: @app-element-height;
+    font-size: @font-size-xmedium;
+    line-height: @font-size-xmedium;
+    .f_radius(5px);
+    .f_transition(background-color 0.25s);
+    cursor: pointer;
+    background-color: @app-main-background-color;
+    border: 1px solid @app-border-element;
+}
+
+/*Button when disabled*/
+input.kButton.disabled {
+    background-color: @app-disabled-background-color;
+    color: @app-disabled-color;
+    cursor: default;
+}
+
+/*Button Hover when enabled*/
+input.kButton:not(.disabled):hover {
+    background-color: @app-main-color-hover;
+}
+
+/*set Button*/
+input.kButton.kButton-set {
+    width: 45px;
+    min-width: 45px;
+    //height: @app-element-height;
+    //line-height: @app-element-height;
+    font-size: @font-size-xmedium;
+    //padding: 0;
+    //.f_transition(none );
+}
+
+input[type="button"]
+{
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+}
+
+

@@ -1,0 +1,166 @@
+<script src="jquery.ddslick.min.js"></script>
+<div class="av-config" id="av-config">
+    <div id="preload-01"/>
+    <div id="preload-02"/>
+    <div id="preload-03"/>
+    <div id="preload-04"/>
+    <div id="preload-05"/>
+    <div class="contentBox-title flex-container middle">
+        <div>{{::$root.pageTitle}}</div>
+        <div style="flex:1"></div>
+    </div>
+    <div style="margin-top: 12px;">
+        <div class="config-tab-section">
+            <div class="config-tab" ng-click="setActiveOutput(1)" ng-class="{selected: activeOutput == 1}">
+                <div class="tab-title">
+                    <i class="icon-hdmi"></i>
+                    <span>HDMI Output 1</span>
+                </div>
+            </div>
+
+            <div class="config-tab" ng-class="{selected: activeOutput == 2}" ng-click="setActiveOutput(2)">
+                <div class="tab-title">
+                    <i class="icon-hdmi"></i>
+                    <span>HDMI Output 2</span>
+                </div>
+            </div>
+        </div>
+        <form>
+            <div class="output">
+
+                <div class="video">
+                    <div class="container-row">
+                        <h2 class="item">
+                            Video
+                        </h2>
+                    </div>
+                    <section>
+                        <h3>
+                            Source
+                        </h3>
+                        <div class="container-col">
+                            <div class="item radio-items">
+                                <k-radio-button value="0" value-to-listen="viewModel.videoSource">
+                                    SDI {{activeOutput}}
+                                </k-radio-button>
+                            </div>
+                            <div class="item ms-bug-radio" >
+                                <div class="container-row">
+                                    <div class="item">
+                                        <k-radio-button value="1" value-to-listen="viewModel.videoSource">
+                                            Signal Generator
+                                        </k-radio-button>
+                                    </div>
+                                    <div class="item dropdown-correction">
+                                        <div name="patterns" id="patterns"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <h3>Image settings</h3>
+                        <div class="container-row">
+                            <div class="item">
+                                Resolution
+                            </div>
+                            <div class="item dropdown-correction">
+                                <select ng-model="viewModel.resolution.res"
+                                        name="resSelect" id="resSelect" ng-change="setResolution()"
+                                        ng-options="k as v for (k, v) in resolutions">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="container-col sliders">
+                            <div class="item  ms-bug-slider" ng-repeat="setting in sliderTitles">
+                                <div class="container-col">
+                                    <div class="item  ms-bug-radio">
+                                        {{setting}}
+                                    </div>
+                                    <div class="item  ms-bug-radio">
+                                        <k-slider visible="true" enabled="true" min="1" max="100"
+                                                  init-val="{{data[activeOutput][sliderFields[$index].key]}}"
+                                                  value="viewModel[sliderModels[$index]]"
+                                                  validate-on-blur="true"
+                                                  auto-correct-value="true"
+
+                                                  control-class="horizontal-slider" show-arrows="false" show-progress="true"
+                                                  show-zero="" show-min-max="false" show-input-arrows="false" show-input="true"
+                                                  orientation="H"
+                                                  on-value-to-listen-changed="slideOn($index, activeOutput, insideVal, 1)"
+                                                  unit="" click-steps="10" timeout="500">
+                                        </k-slider>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </section>
+
+                </div>
+                <div class="audio">
+                    <div class="container-row">
+                        <h2 class="item">Audio</h2>
+                        <div class="item">
+                            <k-state-button state-control-class="mute-margin" onaction="iconOnAction()"
+                                            states="iconStates" state="{{viewModel.iconState}}" disabledstate="iconDisableState"></k-state-button>
+                        </div>
+                        <div class="item"></div>
+                        <div class="item"></div>
+                        <div class="item"></div>
+                        <div class="item"></div>
+                    </div>
+                    <section>
+                        <h3>Source</h3>
+                        <div class="container-row drop-container">
+                            <div class="item">
+                                Group
+                            </div>
+                            <div class="item dropdown-correction">
+                                <select ng-model="viewModel.audioSource.group" ng-change="setAudioSource()">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="container-row">
+                            <div class="item">
+                                Pair
+                            </div>
+                            <div class="item dropdown-correction">
+                                <select ng-model="viewModel.audioSource.pair" ng-change="setAudioSource()">
+                                    <option>1</option>
+                                    <option>2</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <h3>
+                            Output Format
+                        </h3>
+                        <div class="container-col">
+                            <div class="item radio-items">
+                                <k-radio-button value="1" value-to-listen="viewModel.audioFormat">
+                                    Analog
+                                </k-radio-button>
+                            </div>
+                            <div class="item">
+                                <k-radio-button value="2" value-to-listen="viewModel.audioFormat">
+                                    AES
+                                </k-radio-button>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+
+
+            </div>
+        </form>
+    </div>
+</div>
+
+

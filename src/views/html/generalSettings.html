@@ -1,0 +1,95 @@
+<style>
+    .field > label{
+        min-width: 230px;
+    }
+    #prog-btn > div{
+        width: 180px;
+    }
+</style>
+<k-form ng-model="properties"
+        call-on-before-saved="UpdateAuthentication()">
+        <!--exclude-from-compare="[properties.data.PROG_BTN_MOD]"-->
+    <section>
+         <div class="field" ng-if="properties.data.hasOwnProperty('LOCK-FP')">
+            <label>Front Panel</label>
+            <k-on-off show-value-on-disable="true"
+                    active-text="Locked"
+                    inactive-text="Un-locked"
+                    init-val="{{properties.data['LOCK-FP']}}"
+                    value-to-listen="properties.data['LOCK-FP']"
+                    on-click="toggleFrontPanel(insideVal)"
+                    height="30"
+                    width="153"
+                    enabled="true"></k-on-off>
+        </div>
+        <div class="field">
+            <label>Device Name</label>
+            <input type="text" ng-model="properties.data.NAME" name="NAME" device-name>
+        </div>
+        <div class="field" style="margin-top: 15px">
+            <label>Model</label>
+            <label class="answer">{{::properties.data.MODEL}}</label>
+        </div>
+    </section>
+    <hr class="horizontal-separator" ng-class="{'hidden': !fileSystemEnable()}"/>
+    <section ng-class="{'hidden': !fileSystemEnable()}">
+        <div class="field">
+            <label>Firmware version</label>
+            <label class="answer">{{::properties.data.VERSION}}</label>
+        </div>
+    </section>
+    <!--<hr class="horizontal-separator"/>-->
+    <!--<section class="field">-->
+        <!--<label>Programmable buttons mode</label>-->
+        <!--<k-on-off id="prog-btn" -->
+                <!--show-value-on-disable="true"-->
+                  <!--init-val="{{properties.data.PROG_BTN_MOD}}"-->
+                  <!--on-click="toggleProgBtn(insideVal)"-->
+                  <!--active-text="Programmable"-->
+                  <!--inactive-text="Default"-->
+                  <!--height="30"-->
+                  <!--width="170"-->
+                  <!--enabled="true"></k-on-off>-->
+        <!--&lt;!&ndash;&ndash;&gt;-->
+    <!--</section>-->
+    <hr class="horizontal-separator"/>
+    <section class="security">
+        <div>
+            <h3>Security
+                <k-on-off show-value-on-disable="true"
+                          init-val="{{securityDialog.enable()}}"
+                          on-click="toggleSecurity(insideVal)"
+                          height="30"
+                          width="153"
+                          enabled="true"></k-on-off>
+            </h3>
+        </div>
+        <div id="security-properties" ng-show="showSecurityProperties">
+            <p class="toggleCTA">Change security properties</p>
+            <div class="field">
+                <label>Current Password</label>
+                <input type="password"
+                       name="currentPassword"
+                       ng-model="security.currentPassword">
+            </div>
+            <div class="field">
+                <label>New Password</label>
+                <input type="password"
+                       name="newPassword"
+                       ng-model="security.newPassword">
+            </div>
+            <div ng-messages="form.$error" class="error" role="alert">
+                <div ng-message="password-length">password must be at least 5 characters</div>
+            </div>
+            <div class="field">
+                <label>Confirm Password</label>
+                <input type="password"
+                       name="confirmPassword"
+                       ng-model="security.confirmPassword">
+            </div>
+            <div ng-messages="form.$error" class="error" role="alert">
+                <div ng-message="confirm-password">Passwords aren't matching</div>
+            </div>
+        </div>
+    </section>
+</k-form>

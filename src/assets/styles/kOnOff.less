@@ -1,0 +1,104 @@
+@on-off-speed : 0.3s;
+
+.kOnOff {
+  background-color: @app-main-background-secondary;
+  font-size: @font-size-xmedium;
+  border-width: 1px;
+  border-style: solid;
+  border-color: @app-border-down;
+  overflow: hidden;
+  .f_radius(5px);
+  width: @app-element-width;
+  //width: @control-size-width;
+  min-width: 150px;
+  display: inline-block;
+  padding: 2px 1px;
+  position: relative;
+  height: @app-element-height;
+  .kOnOff-text-on, .kOnOff-text-off {
+    display: inline-block;
+    cursor: pointer;
+    width: 50%;
+    text-align: center;
+    //text-transform: uppercase;
+    //font-weight: bold;
+    //    z-index: 10;
+    position: absolute;
+    line-height: @app-element-height;
+    overflow: hidden;
+    .f_transition(color @on-off-speed;);
+  }
+  .kOnOff-text-on {
+    color: @app-disabled-color;
+    cursor: pointer;
+    left: 0px;
+  }
+  .kOnOff-text-off {
+    color: @app-main-color;
+    cursor: default;
+    right: 0px;
+  }
+
+  .kOnOff-button {
+    background-color: @app-main-background-color;
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    top: 0px;
+    left: 50%;
+    //    z-index: 5;
+    opacity: 0.99;
+    .f_radius(5px);
+    .f_transition(right @on-off-speed, left @on-off-speed;);
+  }
+}
+
+.kOnOff.on {
+  .kOnOff-text-on {
+    color: @app-main-color;
+    cursor: default;
+  }
+  .kOnOff-text-off {
+    color: @app-disabled-color;
+    cursor: pointer;
+  }
+  .kOnOff-button {
+    left: 0px;
+  }
+}
+
+.kOnOff.disabled {
+  .kOnOff-text-on, .kOnOff-text-off {
+    cursor: default;
+    color: @app-disabled-color;
+  }
+  .kOnOff-button {
+    background-color: @app-disabled-background-color;
+  }
+}
+
+.kOnOff.disabled.hide-button-on-disable {
+  .kOnOff-button {
+    visibility: hidden;
+  }
+}
+
+.kOnOff-loading {
+  .kOnOff-button, .kOnOff-text-on, .kOnOff-text-off {
+    cursor: wait !important;
+  }
+}
+
+//.divOnOff {
+//  border-width: 1px;
+//  text-align: center;
+//  border-style: solid;
+//  border-radius: 5px;
+//  color: @app-grey-background-color;
+//  background-color: @app-main-background-secondary;
+//  font-size: 15px;
+//  font-weight: bold;
+//  padding: 0px;
+//  vertical-align: middle;
+//  border-color: #2b2a2a #484646 #484646 #2b2a2a;
+//}

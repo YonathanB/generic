@@ -1,0 +1,359 @@
+//TODO:REmoving comment in next lines :
+///*.kDialog BEGIN********************************************************************/
+
+//.kDialog.is-animate .kDialogBack,
+//.kDialog.is-animate .kDialogBox {
+//    .f_transition(visibility 0.5s, opacity 0.5s);
+//}
+
+.kDialog:not(.is-animate) {
+    &:not(.hide-background) .kDialogBack {
+        opacity: 0.7;
+    }
+    &.hide-background .kDialogBack {
+        opacity: 1;
+    }
+}
+
+//.kDialogBox.ng-enter {
+//    -webkit-transition-delay: 0.2s;
+//    transition-delay: 0.2s;
+//}
+
+.kDialog.is-animate {
+
+    .kDialogBack.ng-enter, .kDialogBack.ng-leave,
+    .flex-center-vertical-horizontal-screen.ng-enter, .flex-center-vertical-horizontal-screen.ng-leave {
+        .f_transition(visibility 0.5s, opacity 0.5s;);
+    }
+
+    .flex-center-vertical-horizontal-screen.ng-enter {
+        transition-delay: 0.2s;
+    }
+    .kDialogBack.ng-leave {
+        transition-delay: 0.2s;
+    }
+
+    .kDialogBack.ng-enter,
+    .kDialogBack.ng-leave.ng-leave-active,
+    .flex-center-vertical-horizontal-screen.ng-enter,
+    .flex-center-vertical-horizontal-screen.ng-leave.ng-leave-active {
+        opacity: 0;
+    }
+
+    .flex-center-vertical-horizontal-screen.ng-leave,
+    .flex-center-vertical-horizontal-screen.ng-enter.ng-enter-active {
+        opacity: 1;
+    }
+
+    .kDialogBack,
+    .kDialogBack.ng-leave,
+    .kDialogBack.ng-enter.ng-enter-active {
+        opacity: 0.7;
+    }
+}
+
+.kDialog.is-animate.hide-background {
+
+    .kDialogBack.ng-enter, .kDialogBack.ng-leave,
+    .flex-center-vertical-horizontal-screen.ng-enter, .flex-center-vertical-horizontal-screen.ng-leave {
+        .f_transition(visibility 0.5s, opacity 0.5s;);
+    }
+
+    .flex-center-vertical-horizontal-screen.ng-enter {
+        transition-delay: 0.2s;
+    }
+    .kDialogBack.ng-leave {
+        transition-delay: 0.2s;
+    }
+
+    .kDialogBack.ng-enter,
+    .kDialogBack.ng-leave.ng-leave-active,
+    .flex-center-vertical-horizontal-screen.ng-enter,
+    .flex-center-vertical-horizontal-screen.ng-leave.ng-leave-active {
+        opacity: 0;
+    }
+
+    .flex-center-vertical-horizontal-screen.ng-leave,
+    .flex-center-vertical-horizontal-screen.ng-enter.ng-enter-active {
+        opacity: 1;
+    }
+
+    .kDialogBack,
+    .kDialogBack.ng-leave,
+    .kDialogBack.ng-enter.ng-enter-active {
+        opacity: 1;//Only this line must be changed for hide-background
+    }
+}
+
+//&:not(.hide-background) .kDialogBack.ng-leave,
+//&:not(.hide-background) .kDialogBack.ng-enter.ng-enter-active {
+//    opacity: 0.7;
+//}
+//
+//&.hide-background .kDialogBack.ng-leave,
+//&.hide-background .kDialogBack.ng-enter.ng-enter-active {
+//    opacity: 1;
+//}
+
+///*.kDialog END********************************************************************/
+
+///*.kDialog OLD********************************************************************/
+//.kDialog.ng-enter .kDialogBox {
+//  opacity: 0;
+//  -webkit-transition-delay: 0.2s;
+//  transition-delay: 0.2s;
+//}
+//
+//.kDialog.ng-enter.ng-enter-active .kDialogBox {
+//  opacity: 1;
+//  -webkit-transition-delay: 0.2s;
+//  transition-delay: 0.2s;
+//}
+//
+//.kDialog.ng-leave .kDialogBox {
+//  /*opacity:1;*/
+//}
+//
+//.kDialog.ng-leave.ng-leave-active .kDialogBox {
+//  opacity: 0;
+//}
+//
+///*.kDialogBack old ********************************************************************/
+//.kDialog .kDialogBack {
+//  opacity: 0.5;
+//}
+//
+//.kDialog.hide-background .kDialogBack {
+//  opacity: 1;
+//}
+//
+//.kDialog.ng-enter .kDialogBack {
+//  opacity: 0;
+//  /*transition-delay: 2s;*/
+//}
+//
+//.kDialog.ng-enter.ng-enter-active .kDialogBack {
+//  opacity: 0.5;
+//}
+//
+//.kDialog.ng-enter.ng-enter-active.hide-background .kDialogBack {
+//  opacity: 1;
+//}
+//
+//.kDialog.ng-leave .kDialogBack {
+//  opacity: 0.5;
+//  -webkit-transition-delay: 0.15s;
+//  transition-delay: 0.15s;
+//}
+//
+//.kDialog.ng-leave.ng-leave-active .kDialogBack {
+//  opacity: 0;
+//  transition-delay: 0.15s;
+//  -webkit-transition-delay: 0.15s;
+//}
+//
+///*********************************************************************************/
+
+/*Background*/
+.kDialog .kDialogBack {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    //-webkit-transform: translateZ(0);
+    /*opacity: 0.5;*/
+    /*display: block;*/
+    /*visibility: visible;*/
+    background-color: @app-content-background-color;
+}
+
+/*.kDialog.hidden .kDialogBack {*/
+/*opacity: 0;*/
+/*display: none;*/
+/*visibility: hidden;*/
+/*}*/
+
+/*Dialog box*/
+.kDialog .kDialogBox {
+    //position: fixed;
+    //top: 50%;
+    //left: 50%;
+    //.f_transform(translate(-50%, -50%));
+    position: relative;
+    .f_radius(6px);
+    border: 2px solid;
+    //min-width: 310px;
+    /*max-width: 400px;*/
+    /*padding: 5px;*/
+    border-color: @app-main-background-color;
+    background-color: @app-content-background-color;
+    //z-index: 100;
+    /*opacity: 1;*/
+    display: inline-table;
+}
+
+.kDialog.show-shadow .kDialogBox {
+    box-shadow: 0px 3px 10px 3px @app-box-shadow;
+}
+
+/*.kDialog.hidden .kDialogBox {*/
+/*opacity: 0;*/
+/*}*/
+
+//.kDialog .kDialogCloseButton:after {
+//  content:@ICON_CLOSE;
+//}
+
+.kDialog .kDialogCloseButton {
+    position: absolute;
+    right: 10px;
+    top: 7px;
+    cursor: pointer;
+    width: 12px;
+    height: 12px;
+    //background-repeat: no-repeat;
+    //background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAoElEQVR42oWQMQuGIBCG+7c6RRC4ODg4BP6FtqBFgxYXFzeXEIJ+jOt9nKQVBd8zee896nFNc8IYA8QYAyVblgVSStD3fc0ycMI5h2EY8tk595SQGGNuhhDKHaCUvsV5nuHOOI5vCZFSVmnbtm8Jsdb+f22apse33vu3qJSCL9q2veSu62oDd4j1vu+5Xtf1EoUQOdRa15AQAsdxAM5csh8q+cAx0zk5qAAAAABJRU5ErkJggg==);
+    background-image: @CLOSE_ICON;
+    //.f_transition(opacity 0.5s);
+}
+
+.kDialog .kDialogCloseButton:hover {
+    opacity: 0.5;
+}
+
+.kDialog .kDialogTitleArea {
+    width: 100%;
+    border-style: solid;
+    .f_radius( 6px 6px 0px 0px);
+    margin-top: -2px;
+    margin-left: -3px;
+    border-color: @app-main-background-color;
+    background-color: @app-main-background-color;
+    width: auto;
+    display: block;
+    //border-radius:0px;
+    margin-left: 0px;
+}
+
+.kDialogTitle {
+    width: auto;
+    margin-left: 6px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    text-align: left;
+    font-size: @font-size-medium;
+    font-weight: bold;
+}
+
+.kDialogContent {
+    margin: 10px;
+    display: inline-block;
+}
+
+.kDialogButton {
+    margin: 10px;
+    float: right;
+}
+
+.kDialog.noBorder .kDialogBox {
+    border-width: 0;
+}
+
+.dialog-box {
+    &.dialog-error {
+        .body {
+            p {
+                white-space: pre;
+            }
+        }
+    }
+    /* when hiding the picture */
+    &.ng-leave {
+        animation: 0.5s flipOutX ease;
+    }
+    position: absolute;
+    -webkit-box-pack: center;
+    .flex-justify-content(center);
+    -webkit-box-align: center;
+    .flex-align-items(center);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 80;
+    overflow: hidden;
+    .f_flex();
+    background-color: rgba(0, 0, 0, 0.24);
+    /* opacity: 0.6; */
+    .dialog {
+        i.close-dialog {
+            float: right;
+            font-size: 11px;
+            color: #dedede;
+            cursor: pointer;
+        }
+        .header {
+            padding: 15px;
+            h2 {
+                margin: 0px;
+                text-transform: capitalize;
+            }
+        }
+        hr {
+            width: 99%;
+            border-color: rgb(247, 247, 247);
+            border-style: solid
+        }
+        .body {
+            padding: 15px;
+        }
+        .footer {
+            padding: 15px;
+        }
+        /* when showing the picture */
+        &.flip-in-x.ng-enter {
+            animation: 0.5s flipInX ease;
+        }
+        background-color: white;
+        /* background-color: white; */
+        //padding: 15px;
+        transition: all .4s cubic-bezier(.25, .8, .25, 1);
+        opacity: 1;
+        -webkit-transform: translate(0, 0) scale(1);
+        transform: translate(0, 0) scale(1);
+        border-radius: 4px;
+        color: rgba(0, 0, 0, 0.87);
+        min-width: 240px;
+        max-width: 80%;
+        max-height: 80%;
+        position: relative;
+        overflow: auto;
+        box-shadow: 0 7px 8px -4px rgba(0, 0, 0, .2), 0 13px 19px 2px rgba(0, 0, 0, .14), 0 5px 24px 4px rgba(0, 0, 0, .12);
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        .f_flex();
+        .flex-direction(column);
+        //input:not([type ='checkbox']) {
+        //  //width: 100%;
+        //  border: none;
+        //  border-bottom: 1px solid #c5c5c5;
+        //  border-radius: 0px;
+        //  box-sizing: border-box;
+        //
+        //  &:focus {
+        //    border: none;
+        //    outline: none;
+        //    &:not(.ng-invalid) {
+        //      border-bottom: 2px solid #0067B0;
+        //    }
+        //  }
+        //  &.ng-invalid {
+        //    border-bottom: 2px solid @app-error-color;
+        //  }
+        //
+        //}
+    }
+}

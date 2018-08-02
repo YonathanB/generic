@@ -1,0 +1,23 @@
+<div class="dialog-box">
+            <div class="dialog flip-in-x ng-enter">
+                <div class="body">
+                    <h2>Would you like to factory reset?</h2>
+                    <div class="content flex-container">
+                        <div class=" icon-warning" style="font-size: 40px; padding: 10px"></div>
+                        <ul style="font-size: 15px; list-style-type: none;">
+                            All the settings will be restored to defaults.
+                            <li>After this action, current WEB session may be disconnected.</li>
+                        </ul>
+                    </div>
+                    <p style="font-size: 15px;">Do you want to continue?</p>
+                    <div class="flex-container between">
+                        <button ng-click="$ctrl.closeFactoryReset()"
+                                class="btn flat"
+                        style="min-width: 110px">No</button>
+                        <button class="btn blue selected"
+                                style="min-width: 110px"
+                                ng-click="$ctrl.ProceedFactoryReset()">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>

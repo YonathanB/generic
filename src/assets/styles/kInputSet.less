@@ -1,0 +1,22 @@
+.kInputSet {
+
+  input {
+    box-sizing: content-box;
+  }
+  display: inline-block;
+  vertical-align: top;
+  .kUpDownRange, .kButton {
+    vertical-align: middle;
+  }
+  input:not([type="button"]), .kUpDownRange {
+    border: 1px solid @app-border-element;
+  }
+}
+
+.kInputSet.error {
+
+  input, .kUpDownRange {
+    color: @app-error-color;
+    border: 1px solid @app-error-color;
+  }
+}
