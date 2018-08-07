@@ -7,6 +7,8 @@
         width: 180px;
     }
 </style>
+
+{{$ctrl.properties.NAME}}
 <k-form ng-model="$ctrl.properties" call-on-before-saved="UpdateAuthentication()">
         <!--exclude-from-compare="[$ctrl.properties.data.PROG_BTN_MOD]"-->
     <section>
@@ -18,7 +20,7 @@
         </div>
         <div class="field">
             <label>Device Name</label>
-            <input type="text" ng-model="$ctrl.properties.data.NAME" name="NAME" device-name>
+            <input type="text" ng-model="$ctrl.properties.NAME" name="NAME" device-name>
         </div>
         <div class="field" style="margin-top: 15px">
             <label>Model</label>
@@ -29,7 +31,7 @@
     <section ng-class="{'hidden': !fileSystemEnable()}">
         <div class="field">
             <label>Firmware version</label>
-            <label class="answer">{{::$ctrl.properties.data.VERSION}}</label>
+            <label class="answer">{{::$ctrl.vm.VERSION}}</label>
         </div>
     </section>
     <section ng-if="$ctrl.properties.data.hasOwnProperty('PROG_BTN_MOD')">

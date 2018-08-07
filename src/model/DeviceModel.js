@@ -5,8 +5,17 @@
  * Last Modified: 02/08/2018
  * Modified by: ybenitah
  ***********************************************/
-import {deviceCommands} from "../core/data/Commands";
+/**
+ * @fileOverview The DeviceModel define the web device model.
+ * The module returns an instantiated object (not a class)
+ * @module core/model
+ * @requires deviceCommands
+ * @requires K_Dataproxy
+ * @requires angular - angular is used in order to provide its Promises implementation
+ */
 
+
+import {deviceCommands} from "../core/data/Commands";
 import K_Dataproxy from "../core/data/DataProxy";
 
 
@@ -14,8 +23,12 @@ import K_Dataproxy from "../core/data/DataProxy";
 import angular from 'angular';
 
 const $injector = angular.injector(['ng']);
-console.log($injector)
 
+
+/**
+ * @property {Enum} _APP_STATES - Defines constants for different device's web status
+ *
+ */
 const _APP_STATES = Object.freeze({
     CONNECTING: Symbol("CONNECTING"),
     RUNNING: Symbol("RUNNING"),
@@ -26,7 +39,15 @@ const _APP_STATES = Object.freeze({
 });
 
 let _self;
+
+/**
+ * @property {Object} _Commands - Device's command are stores in a private variable
+ */
 let _Commands = deviceCommands;
+
+/**
+ * @property {Object} _DataProxy - Access to data through the DataProxy object
+ */
 let _DataProxy;
 let _$rootScope,
     _$http,
@@ -35,28 +56,55 @@ let _$rootScope,
     _missedHeartBeats;
 
 
+/**
+ * Class to access data
+ * @name DeviceModel
+ * @module DeviceModel
+ * @kind class
+ * @param {Object} $rootScope - The angular $rootScope in order to bind data to the view, or interact with view on app status has changed.
+ * @param {Object} $http - angular implementation of Ajax.
+ * @param {function} $q - angular implementation of Promises.
+ * */
 class DeviceModel {
     constructor($rootScope, $http, $q) {
-        // set up all the dependencies
         _$rootScope = $rootScope;
         _$http = $http;
         _$q = $q;
         _self = this;
-        this.infoFile = null;// contains device definition
+        this.infoFile = {};
+        this.infoFile.communication = {
+            'type': 'ws',
+            'protocol': 'kramer-p3k-protocol',
+            'url': location.hostname,
+            'translator': 'p3k',
+            'timeout': 0,
+            'connectionAttempts': 3
+        };// contains device definition
         this.STATUS = null;
         this.modules = {};
         this.data = {};
 
     }
 
+    /**
+
+     * @returns {Promise} - Promise when deviceModel is ready and synchronised to physical device
+     * @function
+     * @description That function start the DeviceModel by enabling connection to device
+     */
     start() {
 
         // TODO - _self.STATUS = _APP_STATES.CONNECTING;
-        var defer = _$q.defer();
+        let defer = _$q.defer();
         _$http.get('info')
             .then(function (deviceMetadata) {
-                _self.infoFile = deviceMetadata.data;
-                _DataProxy = new K_Dataproxy(_$q, _self.infoFile["communication"], _onConnectionLost);
+                let tmpInfoFile = deviceMetadata.data;
+                tmpInfoFile.communication = Object.assign(_self.infoFile.communication, tmpInfoFile.communication);
+
+                _DataProxy = new K_Dataproxy(_$q, tmpInfoFile.communication, _onConnectionLost);
+
+
+                _self.infoFile = tmpInfoFile;
                 _createModules.call(_self);
                 _self.STATUS = _APP_STATES.CONNECTING;
                 _connectToDevice.call(_self)
@@ -75,12 +123,27 @@ class DeviceModel {
             });
         return defer.promise;
     }
+
+    getData() {
+        return _DataProxy.getData();
+    }
+
+    initModule(module) {
+        return _DataProxy.get(_self.modules[module].commands)
+            .then(function (data) {
+                _self.modules[module].ready = true;
+                return data;
+            })
+    }
+
+
 }
+
 export const deviceModel = new DeviceModel(
     $injector.get('$rootScope'),
     $injector.get('$http'),
     $injector.get('$q')
-    );
+);
 
 
 function _buildModuleCommands(commands) {
@@ -91,7 +154,7 @@ function _buildModuleCommands(commands) {
         for (let i = 0; i < commands.length; i++) {
             if (typeof commands[i] === "string") {
                 _cmd = commands[i].split(' ');
-                _commands[i] = _Commands.commandsByOpCode[_cmd[0]]
+                _commands[i] = Object.assign({}, _Commands.commandsByOpCode[_cmd[0]]);
             }
 
             // command with params
@@ -127,32 +190,17 @@ function _setUpGlobalModule() {
 
 function _connectToDevice() {
     return _DataProxy.start()
-    .then(function (data) {
-        if ([_APP_STATES.CONNECTION_LOST, _APP_STATES.RESTARTING].indexOf(_self.STATUS) > -1)
-            location.reload();
-        _self.STATUS = _APP_STATES.RUNNING;
-        // _startHeartBeat.call(_self);
-    })
-    .catch(function (err) {
-        _onConnectionLost.call(_self, "CONNECTION_FAILED");
-    })
+        .then(function (data) {
+            if ([_APP_STATES.CONNECTION_LOST, _APP_STATES.RESTARTING].indexOf(_self.STATUS) > -1)
+                location.reload();
+            _self.STATUS = _APP_STATES.RUNNING;
+            // _startHeartBeat.call(_self);
+        })
+        .catch(function (err) {
+            _onConnectionLost.call(_self, "CONNECTION_FAILED");
+        })
 }
 
-function _startHeartBeat() {
-    let _self = this;
-    if (!_heartBeatInterval) {
-        _missedHeartBeats = 0;
-        _heartBeatInterval = setInterval(function () {
-            if (_missedHeartBeats)
-                _onConnectionLost.call(_self);
-            _missedHeartBeats++;
-            _DataProxy.get([_Commands.HAND_SHAKE])
-                .then(function (data) {
-                    _missedHeartBeats = 0;
-                })
-        }, 30000);
-    }
-}
 
 function _onConnectionLost(detail) {
     let _self = this;
@@ -167,6 +215,7 @@ function _onConnectionLost(detail) {
     }
     _connectToDevice.call(_self);
 }
+
 
 // (function () {
 //     angular.module('model')

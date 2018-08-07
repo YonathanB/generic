@@ -1,0 +1,17 @@
+<div id="nav-bar">
+    <div id="kramer-logo">
+        <a style="font-size: 4.4vh; text-decoration: none; color: white;" target="_blank"
+                href="http://www.KramerAV.com/" class="icon icon-LOGO-KRAMER">
+        </a>
+    </div>
+    <div id="page-title" class="app-main-title-font-size" ng-dblclick="enableDebug()">Kramer {{$ctrl.vm.MODEL}} Switcher{{$root.hasRoomController ? '/Controller': ''}}
+    </div>
+    <div id="remote-mute" ng-if="global.GLOBAL_MUTE"><span><i class="icon-warning"></i>GLOBAL MUTE mode is active<i
+            class="icon-warning" style="margin-left: 16px; margin-right: 0px"></i></span></div>
+
+    <div id="resize-icon-area">
+        <i id="security-icon-area" ng-attr-title="Security is {{isAuthenticationEnabled() == 1 ? 'on' : 'off'}}"
+                ng-class="{'icon-lock': isAuthenticationEnabled() == 1,'icon-unlocked': isAuthenticationEnabled() == 0}"></i>
+        <k-resize></k-resize>
+    </div>
+</div>

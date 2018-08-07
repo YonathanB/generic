@@ -1,8 +1,6 @@
 (function () {
     'use strict';
     /**
-     * @memberof model
-     * @ngdoc object
      * @name model.Matrix
      * @param {object} Port: contains definition of I/O port in matrix
      * @param {object} ConnectorsFactory: mapping each port type to its signals
@@ -65,9 +63,7 @@
 
 
                 /**
-                 * @ngdoc function
                  * @name model.Matrix#_getPortDirection
-                 * @methodOf model.Matrix
                  * @description some ports are set as _both_, but they should be input or output
                  * @param {object=} port we want to know its direction
 
@@ -88,9 +84,7 @@
                 }
 
                 /**
-                 * @ngdoc function
                  * @name model.Matrix#_addPort
-                 * @methodOf model.Matrix
                  * @description create a port in matrix
                  * @param {string=} portId
 

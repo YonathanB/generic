@@ -13,6 +13,5 @@ export default angular
 require('./app');
 require('./app.config');
 require('./app.routes');
-require('./ViewSettingsFactory');
 // require('../model/ViewSettingsFactory');
 // require('../model/IO_ObjectService');

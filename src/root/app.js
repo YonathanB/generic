@@ -6,7 +6,6 @@ import {deviceModel} from "../model/DeviceModel";
 'use strict';
 /**
  * @memberof kramerWeb
- * @ngdoc run
  * @name run
  * @param {service} $http
  * @param {service}  DeviceModel create modules and starts communication
@@ -24,15 +23,18 @@ angular.module('kramerWeb')
         'DataProxy',
         'Commands',
         'ViewSettingsFactory',
-        function ($http, $rootScope, $q, $uiRouter, DataProxy, Commands, ViewSettingsFactory) {
+        '$timeout',
+        function ($http, $rootScope, $q, $uiRouter, DataProxy, Commands, ViewSettingsFactory, $timeout) {
 
-            deviceModel.start().then(function (infoFile) {
-                ViewSettingsFactory.initMenu(infoFile.states, deviceModel);
-                document.getElementsByTagName("body")[0].style.display = 'block';
-                // Features.init();
-                // })
-                // })
-            });
+            // deviceModel.start().then(function (infoFile) {
+            //     ViewSettingsFactory.initMenu(infoFile.states, deviceModel);
+            //     $timeout(function () {
+            //         document.getElementsByTagName("body")[0].style.display = 'block';
+            //     }, 0)
+            //     // Features.init();
+            //     // })
+            //     // })
+            // });
 
         }])
 
@@ -44,8 +46,12 @@ angular.module('kramerWeb')
         // 'Authentication', TODO add
         '$state',
         'MessageService',
-        function ($scope, $rootScope, ViewSettingsFactory, $state, MessageService) {
+        'MainService',
+        function ($scope, $rootScope, ViewSettingsFactory, $state, MessageService, MainService) {
 
+            MainService.then(function () {
+                $scope.vm = deviceModel.getData()
+            });
             $scope.deviceStatus = deviceModel.STATUS;
 
 

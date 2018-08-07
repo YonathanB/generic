@@ -1,6 +1,5 @@
 /**
  *
- * @ngdoc module
  * @name components.settings
  *
  * @requires ui.router
@@ -53,10 +52,7 @@ export default require('angular')
     })
 
     .component('deviceSettings', {
-        bindings: {
-            data: '<',
-
-        },
+        bindings: { vm: '<', },
         template: require('./device-settings.html'),
         controller: DeviceSettingsCtrl
     })
