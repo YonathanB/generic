@@ -16,6 +16,7 @@
 import DeviceSettingsCtrl from './deviceSettings';
 import NetworkSettingsCtrl from './network/networkSettings.controller';
 import GeneralDeviceSettingsCtrl from './general/generalSettings.controller';
+import SecuritySettingsCtrl from './security/scuritySettings.controller';
 import UpgradeCtrl from './upgrade/upgradeSettings.controller';
 import NTPSettingsCtrl  from './ntp/ntpSettings.controller';
 
@@ -60,6 +61,11 @@ export default require('angular')
         bindings: {vm: '<'},
         template: require('./general/general-settings.html'),
         controller: GeneralDeviceSettingsCtrl
+    })
+    .component('securitySettings', {
+        bindings: {vm: '<'},
+        template: require('./security/security-settings.html'),
+        controller: SecuritySettingsCtrl
     })
     .component('networkSettings', {
         bindings: {vm: '<'},

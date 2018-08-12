@@ -4,7 +4,7 @@
  *
  * **Flow is as follow**
  *
- *  * The <a href="module-core_model-DeviceModel.html#start">`deviceModel.start`</a> function call the <a href="module-core_data-K_Dataproxy.html">`K_DataProxy`</a> to enable an access to device's data.
+ *  * The <a href="module-core_model-DeviceModel.html#start">`deviceModel.start`</a> function call the <a href="module-core_data-K_DataProxy.html">`K_DataProxy`</a> to enable an access to device's data.
  * `K_DataProxy` implements an access to device (following info file - websocket or polling) and
  * start to ask for device data
  * For an `angular.js` app run block calls for `deviceModel.start`, that returns a promise once
@@ -38,6 +38,5 @@ import angular from 'angular';
 import kramerWeb from './root/app.module';
 
 import './assets/styles/app.less';
-import {deviceModel} from "./model/DeviceModel";
 
 angular.module(kramerWeb);

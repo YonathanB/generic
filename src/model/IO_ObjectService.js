@@ -12,8 +12,8 @@
     var app = angular.module('model');
 
     // VideoPatternService
-    app.factory("VideoService", ['Commands', 'DataProxy',
-        function (Commands, DataProxy) {
+    app.factory("VideoService", ['Commands',
+        function (Commands) {
         var _patterns = [{
             label: 'None',
             value: 0
@@ -46,19 +46,19 @@
             patternInitialized : function(){return _patternInitialized;},
             initPatterns: function () {
                 //TODO turn into array in function itself
-                return DataProxy.send([Commands.VIDEO_PATTERN_LIST])
-                    .then(function (data) {
-                        var patterns = Commands[data[0].commandKey].parserOnMessage(data[0].value).value;
-                        var updatedPatterns = [];
-                        for (var i = 0; i < patterns.length; i++) {
-                            updatedPatterns.push({
-                                "value": i,
-                                "label": patterns[i]
-                            });
-                        }
-                        _patterns = updatedPatterns;
-                        _patternInitialized = true;
-                    });
+                // return DataProxy.send([Commands.VIDEO_PATTERN_LIST])
+                //     .then(function (data) {
+                //         var patterns = Commands[data[0].commandKey].parserOnMessage(data[0].value).value;
+                //         var updatedPatterns = [];
+                //         for (var i = 0; i < patterns.length; i++) {
+                //             updatedPatterns.push({
+                //                 "value": i,
+                //                 "label": patterns[i]
+                //             });
+                //         }
+                //         _patterns = updatedPatterns;
+                //         _patternInitialized = true;
+                //     });
             }
         }
     }]);

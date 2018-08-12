@@ -1,0 +1,18 @@
+<div ng-show="$ctrl.enableSecurityDialogVisible" class="dialog-box">
+            <div class="dialog flip-in-x" ng-if="$ctrl.enableSecurityDialogVisible">
+                <div class="body">
+                    <h2>Would you like to enable security?</h2>
+                    <div class="flex-container">
+                        <div class="kMessageBox-icon icon_MBwarning" style="margin-right: 15px;"></div>
+                        <p>This action will enable the authentication.</p>
+                    </div>
+                    <div style="margin-top: 15px; text-align: right">
+                        <button ng-click="$ctrl.closeEnableSecurityDialogBox(false)"
+                                class="btn flat">cancel</button>
+                        <button class="btn blue selected"
+                                ng-click="$ctrl.closeEnableSecurityDialogBox(true)">Ok</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>

@@ -873,7 +873,8 @@ function CommandsFactory() {
             name: 'portsList',
             opCode: 'PORTS-LIST',
             type: commandsType.COMMAND_TYPE_P3000,
-            parserOnMessage: function (ports, selectedPorts) {
+            parserOnMessage: function (msg, selectedPorts) {
+                let ports = msg.value;
                 var portObj = [];
                 var splited = ports.replace('[', '').replace(']', '').split(',');
                 for (var i = 0; i < splited.length; i++) {

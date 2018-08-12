@@ -1,4 +1,3 @@
-import {deviceModel} from "../../model/DeviceModel";
 
 class headerCtrl {
     constructor() {

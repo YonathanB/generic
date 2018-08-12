@@ -12,8 +12,8 @@ export default require('angular')
         NETWORK_PROPERTIES: 2,
         GLOBAL: 3
     })
-    .factory('K_ModuleFactory', ['$_KRAMER_MODULES', 'Commands', 'DataProxy', '$q', '$rootScope',
-        function ( $_KRAMER_MODULES, Commands, DataProxy, $q, $rootScope) {
+    .factory('K_ModuleFactory', ['$_KRAMER_MODULES', 'Commands', '$q', '$rootScope',
+        function ( $_KRAMER_MODULES, Commands, $q, $rootScope) {
 
         let _modules = {};
             _modules[$_KRAMER_MODULES.MATRIX] = K_Matrix;
@@ -32,10 +32,10 @@ export default require('angular')
                 switch (moduleToCreate) {
                     case 'MATRIX':
                     case 'PORT':
-                        moduleCreated = new _modules[moduleToCreate](data, Commands, DataProxy, $q, $rootScope);
+                        moduleCreated = new _modules[moduleToCreate](data, Commands, $q, $rootScope);
                         break;
                     default:
-                        moduleCreated = new K_Module(data, Commands, DataProxy, $q, $rootScope);
+                        moduleCreated = new K_Module(data, Commands, $q, $rootScope);
                 }
                 return moduleCreated;
             }

@@ -20,3 +20,5 @@ require('./kVerticalSideMenu');
 require('./kVerticalSlider');
 require('./kDialog');
 require('./MessageService');
+require('./kResize');
+require('./kStateButton');

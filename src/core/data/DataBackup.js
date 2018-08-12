@@ -1,48 +1,46 @@
 let _self;
 
-export default class DataBackup{
-    constructor(){
+export default class DataBackup {
+    constructor() {
         _self = this;
     }
 
-    store(toInsert){
-        if(!_self[toInsert.cmd.key])
+    store(toInsert) {
+        if (!_self[toInsert.cmd.key])
             _self[toInsert.cmd.key] = {};
-        if(!toInsert.params)
+
+        // if(toInsert.cmd.hasOwnProperty('parserOnMessage')) {
+        //     console.log('Call parser on message - context ', _self);
+        //     // if()
+        //
+        //     _self[toInsert.cmd.key] = toInsert.value;
+        //     toInsert.cmd.parserOnMessage.call(_self, toInsert);
+        // }
+
+        if (!toInsert.params)
             _self[toInsert.cmd.key] = toInsert.value;
         else
             _self[toInsert.cmd.key][toInsert.params] = toInsert.value;
+        console.log(_self);
+
 
         if($('body'))//notify view
-            $('body').scope().$digest()
+            setTimeout(function() {
+                $('body').scope().$digest()
+            }, 0);
+
     }
+
+    createProperty(key) {
+        this[key] = null;
+    }
+
+    valueExists(key) {
+        return (this[key] !== undefined);
+    }
+
+
+
+
+
 }
-
-
-
-//
-//
-// (function () {
-//     angular.module('core.data')
-//         .factory("DataBackup", [
-//             function () {
-//                 var _model = {};
-//
-//                 var _store = function (msg) {
-//                     _model[msg.cmd.key] = msg;
-//                     console.log('BackUp: ', _model)
-//                 };
-//                 var _ifExist = function (cmd) {
-//                     console.log('Check if command exist')
-//                 };
-//                 var _getValue = function (cmd) {
-//                     console.log('Return value from backup')
-//                 }
-//
-//                 return {
-//                     store: _store,
-//                     ifExist: _ifExist,
-//                     getValue: _getValue
-//                 };
-//             }])
-// })();

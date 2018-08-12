@@ -20,11 +20,10 @@ angular.module('kramerWeb')
         '$rootScope',
         '$q',
         '$uiRouter',
-        'DataProxy',
         'Commands',
         'ViewSettingsFactory',
         '$timeout',
-        function ($http, $rootScope, $q, $uiRouter, DataProxy, Commands, ViewSettingsFactory, $timeout) {
+        function ($http, $rootScope, $q, $uiRouter, Commands, ViewSettingsFactory, $timeout) {
 
             // deviceModel.start().then(function (infoFile) {
             //     ViewSettingsFactory.initMenu(infoFile.states, deviceModel);

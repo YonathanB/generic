@@ -24,11 +24,18 @@ let isDebug = (process.env.NODE_ENV === 'development');
                         views: {
                             'mainView@': {
                                 template: '<ui-view/>',
-                                controller: function ($rootScope, $scope, $timeout, $http, $q, Commands, MainService) {
+                                controller: function ($rootScope, $scope, $timeout, $http, $q, Commands, MainService, $transitions) {
 
                                     MainService.then(function () {
                                         $scope.vm = deviceModel.getData()
                                     });
+
+                                    $transitions.onStart({}, function(transition) {
+                                        console.log('transition', transition)
+                                        if (transition.to().name === 'unreachable') {
+                                            return false;
+                                        }
+                                    })
                                     // Features LoadSaveConfig remoteDeviceControlConfigurationServiceFactory TODO set it back
                                     // if (DeviceModel.global) {
                                     //     if (!DeviceModel.global.initialized)
@@ -131,9 +138,7 @@ let isDebug = (process.env.NODE_ENV === 'development');
             }])
         .factory("ViewSettingsFactory", ['$state', '$urlRouter',
             function ($state, $urlRouter) {
-                var __states = {};
                 var navigation = {};
-                var urlPrefix = "/";
                 var statePref = "main.";
                 var lastRequestedState = '';
                 var menuObj = {};
@@ -146,6 +151,7 @@ let isDebug = (process.env.NODE_ENV === 'development');
                     toInsert.url = stateDefinition.url;
                     toInsert.description = stateDefinition.description;
                     toInsert.menuTab = inMenuTab;
+                    toInsert.redirectTo = stateDefinition.redirectTo;
                     toInsert.onLoad = stateDefinition.onLoad;
                     toInsert.parent = stateDefinition.parent ? stateDefinition.parent : 'main';
 
@@ -224,7 +230,8 @@ let isDebug = (process.env.NODE_ENV === 'development');
                             url: '/' + menu.url,
                             parent: menu.parent,
                             component: menu.state,
-                            resolve: resolves
+                            resolve: resolves,
+                            redirectTo: menu.redirectTo
 
 
                             //     menu.onLoad? menu.onLoad.forEach(function(){
@@ -241,13 +248,9 @@ let isDebug = (process.env.NODE_ENV === 'development');
 
                     });
 
-
-                    console.info(menuObj)
-                    // $stateProviderRef.state(statePref + menu.state,
-
-                    // app.urlRouterProvider.when('', '/'+menus[0].url);
-                    // app.urlRouterProvider.when('/', '/'+menus[0].url);
-                    // app.urlRouterProvider.otherwise("/" + menus[0].url);
+                    $urlRouter.when('', '/'+menus[0].url);
+                    $urlRouter.when('/', '/'+menus[0].url);
+                    $urlRouter.otherwise("/" + menus[0].url);
                     $urlRouter.sync();
                     $urlRouter.listen();
                 };

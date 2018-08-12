@@ -1,11 +1,10 @@
 
 class K_Module {
-    constructor(data, Commands, DataProxy, $q, $rootScope) {
+    constructor(data, Commands, $q, $rootScope) {
         'ngInject';
         let _self = this;
         _self.Commands = Commands;
         _self.$rootScope = $rootScope;
-        _self.DataProxy = DataProxy;
         _self.$q = $q;
         _self.initialized = false;
 
@@ -26,19 +25,19 @@ class K_Module {
 
             let toGet = [];
             _self._eachRecursive(_self.commands, toGet);
-            return _self.DataProxy.get(toGet)
-                .then(function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        _self._updateModel( data[i]);
-                    }
-                    _self.initialized = true;
-                    return _self;
-                })
+            // return _self.DataProxy.get(toGet)
+            //     .then(function (data) {
+            //         for (var i = 0; i < data.length; i++) {
+            //             _self._updateModel( data[i]);
+            //         }
+            //         _self.initialized = true;
+            //         return _self;
+            //     })
         };
         _self.get = function (dataToGet) {
-            return _self.DataProxy.get(dataToGet).then(function (data) {
-                return data;
-            })
+            // return _self.DataProxy.get(dataToGet).then(function (data) {
+            //     return data;
+            // })
         };
         _self.update =  function (dataToUpdate) {
             var toUpdate = [];
@@ -59,12 +58,12 @@ class K_Module {
             }
             // var toUpdate = _self.onUpdate(dataToUpdate);
             if (toUpdate.length > 0) {
-                return _self.DataProxy.put(toUpdate).then(function (data) {
-                    return _self.$q.resolve({'obj': _self, 'data': data});
-                }, function (err) {
-                    console.log('ERROR WHILE FETCHING DATA');
-                    return $_self.q.reject(err);
-                });
+                // return _self.DataProxy.put(toUpdate).then(function (data) {
+                //     return _self.$q.resolve({'obj': _self, 'data': data});
+                // }, function (err) {
+                //     console.log('ERROR WHILE FETCHING DATA');
+                //     return $_self.q.reject(err);
+                // });
             }
         },
             _self.notify = function (data) {
@@ -147,7 +146,7 @@ class K_Module {
     _registerCommand() {
         var toRegister = [];
         this._eachRecursive(this.commands, toRegister);
-        toRegister.map(cmd => this.DataProxy.moduleRegister(this, {key: cmd.key, fn: this.update}))
+        // toRegister.map(cmd => this.DataProxy.moduleRegister(this, {key: cmd.key, fn: this.update}))
 
     }
 
@@ -178,8 +177,8 @@ class K_Module {
 }
 
 class K_Matrix extends K_Module {
-    constructor(data,  Commands, DataProxy, $q, $rootScope) {
-        super(data,  Commands, DataProxy, $q, $rootScope);
+    constructor(data,  Commands, $q, $rootScope) {
+        super(data,  Commands, $q, $rootScope);
     }
 }
 export {

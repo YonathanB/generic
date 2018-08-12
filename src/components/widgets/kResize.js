@@ -10,6 +10,7 @@
  ***********************************************/
 
 
+import * as screenfull from 'screenfull';
 (function ()
     {
         angular.module('components.widgets').directive("kResize", function ()
@@ -22,18 +23,20 @@
                     state: '@',
                     visible: '@'
                 },
-                template: "<k-state-button  onaction='iconOnAction()' visible='{{visible}}' enabled='true' states='iconStates' state='{{state}}'></k-state-button>",
+                template: "<k-state-button  onaction='iconOnAction()' visible='{{visible}}' enabled='true' width='18px' states='iconStates' state='{{state}}'></k-state-button>",
                 compile: function (element, attrs)
                     {
-                        if (!attrs.state)
-                            { attrs.state = 0 }
+
                         if (!attrs.visible)
                             { attrs.visible = true }
                         return this.link;
                     },
                 link: function (scope, element, attrs)
                     {
-                        if(screenfull)
+                        //screenfull = window.navigator.standalone || (document.fullScreenElement && document.fullScreenElement !== null) || (document.mozFullScreen || document.webkitIsFullScreen) || (!window.screenTop && !window.screenY)
+
+                        scope.state = 0;
+                            if(screenfull)
                             {
                                 var target = document.body;
                                 $(window).on(screenfull.raw.fullscreenchange, function ()
@@ -68,8 +71,8 @@
                                 if (!scope.iconStates)
                                     {
                                         scope.iconStates = scope.iconStates = [];
-                                        scope.iconStates.push({ iconClass: "icon_fullscreen", title: "Click to full screen" })
-                                        scope.iconStates.push({ iconClass: "icon_exitFullscreen", title: "Click to exit full screen" })
+                                        scope.iconStates.push({ iconClass: "icon-enlarge", title: "Click to full screen" })
+                                        scope.iconStates.push({ iconClass: "icon-shrink", title: "Click to exit full screen" })
                                     }
 
 

@@ -1,0 +1,29 @@
+<section class="security">
+        <div>
+            <h3>Security{{$ctrl.properties.SECURITY_ENABLE}}
+                <k-on-off show-value-on-disable="true" init-val="{{$ctrl.properties.SECURITY_ENABLE}}"
+                        ng-click="$ctrl.toggleSecurity()" height="30" width="153" enabled="true"></k-on-off>
+            </h3>
+        </div>
+        <div id="security-properties" ng-show="$ctrl.showSecurityFields">
+            <p class="toggleCTA">Change security properties</p>
+            <div class="field">
+                <label>Current Password</label>
+                <input type="password" name="currentPassword" ng-model="$ctrl.security.currentPassword">
+            </div>
+            <div class="field">
+                <label>New Password</label>
+                <input type="password" name="newPassword" ng-model="$ctrl.security.newPassword">
+            </div>
+            <div ng-messages="form.$error" class="error" role="alert">
+                <div ng-message="password-length">password must be at least 5 characters</div>
+            </div>
+            <div class="field">
+                <label>Confirm Password</label>
+                <input type="password" name="confirmPassword" ng-model="$ctrl.security.confirmPassword">
+            </div>
+            <div ng-messages="form.$error" class="error" role="alert">
+                <div ng-message="confirm-password">Passwords aren't matching</div>
+            </div>
+        </div>
+    </section>

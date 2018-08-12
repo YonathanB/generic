@@ -1,0 +1,18 @@
+<form ng-show="$ctrl.disableSecurityDialogVisible" class="dialog-box"
+        ng-submit="$ctrl.closeDisableSecurityDialogBox(true)">
+<div class="dialog flip-in-x" ng-if="disableSecurityDialogVisible">
+                <div class="body">
+                    <h2>Would you like to disable security?</h2>
+                    <p>Type the password to disable authentication.</p>
+                    <input type="password" placeholder="password" ng-model="$ctrl.securityDialog.pwd"
+                            style="margin-top: 10px">
+                    <div class="error " ng-show="$ctrl.passwordOK">
+                        <p>Password is incorrect!</p>
+                    </div>
+                    <div style="margin-top: 15px; text-align: right">
+                        <button ng-click="$ctrl.closeDisableSecurityDialogBox(false)" class="btn flat">cancel</button>
+                        <button class="btn blue selected" ng-click="$ctrl.closeDisableSecurityDialogBox(true)">Save</button>
+                    </div>
+                </div>
+            </div>
+</form>
