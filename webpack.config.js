@@ -1,12 +1,12 @@
 const path = require('path');
-var webpack = require('webpack');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackShellPlugin = require('webpack-shell-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// var ExtractTextPlugin = require("extract-text-webpack-plugin");
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// const HtmlWebpackPlugin = require('html-webpack-plugin');
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 
 var outputPath;
@@ -35,12 +35,6 @@ const config = {
                     priority: -20,
                     chunks: "all"
                 },
-                // core:{
-                //     test: /[\\/]core[\\/]/,
-                //     name: "core",
-                //     priority: -20,
-                //     chunks: "all"
-                // },
                 components:{
                     test: /[\\/]components[\\/]/,
                     name: "components",
@@ -97,6 +91,7 @@ const config = {
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
+                include:[path.join(__dirname, 'test')],
                 exclude: /node_modules/
             },
             {
@@ -131,7 +126,7 @@ const config = {
     //     }
     // },
     plugins: [
-        new BundleAnalyzerPlugin(),
+        // new BundleAnalyzerPlugin(),
         new WebpackShellPlugin({onBuildStart: ['echo "Webpack Start"'], onBuildEnd: ['echo "Webpack End"']}),//'copy "devices\\VS-88UT\\index.html" "devices\\VS-88UT\\dist"']}),
         new MiniCssExtractPlugin({
             filename: "[name].css",

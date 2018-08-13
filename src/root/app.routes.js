@@ -1,5 +1,5 @@
 
-import {deviceModel} from "../model/DeviceModel";
+import {applicationStarter} from "../model/applicationStarter";
 
 let isDebug = (process.env.NODE_ENV === 'development');
     angular.module('kramerWeb')
@@ -10,24 +10,13 @@ let isDebug = (process.env.NODE_ENV === 'development');
                         name: 'main',
                         abstract: true,
                         url: '',
-                        // resolve:{
-
-                        //     TimeZoneList:['deviceModel', 'Commands',function (deviceModel, Commands) {
-                        //         return deviceModel.send([ Commands.TIME_ZONE_LIST])
-                        //             .then(function (data) {
-                        //                 if(data[0].value)
-                        //                     deviceModel.TimeZoneList = (data[0].value.replace(/^\s+/,"")).split('\n');
-                        //             return deviceModel.TimeZoneList;
-                        //         });
-                        //     }],
-                        // },
                         views: {
                             'mainView@': {
                                 template: '<ui-view/>',
                                 controller: function ($rootScope, $scope, $timeout, $http, $q, Commands, MainService, $transitions) {
 
                                     MainService.then(function () {
-                                        $scope.vm = deviceModel.getData()
+                                        $scope.vm = applicationStarter.getData()
                                     });
 
                                     $transitions.onStart({}, function(transition) {
@@ -214,7 +203,7 @@ let isDebug = (process.env.NODE_ENV === 'development');
                             menu.onLoad.forEach(function (toLoad) {
                                 let newResove = {};
                                 newResove[toLoad] = function () {
-                                    return deviceModel.initModule(toLoad);
+                                    return applicationStarter.initModule(toLoad);
                                 };
 
                                 resolves = Object.assign(resolves, newResove)
@@ -222,7 +211,7 @@ let isDebug = (process.env.NODE_ENV === 'development');
                         }
                         resolves = Object.assign(resolves, {
                             vm: function($transition$){
-                                return deviceModel.getData();
+                                return applicationStarter.getData();
                             }
                         })
                         $state.router.stateRegistry.register({

@@ -6,12 +6,10 @@
         '$provide',
         '$sceDelegateProvider',
         '$stateProvider',
-        // '$urlRouterProvider',
         '$locationProvider',
-        function (/*ngQuickDateDefaultsProvider,*/ $provide, $sceDelegateProvider, $stateProvider, /*$urlRouterProvider, */$locationProvider) {
+        function (/*ngQuickDateDefaultsProvider,*/ $provide, $sceDelegateProvider, $stateProvider, $locationProvider) {
 
             $locationProvider.html5Mode({enabled: false});
-            $stateProviderRef = $stateProvider;
             $sceDelegateProvider.resourceUrlWhitelist([
                 'http://localhost/**',
                 'self'

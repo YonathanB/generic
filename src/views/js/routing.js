@@ -32,7 +32,7 @@
             'Commands',
             'ConnectorsFactory',
             'matrixOverview',
-            function ($scope, $filter, $timeout, K_Port, deviceModel, Commands, ConnectorsFactory, matrixOverview) {
+            function ($scope, $filter, $timeout, K_Port, applicationStarter, Commands, ConnectorsFactory, matrixOverview) {
 
                 $scope.matrixPorts = K_Port.getMatrixPorts();
             if(deviceModel.global) {

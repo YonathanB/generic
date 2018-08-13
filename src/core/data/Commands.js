@@ -1887,7 +1887,7 @@ function CommandsFactory() {
         // this.commandsByName[command.name] = command;
     }, commands);
 
-    var commandObj = angular.extend({}, commandsType, commands);
+    var commandObj = Object.assign({}, commandsType, commands);
     commandObj.commandsByOpCode = commandsByOpCode;
 
     return commandObj;

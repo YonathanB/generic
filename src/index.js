@@ -39,4 +39,4 @@ import kramerWeb from './root/app.module';
 
 import './assets/styles/app.less';
 
-angular.module(kramerWeb);
+export default angular.module(kramerWeb);

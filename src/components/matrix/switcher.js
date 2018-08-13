@@ -45,7 +45,7 @@
             'videoPatterns',
             'Commands',
             'VideoService',
-            function ($scope, $filter, $timeout, K_Port, deviceModel, videoPatterns, Commands, VideoService) {
+            function ($scope, $filter, $timeout, K_Port, applicationStarter, videoPatterns, Commands, VideoService) {
                 if (!K_Port.isDetailDataReady())//Don't want to load details in router-resolve
                     deviceModel.portsList.initPortsDetails();
 

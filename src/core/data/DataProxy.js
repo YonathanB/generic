@@ -72,7 +72,7 @@ class K_DataProxy {
         _COM_PROPERTIES = comProp;
         _callbackOnConnectionLost = callbacks.onConnectionLost;
         this.communicationDescriptor = comProp;
-        this.model = new DataBackup();
+        this.model = new DataBackup(callbacks.onDataUpdated);
     }
 
     /**

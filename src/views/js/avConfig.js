@@ -16,7 +16,7 @@
         '$state',
         'Commands',
         'DevicePorts',
-        function ($scope, deviceModel, $timeout, $rootScope, $stateParams, $state, Commands, DevicePorts) {
+        function ($scope, applicationStarter, $timeout, $rootScope, $stateParams, $state, Commands, DevicePorts) {
             if (utils.browserName == "IE") {
                 $("#av-config").addClass("ie");
             }

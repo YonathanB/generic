@@ -1,5 +1,5 @@
 import $uiRouter from "@uirouter/angularjs/lib/index";
-import {deviceModel} from "../model/DeviceModel";
+import {applicationStarter} from "../model/applicationStarter";
 
 
 // (function () {
@@ -49,9 +49,9 @@ angular.module('kramerWeb')
         function ($scope, $rootScope, ViewSettingsFactory, $state, MessageService, MainService) {
 
             MainService.then(function () {
-                $scope.vm = deviceModel.getData()
+                $scope.vm = applicationStarter.getData()
             });
-            $scope.deviceStatus = deviceModel.STATUS;
+            $scope.deviceStatus = applicationStarter.STATUS;
 
 
             MessageService.subscribe(function (data) {

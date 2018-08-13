@@ -20,9 +20,7 @@ import K_DataProxy from "../core/data/DataProxy";
 
 
 // needs to import angular for providers - TODO remove when refactoring to native
-import angular from 'angular';
-
-const $injector = angular.injector(['ng']);
+const $injector = require('angular').injector(['ng']);
 
 
 /**
@@ -49,6 +47,7 @@ let _Commands = deviceCommands;
  * @property {Object} _DataProxy - Access to data through the DataProxy object
  */
 let _DataProxy;
+let _DeviceViewModel;
 let _$rootScope,
     _$http,
     _$q;
@@ -56,7 +55,7 @@ let _$rootScope,
 
 /**
  * Class to access data
- * @name DeviceModel
+ * @name ApplicationStarter
  * @module DeviceModel
  * @kind class
  * @param {Object} $rootScope - The angular $rootScope in order to bind data to the view, or interact with view on app status has changed.
@@ -65,7 +64,21 @@ let _$rootScope,
  * */
 
 
-class DeviceModel {
+class DeviceViewModel {
+    constructor(){
+        // this.dataProxy = dataProxy;
+        this.data = {};
+        this.actions = {};
+    }
+    updateViewModel(data){
+        this.data = Object.assign(this.data, data);
+        if($('body'))//notify view
+            setTimeout(function() {
+                $('body').scope().$digest()
+            }, 0);
+    }
+}
+class ApplicationStarter {
     constructor($rootScope, $http, $q) {
         _$rootScope = $rootScope;
         _$http = $http;
@@ -100,8 +113,10 @@ class DeviceModel {
                 let tmpInfoFile = deviceMetadata.data;
                 tmpInfoFile.communication = Object.assign(_self.infoFile.communication, tmpInfoFile.communication);
 
+                _DeviceViewModel = new DeviceViewModel();
                 _DataProxy = new K_DataProxy(_$q, tmpInfoFile.communication, {
-                    'onConnectionLost': _onConnectionLost
+                    'onConnectionLost': _onConnectionLost,
+                    'onDataUpdated': _DeviceViewModel.updateViewModel.bind(_DeviceViewModel)
                 });
 
 
@@ -126,7 +141,7 @@ class DeviceModel {
     }
 
     getData() {
-        return _DataProxy.getData();
+        return _DeviceViewModel.data;
     }
 
     initModule(module) {
@@ -140,7 +155,7 @@ class DeviceModel {
 
 }
 
-export const deviceModel = new DeviceModel(
+export const applicationStarter = new ApplicationStarter(
     $injector.get('$rootScope'),
     $injector.get('$http'),
     $injector.get('$q')
