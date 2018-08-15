@@ -16,7 +16,7 @@ let isDebug = (process.env.NODE_ENV === 'development');
                                 controller: function ($rootScope, $scope, $timeout, $http, $q, Commands, MainService, $transitions) {
 
                                     MainService.then(function () {
-                                        $scope.vm = applicationStarter.getData()
+                                        $scope.vm = applicationStarter.getViewModel()
                                     });
 
                                     $transitions.onStart({}, function(transition) {
@@ -210,10 +210,10 @@ let isDebug = (process.env.NODE_ENV === 'development');
                             });
                         }
                         resolves = Object.assign(resolves, {
-                            vm: function($transition$){
-                                return applicationStarter.getData();
+                            vm: function(){
+                                return applicationStarter.getViewModel();
                             }
-                        })
+                        });
                         $state.router.stateRegistry.register({
                             name: menu.id,
                             url: '/' + menu.url,

@@ -16,7 +16,7 @@ export default class DataBackup {
             _self[toInsert.cmd.key][toInsert.params] = toInsert.value;
 
         for(let i = 0; i < _onDataUpdated.length; i++) {
-            _onDataUpdated[i](_self);
+            _onDataUpdated[i](_self, toInsert);
         }
 
     }

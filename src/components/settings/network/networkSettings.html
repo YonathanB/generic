@@ -1,6 +1,6 @@
 <div class="network-settings">
     <!--<div class="contentBox-title">{{$root.pageTitle}}</div>-->
-    <k-form ng-model="$ctrl.properties" control="resetDHCP"
+    <k-form ng-model="$ctrl.properties.data" control="resetDHCP"
             call-on-before-saved="checkNetwork(data, before)"
             exclude-from-compare="[$ctrl.properties.data.ETH_PORT_TCP]">
         <section>

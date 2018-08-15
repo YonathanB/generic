@@ -16,10 +16,11 @@
 import DeviceSettingsCtrl from './deviceSettings';
 import NetworkSettingsCtrl from './network/networkSettings.controller';
 import GeneralDeviceSettingsCtrl from './general/generalSettings.controller';
-import SecuritySettingsCtrl from './security/scuritySettings.controller';
+import SecuritySettingsCtrl from './security/securitySettings.controller';
 import UpgradeCtrl from './upgrade/upgradeSettings.controller';
 import NTPSettingsCtrl  from './ntp/ntpSettings.controller';
 
+import ngMessages from 'angular-messages'; // check if loaded twice
 import $uiRouter from "@uirouter/angularjs";
 
 import styles from './deviceSettings.less';
@@ -40,7 +41,7 @@ class factoryResetCtrl{
 }
 
 export default require('angular')
-    .module('components.deviceSettings', [$uiRouter])
+    .module('components.deviceSettings', [$uiRouter, ngMessages])
     .filter('getDateString', function () {
         return function (data) {
             var date = new Date(data);

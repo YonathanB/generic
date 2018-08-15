@@ -49,7 +49,7 @@ angular.module('kramerWeb')
         function ($scope, $rootScope, ViewSettingsFactory, $state, MessageService, MainService) {
 
             MainService.then(function () {
-                $scope.vm = applicationStarter.getData()
+                $scope.vm = applicationStarter.getViewModel()
             });
             $scope.deviceStatus = applicationStarter.STATUS;
 

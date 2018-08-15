@@ -22,3 +22,5 @@ require('./kDialog');
 require('./MessageService');
 require('./kResize');
 require('./kStateButton');
+require('./stringToNumber');
+require('./kDevicename');

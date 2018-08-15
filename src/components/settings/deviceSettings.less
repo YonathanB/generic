@@ -147,15 +147,20 @@ input:disabled, select:disabled {
     }
   }
 
+  &form:not(.ng-invalid) {
+    .field {
+      input:not([type ='checkbox']) {
+        border-color: @app-input-border;
+      }
+    }
+  }
   .field {
     .display(flex);
     .flex-align-items(center);
     padding: 10px 0px;
     .flex-justify-content(flex-start);
     //.flex-justify-content(space-between);
-    input:not([type ='checkbox']) {
-      border-color: @app-input-border;
-    }
+
     input + label {
       cursor: pointer;
     }

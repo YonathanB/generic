@@ -9,9 +9,6 @@ export default class DeviceSettingsCtrl {
             this.factoryReset = false;
         };
         this.$onChanges = function (changes) {
-            // if (changes.vm) {
-            //     this.vm = angular.copy(this.vm);
-            // }
         }
         this.isState = function (currentState, desirableState) {
             return currentState == desirableState;

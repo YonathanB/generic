@@ -7,45 +7,9 @@
  ***********************************************/
 
 
+
+
 (function () {
-    angular.module('components.widgets')
-        .directive('stringToNumber', function () {
-            return {
-                require: 'ngModel',
-                link: function (scope, element, attrs, ngModel) {
-                    ngModel.$parsers.push(function (value) {
-                        return '' + value;
-                    });
-                    ngModel.$formatters.push(function (value) {
-                        return parseFloat(value);
-                    });
-                }
-            };
-        })
-        .directive('deviceName', function () {
-
-            return {
-                link: function (scope, element, attrs) {
-                    var $elem = element;
-                    var applyChanges = function () {
-                        console.log($elem.val());
-                        if ($elem.val().trim().length == 1 && /^\d+$/.test($elem.val())) {
-                            $elem.val("K-" + $elem.val());
-                            if (!$elem.next().hasClass('description'))
-                                $elem.after("<div style=\"position: absolute; margin-top: 10px \" class=\"description fade-in \">\n" +
-                                    "        <br/>\n" +
-                                    "            <i class=\"icon-warning \" style=\"margin-right: 5px; color: #b71c1c; font-size: 15px\">\n" +
-                                    "            </i><span>Name cannot start with a digit</span>\n" +
-                                    "  </div>");
-                        }
-                        else if ($elem.next().hasClass('description'))
-                            $elem.next().remove();
-                    }
-                    $elem.keyup(applyChanges);
-                }
-            };
-        })
-
     angular.module('components.widgets').directive("kForm", function ($parse, $compile, $timeout) {
         var multicast_upper_pattern = "239.255.255.255";
         var multicast_lower_pattern = "224.0.0.0";
@@ -153,7 +117,7 @@
             return currentDataCopy;
         }
 
-        var validateStreamingPort = function(portNumber){
+        var validateStreamingPort = function (portNumber) {
             return (portNumber == 554 || (portNumber >= 1024 && portNumber <= 65535));
         }
 
@@ -162,8 +126,7 @@
             return nameReg.test(name);
         }
 
-        function validateRecordingURI(uri)
-        {
+        function validateRecordingURI(uri) {
             var uriReg = /^((smb|usb):\/\/)[0-9a-zA-Z-/_.]*$/;
             return uriReg.test(uri);
         }
@@ -182,27 +145,26 @@
             return name.length < 16 && name.length > 4;
         }
 
-        function validateStorageFilePrefix(prefix){
+        function validateStorageFilePrefix(prefix) {
             //var nameReg = /^(?:(?![:[\];|\\=,\/+*?<>#~@"])[ -~])$/i;///^(?!-)[0-9a-zA-Z-]*[0-9a-zA-Z-]$/;
             //var nameReg = /^[^\]\[;|\\=,\/+*?<>#~@"]$/i;
             var nameReg = /^(?!-)[0-9a-zA-Z-!$%&()+_=']*[0-9a-zA-Z-!$%&()+_=']$/;
             return nameReg.test(prefix);
         }
 
-        function validateStorageFileLimit(limit){
-            var index =limit.indexOf("00:00:00");
-            return  index == -1;
+        function validateStorageFileLimit(limit) {
+            var index = limit.indexOf("00:00:00");
+            return index == -1;
         }
 
-        function validateStorageFileDuration(limit){
+        function validateStorageFileDuration(limit) {
             var splitted_limit = limit.split(":");
-            return  (parseInt(splitted_limit[0]) > 0 || parseInt(splitted_limit[1]) >= 1);
+            return (parseInt(splitted_limit[0]) > 0 || parseInt(splitted_limit[1]) >= 1);
         }
 
         function validateDeviceNameLength(name) {
             var validLength = 64;
-            if(!isNaN(name[0]))
-            {
+            if (!isNaN(name[0])) {
                 validLength = 62;
             }
             return name.length < validLength;
@@ -220,7 +182,7 @@
             return nameReg.test(name);
         }
 
-        function validateEmptyField(value){
+        function validateEmptyField(value) {
             return value.trim() != "";
         }
 
@@ -230,12 +192,18 @@
             var regExpr = new RegExp("[^" + regExprString + "]", "g");
             return value.replace(regExpr, '');
 
+
         };
+
+        var fieldToUpdate = [];
+        var internalViewModel = {};
         return {
             restrict: 'AE',
             require: ['?ngModel'],
-            template: '<form name="form" class="page-content "><div style="text-align: right; padding: 10px 10px 0px;    color: #585858"> &nbsp;' +
-            '<i ng-if="formHasChanged" class="icons icon-loop2" title="refresh data from device" style="cursor: pointer;" ng-click="resetData()"></div></i>' +
+            template: '<form name="form" class="page-content ">' +
+            '<div style="text-align: right; padding: 10px 10px 0px;    color: #585858"> &nbsp;' +
+            '<i ng-show="formHasChanged" class="icons icon-loop2" title="refresh data from device" style="cursor: pointer;" ' +
+            'ng-click="resetData()"></div></i>' +
             '<ng-transclude></ng-transclude>' +
             '<div ng-messages="form.$error" role="alert" class="failed-to-save" style="width: 100%">' +
             '<div ng-message="distinct">Gateway and IP must be distinct</div>' +
@@ -252,10 +220,6 @@
             '<div ng-message="gateway-multicast">Invalid Gateway address (reserved address)</div>' +
             '<div ng-message="gateway-network">Gateway cannot be network address</div>' +
             '<div ng-message="gateway-broadcast">Gateway cannot be broadcast address</div>' +
-            '<div ng-message="password-length">Password should be 5-15 length</div>' +
-            '<div ng-message="password-pattern">Password should be alphanumeric</div>' +
-            '<div ng-message="confirm-password">The passwords you entered did not match</div>' +
-            '<div ng-message="current-password-not-empty">Enter current password</div>' +
             '<div ng-message="failed-on-save">{{errorMsg}}</div>' +
             '<div ng-message="device-name">Device name should be alphanumeric</div>' +
             '<div ng-message="storage-file-prefix" >File prefix should be alphanumeric and could contain special characters: -!$%&()+_=\'</div>' +
@@ -282,242 +246,402 @@
             transclude: true,
             scope: {
                 dataSource: '=ngModel',
-                callOnSaved: '&',
+                // callOnSaved: '&', rename to kOnSubmit
+                kOnSubmit: '=',
                 callOnBeforeSaved: '&',
                 callBeforeDestroy: '&',
                 excludeFromCompare: '=',
                 control: '=?'
             },
-            link: function (scope, $element, attrs) {
-                scope.internalControl = scope.control || {};
-                var $element = $element;
-                scope.$watch('dataSource.initialized', function (newVal, oldVal) {
-                    if (newVal)
-                        init();
-                });
-
-                var test = function(newVal){
-                    if(_DATA_CHANGED_FROM_OUTSIDE) {
-                        console.info('DATA CHANGE FROM OUTSIDE', _DATA_CHANGED_FROM_OUTSIDE)
-                        scope.dataBeforeChanges = createCopyWithExcludedPropterties(newVal, scope.excludeFromCompare)
+            controller: function ($scope) {
+                fieldToUpdate = [];
+                $scope.submitForm = function () {
+                    if ($scope.form.$valid) {
+                        $scope.kOnSubmit(fieldToUpdate);
                     }
+                };
+                $scope.resetData = function () {
+                    console.log('REVERT CHANGES KFORM');
+                    for (var prop in internalViewModel) {
+                        $scope.dataSource[prop] = internalViewModel[prop];//revert viewModel
+                     }
                 }
 
-                var _DATA_CHANGED_FROM_OUTSIDE = false;
-                var init = function () {
-                    var timeoutPromise;
-                    var delayInMs = 1700;
-                    scope.$watch("dataSource.data", function(newVal) {
-                        _DATA_CHANGED_FROM_OUTSIDE = true;
-                        $timeout.cancel(timeoutPromise);  //does nothing, if timeout alrdy done
-                        timeoutPromise = $timeout(function(){   //Set timeout
-                            test(newVal);
-                            console.info('ENTERING CHANGE')
-                        },delayInMs);
+            },
+            link: function (scope, $element, attrs) {
+
+                //  detect changes from model
+                scope.$watch('dataSource',
+                    function (newVal, oldVal) {
+                        for (var prop in internalViewModel) {
+                            if (newVal[prop] && oldVal[prop])
+                                if (newVal[prop] != internalViewModel[prop]) {
+                                    DATA_CHANGED_IN_DEVICE = true;
+                                    dataChanged(prop);
+                                }
+                            // else will be detected by input's event listener
+                        }
+                        if(!DATA_CHANGED_IN_DEVICE)
+                            fieldToUpdate = [];
+                        checkIfDataHasChanged();
                     }, true);
 
 
-                    scope.formHasChanged = false;
-                    scope.submitButton = $element.find('button[type="submit"]');
-                    scope.dataBeforeChanges = createCopyWithExcludedPropterties(scope.dataSource.data, scope.excludeFromCompare);
 
-                    var TCP_elem = $element.find('input[name="tcp"]');
-                    TCP_elem.on('keydown', function (event) {
-                        $timeout(function () {
-                            TCP_elem.val(generateRegularExpression(TCP_elem.val()));
-                            _refreshForm();
-                        }, 0);
+                scope.internalControl = scope.control || {};
+                var $element = $element;
+                var $inputElements = $element.find('input');
+
+                var DATA_CHANGED_IN_DEVICE = true;
+
+                internalViewModel = {};
+                for (var input in $inputElements.toArray()) {
+                    var property = $inputElements[input].name;
+                    if(!scope.dataSource.hasOwnProperty(property))
+                        scope.dataSource[property] = '';
+                    internalViewModel[property] = scope.dataSource[property];
+
+                    var $el = angular.element($inputElements[input]);
+
+                    //  detect changes from view
+                    $el.on('keyup blur change', function (event) {//TODO - check why do we need such a lot triggers
+                        DATA_CHANGED_IN_DEVICE = false;
+                        dataChanged(event.target.name);
                     });
+                }
 
-                    var _refreshModel = function(){
-                        scope.dataBeforeChanges = createCopyWithExcludedPropterties(scope.dataSource.data, scope.excludeFromCompare);
-                        _refreshForm();
+
+
+
+
+                function dataChanged(prop) {
+                    if (!DATA_CHANGED_IN_DEVICE) {
+                        $timeout(function () {
+                            checkValidity(prop);
+                            if (prop) {
+                                let changeDetected = (internalViewModel[prop] != scope.form.$$element.find('input#' + prop).val());
+                                if (changeDetected && fieldToUpdate.indexOf(prop) === -1)
+                                    fieldToUpdate.push(prop);
+                                else if (!changeDetected && fieldToUpdate.indexOf(prop) > -1)
+                                    fieldToUpdate.splice(fieldToUpdate.indexOf(prop), 1);
+                            }
+                            checkIfDataHasChanged();
+                        }, 0);
+                        return;
+                    } else fieldToUpdate = [];
+                    checkIfDataHasChanged();
+                }
+
+                function checkValidity() {
+                    if (scope.form.hasOwnProperty('multicast_group_address')) {
+                        scope.form.multicast_group_address.$setValidity('multicast-group-address', validateMulticastGroupAddress(scope.form.multicast_group_address.$viewValue));
                     }
 
-                    var _refreshForm = function () {
-                        if (!scope.form)
-                            return;
-                        $timeout(function () { // to have view updated
+                    if (scope.form.hasOwnProperty('streaming_port')) {
+                        scope.form.streaming_port.$setValidity('streaming-port', validateStreamingPort(scope.form.streaming_port.$viewValue));
+                    }
 
-                            if (scope.form.hasOwnProperty('multicast_group_address')) {
-                                scope.form.multicast_group_address.$setValidity('multicast-group-address', validateMulticastGroupAddress(scope.form.multicast_group_address.$viewValue));
-                            }
+                    if (scope.form.hasOwnProperty('storage_file_prefix')) {
+                        scope.form.storage_file_prefix.$setValidity('storage-file-prefix', validateStorageFilePrefix(scope.form.storage_file_prefix.$viewValue));
+                    }
 
-                            if (scope.form.hasOwnProperty('streaming_port')) {
-                                scope.form.streaming_port.$setValidity('streaming-port', validateStreamingPort(scope.form.streaming_port.$viewValue));
-                            }
+                    if (scope.form.hasOwnProperty('device_hour')) {
+                        scope.form.device_hour.$setValidity('device-hour', validateEmptyField(scope.form.device_hour.$viewValue));
+                    }
 
-                            if (scope.form.hasOwnProperty('storage_file_prefix')) {
-                                scope.form.storage_file_prefix.$setValidity('storage-file-prefix', validateStorageFilePrefix(scope.form.storage_file_prefix.$viewValue));
-                            }
+                    if (scope.form.hasOwnProperty('device_minute')) {
+                        scope.form.device_minute.$setValidity('device_minute-hour', validateEmptyField(scope.form.device_minute.$viewValue));
+                    }
 
-                            if (scope.form.hasOwnProperty('device_hour')) {
-                                scope.form.device_hour.$setValidity('device-hour', validateEmptyField(scope.form.device_hour.$viewValue));
-                            }
+                    if (scope.form.hasOwnProperty('storage_file_limit')) {
+                        scope.form.storage_file_limit.$setValidity('storage-file-limit', validateStorageFileLimit(scope.form.storage_file_limit.$viewValue));
+                    }
 
-                            if (scope.form.hasOwnProperty('device_minute')) {
-                                scope.form.device_minute.$setValidity('device_minute-hour', validateEmptyField(scope.form.device_minute.$viewValue));
-                            }
+                    if (scope.form.hasOwnProperty('recording_uri')) {
+                        scope.form.recording_uri.$setValidity('recording-uri', validateRecordingURI(scope.form.recording_uri.$viewValue));
+                    }
 
-                            if (scope.form.hasOwnProperty('storage_file_limit')) {
-                                scope.form.storage_file_limit.$setValidity('storage-file-limit', validateStorageFileLimit(scope.form.storage_file_limit.$viewValue));
-                            }
+                    if (scope.form.hasOwnProperty('storage_file_duration')) {
+                        scope.form.storage_file_duration.$setValidity('storage-file-duration', validateStorageFileDuration(scope.form.storage_file_duration.$viewValue));
+                    }
 
-                            if (scope.form.hasOwnProperty('recording_uri')) {
-                                scope.form.recording_uri.$setValidity('recording-uri', validateRecordingURI(scope.form.recording_uri.$viewValue));
-                            }
+                    if (scope.form.hasOwnProperty('streaming_folder_name')) {
+                        scope.form.streaming_folder_name.$setValidity('streaming-folder-name', validateStreamingFolderName(scope.form.streaming_folder_name.$viewValue));
+                    }
 
-                            if (scope.form.hasOwnProperty('storage_file_duration')) {
-                                scope.form.storage_file_duration.$setValidity('storage-file-duration', validateStorageFileDuration(scope.form.storage_file_duration.$viewValue));
-                            }
+                    if (scope.form.hasOwnProperty('streaming_status') && scope.form.hasOwnProperty('recording_status')) {
+                        scope.form.streaming_status.$setValidity('streaming-recording-status',
+                            validateStreamingRecordingStatus(scope.form.streaming_status.$viewValue, scope.form.recording_status.$viewValue));
+                    }
 
-                            if (scope.form.hasOwnProperty('streaming_folder_name')) {
-                                scope.form.streaming_folder_name.$setValidity('streaming-folder-name', validateStreamingFolderName(scope.form.streaming_folder_name.$viewValue));
-                            }
+                    if (scope.form.hasOwnProperty('ip')) {
+                        scope.form.ip.$setValidity('ip-localhost', validateIsLocalHost(scope.form.ip.$viewValue));
+                        scope.form.ip.$setValidity('ip-multicast', validateIsMulticastReserved(scope.form.ip.$viewValue));
+                    }
 
-                            if (scope.form.hasOwnProperty('streaming_status') && scope.form.hasOwnProperty('recording_status')) {
-                                scope.form.streaming_status.$setValidity('streaming-recording-status',
-                                    validateStreamingRecordingStatus(scope.form.streaming_status.$viewValue, scope.form.recording_status.$viewValue));
-                            }
+                    if (scope.form.hasOwnProperty('dns_primary')) {
+                        scope.form.dns_primary.$setValidity('ip-localhost', validateIsLocalHost(scope.form.dns_primary.$viewValue));
+                        //scope.form.dns.$setValidity('ip-multicast', validateIsMulticastReserved(scope.form.dns.$viewValue));
+                    }
+                    if (scope.form.hasOwnProperty('mask')) {
+                        scope.form.mask.$setValidity('mask', validateIsMask(scope.form.mask.$viewValue));
+                        if (scope.form.hasOwnProperty('ip')) {
+                            scope.form.ip.$setValidity('ip-network', !validateIsNetwork(scope.form.mask.$viewValue, scope.form.ip.$viewValue));
+                            scope.form.ip.$setValidity('ip-broadcast', !validateIsBroadcast(scope.form.mask.$viewValue, scope.form.ip.$viewValue));
+                        }
+                        if (scope.form.hasOwnProperty('gateway')) {
+                            scope.form.gateway.$setValidity('gateway-network', !validateIsNetwork(scope.form.mask.$viewValue, scope.form.gateway.$viewValue));
+                            scope.form.gateway.$setValidity('gateway-broadcast', !validateIsBroadcast(scope.form.mask.$viewValue, scope.form.gateway.$viewValue));
+                        }
+                        if (scope.form.hasOwnProperty('tcp'))
+                            scope.form.tcp.$setValidity('tcp-empty', function () {
+                                return scope.form.tcp.$viewValue.trim() !== "" && !scope.form.tcp.$viewValue.match(/[a-z]/g)
+                            }());
 
-                            if (scope.form.hasOwnProperty('ip')) {
-                                scope.form.ip.$setValidity('ip-localhost', validateIsLocalHost(scope.form.ip.$viewValue));
-                                scope.form.ip.$setValidity('ip-multicast', validateIsMulticastReserved(scope.form.ip.$viewValue));
-                            }
-
-                            if (scope.form.hasOwnProperty('dns_primary')) {
-                                scope.form.dns_primary.$setValidity('ip-localhost', validateIsLocalHost(scope.form.dns_primary.$viewValue));
-                                //scope.form.dns.$setValidity('ip-multicast', validateIsMulticastReserved(scope.form.dns.$viewValue));
-                            }
-                            if (scope.form.hasOwnProperty('mask')) {
-                                scope.form.mask.$setValidity('mask', validateIsMask(scope.form.mask.$viewValue));
-                                if (scope.form.hasOwnProperty('ip')) {
-                                    scope.form.ip.$setValidity('ip-network', !validateIsNetwork(scope.form.mask.$viewValue, scope.form.ip.$viewValue));
-                                    scope.form.ip.$setValidity('ip-broadcast', !validateIsBroadcast(scope.form.mask.$viewValue, scope.form.ip.$viewValue));
-                                }
-                                if (scope.form.hasOwnProperty('gateway')) {
-                                    scope.form.gateway.$setValidity('gateway-network', !validateIsNetwork(scope.form.mask.$viewValue, scope.form.gateway.$viewValue));
-                                    scope.form.gateway.$setValidity('gateway-broadcast', !validateIsBroadcast(scope.form.mask.$viewValue, scope.form.gateway.$viewValue));
-                                }
-                                if(scope.form.hasOwnProperty('tcp'))
-                                    scope.form.tcp.$setValidity('tcp-empty', function(){ return scope.form.tcp.$viewValue.trim() !== "" && !scope.form.tcp.$viewValue.match(/[a-z]/g)}());
-
-                                if (scope.form.hasOwnProperty('ip') && scope.form.hasOwnProperty('gateway')) {
-                                    scope.form.ip.$setValidity('same-host', !validateSameHostAddress(scope.form.ip.$viewValue, scope.form.gateway.$viewValue, scope.form.mask.$viewValue));
-                                    scope.form.gateway.$setValidity('distinct', validateSameIP(scope.form.ip.$viewValue, scope.form.gateway.$viewValue));
-                                    scope.form.ip.$setValidity('distinct', validateSameIP(scope.form.ip.$viewValue, scope.form.gateway.$viewValue));
-                                }
-                            }
+                        if (scope.form.hasOwnProperty('ip') && scope.form.hasOwnProperty('gateway')) {
+                            scope.form.ip.$setValidity('same-host', !validateSameHostAddress(scope.form.ip.$viewValue, scope.form.gateway.$viewValue, scope.form.mask.$viewValue));
+                            scope.form.gateway.$setValidity('distinct', validateSameIP(scope.form.ip.$viewValue, scope.form.gateway.$viewValue));
+                            scope.form.ip.$setValidity('distinct', validateSameIP(scope.form.ip.$viewValue, scope.form.gateway.$viewValue));
+                        }
+                    }
 
 
-                            if (scope.form.hasOwnProperty('deviceName')) {
-                                if (scope.form.deviceName.$dirty && scope.form.deviceName.$viewValue != '') {
-                                    if (scope.form.deviceName.$viewValue.length == 1 && scope.form.deviceName.$viewValue == 1)
-                                        scope.form.deviceName.$modelValue = 'K_1';
-                                    scope.form.deviceName.$setValidity('device-name', validateDeviceName(scope.form.deviceName.$viewValue));
-                                    // scope.form.deviceName.$setValidity('first-device-name', validateFirstLetterDeviceName(scope.form.deviceName.$viewValue));
-                                    scope.form.deviceName.$setValidity('device-name-length', validateDeviceNameLength(scope.form.deviceName.$viewValue));
-                                    // scope.form.deviceName.$setValidity('device-name-first-char', validateDeviceNameFirstChar(scope.form.deviceName.$viewValue));
-                                }
-                            }
+                    if (scope.form.hasOwnProperty('deviceName')) {
+                        if (scope.form.deviceName.$dirty && scope.form.deviceName.$viewValue != '') {
+                            if (scope.form.deviceName.$viewValue.length == 1 && scope.form.deviceName.$viewValue == 1)
+                                scope.form.deviceName.$modelValue = 'K_1';
+                            scope.form.deviceName.$setValidity('device-name', validateDeviceName(scope.form.deviceName.$viewValue));
+                            // scope.form.deviceName.$setValidity('first-device-name', validateFirstLetterDeviceName(scope.form.deviceName.$viewValue));
+                            scope.form.deviceName.$setValidity('device-name-length', validateDeviceNameLength(scope.form.deviceName.$viewValue));
+                            // scope.form.deviceName.$setValidity('device-name-first-char', validateDeviceNameFirstChar(scope.form.deviceName.$viewValue));
+                        }
+                    }
 
-                            if (scope.form.hasOwnProperty('currentPassword')) {
-                                if ((scope.form.currentPassword.$dirty && scope.form.currentPassword.$viewValue != '')
-                                    || (scope.form.newPassword.$dirty && scope.form.newPassword.$viewValue != '')
-                                    || (scope.form.confirmPassword.$dirty && scope.form.confirmPassword.$viewValue != '')) {
-                                    scope.form.newPassword.$setValidity('password-length', true);
-                                    scope.form.confirmPassword.$setValidity('confirm-password', true);
-                                    scope.form.$setValidity('password', scope.form.currentPassword.$viewValue != '' && scope.form.confirmPassword.$viewValue != '' &&
-                                        angular.isDefined(scope.form.newPassword.$viewValue) && scope.form.confirmPassword.$viewValue == scope.form.newPassword.$viewValue);
-                                    if (angular.isDefined(scope.form.newPassword.$viewValue) && scope.form.newPassword.$viewValue != '') {
-                                        scope.form.newPassword.$setValidity('password-length', validatePwdLength(scope.form.newPassword.$viewValue));
-                                        scope.form.newPassword.$setValidity('password-pattern', validatePwd(scope.form.newPassword.$viewValue));
-                                    }
-                                    if (scope.form.confirmPassword.$dirty && scope.form.confirmPassword.$viewValue != '') {
-                                        scope.form.confirmPassword.$setValidity('confirm-password', scope.form.confirmPassword.$viewValue == scope.form.newPassword.$viewValue);
+                };
 
-
-                                        scope.form.confirmPassword.$setValidity('current-password-not-empty', !(scope.form.confirmPassword.$viewValue != '' && scope.form.newPassword.$viewValue != '' && scope.form.currentPassword.$viewValue == ''));
-                                    }
-                                }
-                                else if (scope.form.$error['password-length'] || scope.form.$error['password'] || scope.form.$error['confirm-length']) {
-                                    scope.form.$setValidity('password', true);
-                                    scope.form.newPassword.$setValidity('password-length', true);
-                                    scope.form.confirmPassword.$setValidity('confirm-password', true);
-                                }
-
-                            }
-                            scope.form.$setValidity('failed-on-save', true);
-
-                            scope.formHasChanged = !angular.equals(scope.dataBeforeChanges, createCopyWithExcludedPropterties(scope.dataSource.data, scope.excludeFromCompare));
-                            if(scope.formHasChanged)
-                                _DATA_CHANGED_FROM_OUTSIDE = false;
-                        }, 0);
-                    };
-                    scope.internalControl.refresh = _refreshForm;
-                    scope.internalControl.refreshModel = _refreshModel;
-                    $element.on('keyup blur change', function (event) {
-                        _refreshForm();
-                    });
-                    scope.saveProcess = false;
-                    scope.submitButton.click(function (event) {
-                        if (!scope.formHasChanged)
-                            return;
-                        scope.saveProcess = true;
-                        scope.update_success = true;
-                        if (angular.isDefined(scope.callOnBeforeSaved))
-                            scope.callOnBeforeSaved({data: scope.dataSource.data, before: scope.dataBeforeChanges});
-                        scope.dataSource.update(scope.dataSource.data)
-                            .then(function (data) {
-                                scope.dataBeforeChanges = createCopyWithExcludedPropterties(data.obj.data, scope.excludeFromCompare);
-                                scope.formHasChanged = false;
-                                scope.saveProcess = false;
-                                scope.errorMsg = '';
-                                for (var i = 0; data.data.length > i; i++) {
-                                    if (angular.isDefined(data.data[i].errCode)) {
-                                        scope.form.$setValidity('failed-on-save', false);
-                                        scope.errorMsg += 'Failed to update ' + data.data[i].cmd.name + '\n';
-                                        scope.update_success = false;
-                                    }
-                                }
-                                if (angular.isDefined(scope.callOnSaved))
-                                    scope.callOnSaved({data: data, update_success:scope.update_success});
-                            }, function (err) {
-                                console.log('UPDATE FAILED', err);
-                                scope.saveProcess = false;
-
-                            })
-                    });
-
-
-                    scope.resetData = function () {
-                        // scope.saveProcess = true;
-                        scope.dataSource.init(true).then(function (data) {
-                            if (data) {
-                                _refreshForm();
-                                scope.formHasChanged = false; // force dorm to not beeing changed
-                                if(typeof scope.internalControl == 'function')
-                                    scope.internalControl();
-
-                            }
-                        }, function (data) {
-                            console.log('RESTORE DATA FAILED');
-                            // scope.saveProcess = false;
-                        })
-
-
-                    };
-
-                    scope.$on("$destroy", function () {
-                        if (angular.isDefined(scope.callBeforeDestroy))
-                            scope.callBeforeDestroy();
-                        if (!angular.equals(scope.dataBeforeChanges, createCopyWithExcludedPropterties(scope.dataSource.data, scope.excludeFromCompare)))
-                            scope.resetData();
-
-                    });
-
-
+                function checkIfDataHasChanged(){
+                    scope.formHasChanged = (fieldToUpdate.length > 0);
                 }
+
+                scope.submitButton = $element.find('button[type="submit"]');
+                scope.submitButton.click(function (event) {
+                    scope.submitForm();
+                });
+
+
+                // var init = function () {
+                //     var timeoutPromise;
+                //     var delayInMs = 1700;
+                //     scope.$watch("dataSource.data", function(newVal) {
+                //         _DATA_CHANGED_FROM_OUTSIDE = true;
+                //         $timeout.cancel(timeoutPromise);  //does nothing, if timeout already done
+                //         timeoutPromise = $timeout(function(){   //Set timeout
+                //             test(newVal);
+                //             console.info('ENTERING CHANGE')
+                //         },delayInMs);
+                //     }, true);
+                //
+                //
+                //     scope.formHasChanged = false;
+                //     scope.submitButton = $element.find('button[type="submit"]');
+                //     scope.dataBeforeChanges = createCopyWithExcludedPropterties(scope.dataSource.data, scope.excludeFromCompare);
+                //
+                //     var TCP_elem = $element.find('input[name="tcp"]');
+                //     TCP_elem.on('keydown', function (event) {
+                //         $timeout(function () {
+                //             TCP_elem.val(generateRegularExpression(TCP_elem.val()));
+                //             _refreshForm();
+                //         }, 0);
+                //     });
+                //
+                //     var _refreshModel = function(){
+                //         scope.dataBeforeChanges = createCopyWithExcludedPropterties(scope.dataSource.data, scope.excludeFromCompare);
+                //         _refreshForm();
+                //     }
+                //
+                //     var _refreshForm = function () {
+                //     if (!scope.form)
+                //         return;
+                //     $timeout(function () { // to have view updated
+                //
+                //         if (scope.form.hasOwnProperty('multicast_group_address')) {
+                //             scope.form.multicast_group_address.$setValidity('multicast-group-address', validateMulticastGroupAddress(scope.form.multicast_group_address.$viewValue));
+                //         }
+                //
+                //         if (scope.form.hasOwnProperty('streaming_port')) {
+                //             scope.form.streaming_port.$setValidity('streaming-port', validateStreamingPort(scope.form.streaming_port.$viewValue));
+                //         }
+                //
+                //         if (scope.form.hasOwnProperty('storage_file_prefix')) {
+                //             scope.form.storage_file_prefix.$setValidity('storage-file-prefix', validateStorageFilePrefix(scope.form.storage_file_prefix.$viewValue));
+                //         }
+                //
+                //         if (scope.form.hasOwnProperty('device_hour')) {
+                //             scope.form.device_hour.$setValidity('device-hour', validateEmptyField(scope.form.device_hour.$viewValue));
+                //         }
+                //
+                //         if (scope.form.hasOwnProperty('device_minute')) {
+                //             scope.form.device_minute.$setValidity('device_minute-hour', validateEmptyField(scope.form.device_minute.$viewValue));
+                //         }
+                //
+                //         if (scope.form.hasOwnProperty('storage_file_limit')) {
+                //             scope.form.storage_file_limit.$setValidity('storage-file-limit', validateStorageFileLimit(scope.form.storage_file_limit.$viewValue));
+                //         }
+                //
+                //         if (scope.form.hasOwnProperty('recording_uri')) {
+                //             scope.form.recording_uri.$setValidity('recording-uri', validateRecordingURI(scope.form.recording_uri.$viewValue));
+                //         }
+                //
+                //         if (scope.form.hasOwnProperty('storage_file_duration')) {
+                //             scope.form.storage_file_duration.$setValidity('storage-file-duration', validateStorageFileDuration(scope.form.storage_file_duration.$viewValue));
+                //         }
+                //
+                //         if (scope.form.hasOwnProperty('streaming_folder_name')) {
+                //             scope.form.streaming_folder_name.$setValidity('streaming-folder-name', validateStreamingFolderName(scope.form.streaming_folder_name.$viewValue));
+                //         }
+                //
+                //         if (scope.form.hasOwnProperty('streaming_status') && scope.form.hasOwnProperty('recording_status')) {
+                //             scope.form.streaming_status.$setValidity('streaming-recording-status',
+                //                 validateStreamingRecordingStatus(scope.form.streaming_status.$viewValue, scope.form.recording_status.$viewValue));
+                //         }
+                //
+                //         if (scope.form.hasOwnProperty('ip')) {
+                //             scope.form.ip.$setValidity('ip-localhost', validateIsLocalHost(scope.form.ip.$viewValue));
+                //             scope.form.ip.$setValidity('ip-multicast', validateIsMulticastReserved(scope.form.ip.$viewValue));
+                //         }
+                //
+                //         if (scope.form.hasOwnProperty('dns_primary')) {
+                //             scope.form.dns_primary.$setValidity('ip-localhost', validateIsLocalHost(scope.form.dns_primary.$viewValue));
+                //             //scope.form.dns.$setValidity('ip-multicast', validateIsMulticastReserved(scope.form.dns.$viewValue));
+                //         }
+                //         if (scope.form.hasOwnProperty('mask')) {
+                //             scope.form.mask.$setValidity('mask', validateIsMask(scope.form.mask.$viewValue));
+                //             if (scope.form.hasOwnProperty('ip')) {
+                //                 scope.form.ip.$setValidity('ip-network', !validateIsNetwork(scope.form.mask.$viewValue, scope.form.ip.$viewValue));
+                //                 scope.form.ip.$setValidity('ip-broadcast', !validateIsBroadcast(scope.form.mask.$viewValue, scope.form.ip.$viewValue));
+                //             }
+                //             if (scope.form.hasOwnProperty('gateway')) {
+                //                 scope.form.gateway.$setValidity('gateway-network', !validateIsNetwork(scope.form.mask.$viewValue, scope.form.gateway.$viewValue));
+                //                 scope.form.gateway.$setValidity('gateway-broadcast', !validateIsBroadcast(scope.form.mask.$viewValue, scope.form.gateway.$viewValue));
+                //             }
+                //             if(scope.form.hasOwnProperty('tcp'))
+                //                 scope.form.tcp.$setValidity('tcp-empty', function(){ return scope.form.tcp.$viewValue.trim() !== "" && !scope.form.tcp.$viewValue.match(/[a-z]/g)}());
+                //
+                //             if (scope.form.hasOwnProperty('ip') && scope.form.hasOwnProperty('gateway')) {
+                //                 scope.form.ip.$setValidity('same-host', !validateSameHostAddress(scope.form.ip.$viewValue, scope.form.gateway.$viewValue, scope.form.mask.$viewValue));
+                //                 scope.form.gateway.$setValidity('distinct', validateSameIP(scope.form.ip.$viewValue, scope.form.gateway.$viewValue));
+                //                 scope.form.ip.$setValidity('distinct', validateSameIP(scope.form.ip.$viewValue, scope.form.gateway.$viewValue));
+                //             }
+                //         }
+                //
+                //
+                //         if (scope.form.hasOwnProperty('deviceName')) {
+                //             if (scope.form.deviceName.$dirty && scope.form.deviceName.$viewValue != '') {
+                //                 if (scope.form.deviceName.$viewValue.length == 1 && scope.form.deviceName.$viewValue == 1)
+                //                     scope.form.deviceName.$modelValue = 'K_1';
+                //                 scope.form.deviceName.$setValidity('device-name', validateDeviceName(scope.form.deviceName.$viewValue));
+                //                 // scope.form.deviceName.$setValidity('first-device-name', validateFirstLetterDeviceName(scope.form.deviceName.$viewValue));
+                //                 scope.form.deviceName.$setValidity('device-name-length', validateDeviceNameLength(scope.form.deviceName.$viewValue));
+                //                 // scope.form.deviceName.$setValidity('device-name-first-char', validateDeviceNameFirstChar(scope.form.deviceName.$viewValue));
+                //             }
+                //         }
+                //
+                //         if (scope.form.hasOwnProperty('currentPassword')) {
+                //             if ((scope.form.currentPassword.$dirty && scope.form.currentPassword.$viewValue != '')
+                //                 || (scope.form.newPassword.$dirty && scope.form.newPassword.$viewValue != '')
+                //                 || (scope.form.confirmPassword.$dirty && scope.form.confirmPassword.$viewValue != '')) {
+                //                 scope.form.newPassword.$setValidity('password-length', true);
+                //                 scope.form.confirmPassword.$setValidity('confirm-password', true);
+                //                 scope.form.$setValidity('password', scope.form.currentPassword.$viewValue != '' && scope.form.confirmPassword.$viewValue != '' &&
+                //                     angular.isDefined(scope.form.newPassword.$viewValue) && scope.form.confirmPassword.$viewValue == scope.form.newPassword.$viewValue);
+                //                 if (angular.isDefined(scope.form.newPassword.$viewValue) && scope.form.newPassword.$viewValue != '') {
+                //                     scope.form.newPassword.$setValidity('password-length', validatePwdLength(scope.form.newPassword.$viewValue));
+                //                     scope.form.newPassword.$setValidity('password-pattern', validatePwd(scope.form.newPassword.$viewValue));
+                //                 }
+                //                 if (scope.form.confirmPassword.$dirty && scope.form.confirmPassword.$viewValue != '') {
+                //                     scope.form.confirmPassword.$setValidity('confirm-password', scope.form.confirmPassword.$viewValue == scope.form.newPassword.$viewValue);
+                //
+                //
+                //                     scope.form.confirmPassword.$setValidity('current-password-not-empty', !(scope.form.confirmPassword.$viewValue != '' && scope.form.newPassword.$viewValue != '' && scope.form.currentPassword.$viewValue == ''));
+                //                 }
+                //             }
+                //             else if (scope.form.$error['password-length'] || scope.form.$error['password'] || scope.form.$error['confirm-length']) {
+                //                 scope.form.$setValidity('password', true);
+                //                 scope.form.newPassword.$setValidity('password-length', true);
+                //                 scope.form.confirmPassword.$setValidity('confirm-password', true);
+                //             }
+                //
+                //         }
+                //         scope.form.$setValidity('failed-on-save', true);
+                //
+                //         scope.formHasChanged = !angular.equals(scope.dataBeforeChanges, createCopyWithExcludedPropterties(scope.dataSource.data, scope.excludeFromCompare));
+                //         if(scope.formHasChanged)
+                //             _DATA_CHANGED_FROM_OUTSIDE = false;
+                //     }, 0);
+                // };
+                //     scope.internalControl.refresh = _refreshForm;
+                //     scope.internalControl.refreshModel = _refreshModel;
+
+                //     scope.saveProcess = false;
+                //     scope.submitButton.click(function (event) {
+                //         if (!scope.formHasChanged)
+                //             return;
+                //         scope.saveProcess = true;
+                //         scope.update_success = true;
+                //         if (angular.isDefined(scope.callOnBeforeSaved))
+                //             scope.callOnBeforeSaved({data: scope.dataSource.data, before: scope.dataBeforeChanges});
+                //         scope.dataSource.update(scope.dataSource.data)
+                //             .then(function (data) {
+                //                 scope.dataBeforeChanges = createCopyWithExcludedPropterties(data.obj.data, scope.excludeFromCompare);
+                //                 scope.formHasChanged = false;
+                //                 scope.saveProcess = false;
+                //                 scope.errorMsg = '';
+                //                 for (var i = 0; data.data.length > i; i++) {
+                //                     if (angular.isDefined(data.data[i].errCode)) {
+                //                         scope.form.$setValidity('failed-on-save', false);
+                //                         scope.errorMsg += 'Failed to update ' + data.data[i].cmd.name + '\n';
+                //                         scope.update_success = false;
+                //                     }
+                //                 }
+                //                 if (angular.isDefined(scope.callOnSaved))
+                //                     scope.callOnSaved({data: data, update_success:scope.update_success});
+                //             }, function (err) {
+                //                 console.log('UPDATE FAILED', err);
+                //                 scope.saveProcess = false;
+                //
+                //             })
+                //     });
+                //
+                //
+                //     scope.resetData = function () {
+                //         // scope.saveProcess = true;
+                //         scope.dataSource.init(true).then(function (data) {
+                //             if (data) {
+                //                 _refreshForm();
+                //                 scope.formHasChanged = false; // force dorm to not beeing changed
+                //                 if(typeof scope.internalControl == 'function')
+                //                     scope.internalControl();
+                //
+                //             }
+                //         }, function (data) {
+                //             console.log('RESTORE DATA FAILED');
+                //             // scope.saveProcess = false;
+                //         })
+                //
+                //
+                //     };
+                //
+                //     scope.$on("$destroy", function () {
+                //         if (angular.isDefined(scope.callBeforeDestroy))
+                //             scope.callBeforeDestroy();
+                //         if (!angular.equals(scope.dataBeforeChanges, createCopyWithExcludedPropterties(scope.dataSource.data, scope.excludeFromCompare)))
+                //             scope.resetData();
+                //
+                //     });
+                //
+                //
+                // }
+                // init();
             }
         };
     })

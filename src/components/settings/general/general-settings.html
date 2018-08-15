@@ -8,41 +8,47 @@
     }
 </style>
 
-<k-form ng-model="$ctrl.properties" call-on-before-saved="UpdateAuthentication()">
-        <!--exclude-from-compare="[$ctrl.properties.data.PROG_BTN_MOD]"-->
+<k-form ng-model="$ctrl.vm.data" k-on-submit="$ctrl.update">
+    <!--call-on-before-saved="UpdateAuthentication()" >-->
+    <!-->
+        <!--exclude-from-compare="[$ctrl.vm.data.PROG_BTN_MOD]"-->
     <section>
-         <div class="field" ng-if="$ctrl.properties.hasOwnProperty('LOCK_FP')">
-            <label>Front Panel</label>
+         <div class="field" ng-if="$ctrl.vm.data.hasOwnProperty('LOCK_FP')">
+            <label >Front Panel</label>
             <k-on-off show-value-on-disable="true" active-text="Locked" inactive-text="Un-locked"
-                    init-val="{{$ctrl.properties.data['LOCK-FP']}}" value-to-listen="$ctrl.properties.data['LOCK-FP']"
+                    init-val="{{$ctrl.vm.data['LOCK-FP']}}" value-to-listen="$ctrl.vm.data['LOCK-FP']"
                     on-click="toggleFrontPanel(insideVal)" height="30" width="153" enabled="true"></k-on-off>
         </div>
         <div class="field">
-            <label>Device Name</label>
-            <input type="text" ng-model="$ctrl.properties.NAME" name="NAME" device-name>
+            <label for="NAME">Device Name</label>
+            <input device-name
+                    id="NAME"
+                    type="text"
+                    ng-model="$ctrl.vm.data.NAME"
+                    name="NAME" >
         </div>
         <div class="field" style="margin-top: 15px">
             <label>Model</label>
-            <label class="answer">{{::$ctrl.properties.MODEL}}</label>
+            <span class="answer">{{::$ctrl.vm.data.MODEL}}</span>
         </div>
     </section>
     <hr class="horizontal-separator" ng-class="{'hidden': !fileSystemEnable()}"/>
     <section ng-class="{'hidden': !fileSystemEnable()}">
         <div class="field">
             <label>Firmware version</label>
-            <label class="answer">{{::$ctrl.properties.VERSION}}</label>
+            <label class="answer">{{::$ctrl.vm.data.VERSION}}</label>
         </div>
     </section>
-    <section ng-if="$ctrl.properties.hasOwnProperty('PROG_BTN_MOD')">
+    <section ng-if="$ctrl.vm.data.hasOwnProperty('PROG_BTN_MOD')">
         <div class="field">
-            <label>Programmable buttons mode</label>
-            <k-on-off id="prog-btn" show-value-on-disable="true" init-val="{{$ctrl.properties.PROG_BTN_MOD}}"
+            <label for="PROG_BTN_MOD">Programmable buttons mode</label>
+            <k-on-off id="PROG_BTN_MOD" show-value-on-disable="true" init-val="{{$ctrl.vm.data.PROG_BTN_MOD}}"
                     on-click="toggleProgBtn(insideVal)" active-text="Programmable" inactive-text="Default" height="30"
                     width="170" enabled="true"></k-on-off>
         </div>
     </section>
     <hr class="horizontal-separator"/>
-    <security-settings vm="$ctrl.properties"></security-settings>
+    <security-settings vm="$ctrl.vm"></security-settings>
 
 
 </k-form>

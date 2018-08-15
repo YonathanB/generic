@@ -1,8 +1,11 @@
 export default class NetworkSettingsCtrl {
     constructor() {
-        this.$onInit = function () {
-            console.log(this)
-            this.properties.data = this.vm;
+        let $ctrl = this;
+        $ctrl.$onChanges = function (changes) {
+            if (changes.vm) {
+                console.log(changes.vm)
+            }
         };
+
     }
 }

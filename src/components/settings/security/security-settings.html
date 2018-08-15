@@ -1,29 +1,46 @@
-<section class="security">
-        <div>
-            <h3>Security{{$ctrl.properties.SECURITY_ENABLE}}
-                <k-on-off show-value-on-disable="true" init-val="{{$ctrl.properties.SECURITY_ENABLE}}"
-                        ng-click="$ctrl.toggleSecurity()" height="30" width="153" enabled="true"></k-on-off>
-            </h3>
-        </div>
-        <div id="security-properties" ng-show="$ctrl.showSecurityFields">
-            <p class="toggleCTA">Change security properties</p>
-            <div class="field">
-                <label>Current Password</label>
-                <input type="password" name="currentPassword" ng-model="$ctrl.security.currentPassword">
-            </div>
-            <div class="field">
-                <label>New Password</label>
-                <input type="password" name="newPassword" ng-model="$ctrl.security.newPassword">
-            </div>
-            <div ng-messages="form.$error" class="error" role="alert">
-                <div ng-message="password-length">password must be at least 5 characters</div>
-            </div>
-            <div class="field">
-                <label>Confirm Password</label>
-                <input type="password" name="confirmPassword" ng-model="$ctrl.security.confirmPassword">
-            </div>
-            <div ng-messages="form.$error" class="error" role="alert">
-                <div ng-message="confirm-password">Passwords aren't matching</div>
-            </div>
-        </div>
-    </section>
+<style>
+   form.security.ng-invalid-password input {
+       border: 1px solid #ca8989;
+       box-shadow: 2px 1px 7px -3px #ca8989;
+       background-color: rgba(205, 92, 92, 0.08);
+       color: #980000;
+       outline: none;
+   }
+</style>
+<section>
+   <form name="$ctrl.securityForm" class="security">
+      <div>
+         <h3>
+            Security
+            <k-on-off show-value-on-disable="true" init-val="{{$ctrl.vm.data.SECURITY_ENABLE}}"
+                    ng-click="$ctrl.toggleSecurity()" height="30" width="153" enabled="true"></k-on-off>
+         </h3>
+      </div>
+      <div id="security-properties" ng-show="$ctrl.showSecurityFields">
+          <p class="toggleCTA">Change security properties</p>
+          <div class="field">
+             <label for="currentPassword">Current Password</label>
+             <input type="password" id="currentPassword" name="currentPassword"
+                     ng-model="$ctrl.vm.data.currentPassword">
+          </div>
+          <div class="field">
+             <label for="newPassword">New Password</label>
+             <input type="password" id="newPassword" name="newPassword" ng-model="$ctrl.vm.data.newPassword">
+          </div>
+          <div class="field">
+         <label for="confirmPassword">Confirm Password</label>
+         <input type="password" id="confirmPassword" name="confirmPassword"
+                 ng-model="$ctrl.vm.data.confirmPassword">
+      </div>
+      </div>
+
+   </form>
+</section>
+<div ng-messages="$ctrl.securityForm.$error" class="failed-to-save" role="alert">
+         <div ng-message="confirm-password">Passwords aren't matching</div>
+         <div ng-message="password">To update password all fields are required</div>
+         <div ng-message="password-length">Password should be 5-15 length</div>
+         <div ng-message="password-pattern">Password should be alphanumeric</div>
+         <div ng-message="confirm-password">The passwords you entered did not match</div>
+         <div ng-message="current-password-not-empty">Enter current password</div>
+      </div>
