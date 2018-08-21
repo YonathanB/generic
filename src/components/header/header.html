@@ -5,7 +5,7 @@
         </a>
     </div>
     <div id="page-title" class="app-main-title-font-size"
-            ng-dblclick="enableDebug()">Kramer {{$ctrl.vm.MODEL}} Switcher{{$root.hasRoomController ? '/Controller': ''}}
+            ng-dblclick="enableDebug()">Kramer {{$ctrl.deviceModel}} Switcher{{$root.hasRoomController ? '/Controller': ''}}
     </div>
     <div id="remote-mute" ng-if="$ctrl.vm.GLOBAL_MUTE">
         <span><i class="icon-warning"></i>GLOBAL MUTE mode is active<i class="icon-warning"></i>
@@ -13,8 +13,12 @@
     </div>
 
     <div id="resize-icon-area">
-        <i id="security-icon-area" ng-attr-title="Security is {{$ctrl.vm.SECURITY_ENABLE == 1 ? 'on' : 'off'}}"
-                ng-class="{'icon-lock': $ctrl.vm.SECURITY_ENABLE == 1,'icon-unlocked': $ctrl.vm.SECURITY_ENABLE == 0}"></i>
+        <k-security-toggle
+                type="icon"
+                is-authentication-enabled="$ctrl.isAuthenticationEnabled"
+                toggle-authentication="$ctrl.toggleAuthentication(data)">
+        </k-security-toggle>
+
         <k-resize></k-resize>
     </div>
 </div>

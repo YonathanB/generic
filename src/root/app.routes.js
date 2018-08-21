@@ -1,25 +1,26 @@
-
 import {applicationStarter} from "../model/applicationStarter";
-
+console.log(applicationStarter);
+// import $oclazyLoad from 'oclazyload';
 let isDebug = (process.env.NODE_ENV === 'development');
-    angular.module('kramerWeb')
-        .config(['$stateProvider',
-            function ($stateProvider) {
-                $stateProvider
-                    .state({
-                        name: 'main',
-                        abstract: true,
-                        url: '',
-                        views: {
-                            'mainView@': {
-                                template: '<ui-view/>',
-                                controller: function ($rootScope, $scope, $timeout, $http, $q, Commands, MainService, $transitions) {
+angular.module('kramerWeb')
+    .config(['$stateProvider',
+        function ($stateProvider) {
+            $stateProvider
+                .state({
+                    name: 'main',
+                    abstract: true,
+                    url: '',
+                    views: {
+                        'mainView@': {
+                            template: '<ui-view/>',
+                            controller: ['$rootScope', '$scope', '$timeout', '$http', '$q', 'MainService', '$transitions',
+                                function ($rootScope, $scope, $timeout, $http, $q, MainService, $transitions) {
 
                                     MainService.then(function () {
                                         $scope.vm = applicationStarter.getViewModel()
                                     });
 
-                                    $transitions.onStart({}, function(transition) {
+                                    $transitions.onStart({}, function (transition) {
                                         console.log('transition', transition)
                                         if (transition.to().name === 'unreachable') {
                                             return false;
@@ -118,154 +119,119 @@ let isDebug = (process.env.NODE_ENV === 'development');
                                     //     // })
                                     //     // saveConfigCommandFiles();
                                     // }
-                                }
-                            }
-                        }
-
-                    })
-
-            }])
-        .factory("ViewSettingsFactory", ['$state', '$urlRouter',
-            function ($state, $urlRouter) {
-                var navigation = {};
-                var statePref = "main.";
-                var lastRequestedState = '';
-                var menuObj = {};
-                var menus = [];
-
-                var insertInMenu = function (stateDefinition, inMenuTab, parentName) {
-                    var toInsert = {};
-                    toInsert.state = stateDefinition.id;
-                    toInsert.id = stateDefinition.id;
-                    toInsert.url = stateDefinition.url;
-                    toInsert.description = stateDefinition.description;
-                    toInsert.menuTab = inMenuTab;
-                    toInsert.redirectTo = stateDefinition.redirectTo;
-                    toInsert.onLoad = stateDefinition.onLoad;
-                    toInsert.parent = stateDefinition.parent ? stateDefinition.parent : 'main';
-
-
-                    if (stateDefinition.hasOwnProperty('params'))
-                        toInsert.params = stateDefinition.params;
-                    if (stateDefinition.hasOwnProperty('abstract'))
-                        toInsert.abstract = stateDefinition.abstract;
-                    if (stateDefinition.hasOwnProperty('resolve')) {
-                        toInsert.resolve = {};
-                        // for (var resl in stateDefinition.resolve) {
-                        //     toInsert.resolve[stateDefinition.resolve[resl]] = dependencyResolve[stateDefinition.resolve[resl]];
-                        // }
-                    }
-                    if (stateDefinition.hasOwnProperty('icon'))
-                        toInsert.icon = stateDefinition.icon;
-                    if (stateDefinition.hasOwnProperty('template') && !parentName)
-                        toInsert.templateUrl = stateDefinition.template;
-                    if (stateDefinition.hasOwnProperty('controller') && !parentName)
-                        toInsert.controller = stateDefinition.controller;
-
-
-                    if (parentName) {
-
-                        toInsert.views = {};
-                        toInsert.views[stateDefinition.name] = {};
-                        toInsert.pageTitle = parentName;
-                        if (stateDefinition.hasOwnProperty('template'))
-                            toInsert.views[stateDefinition.name].template = require('../views/html/' + stateDefinition.template);
-                        if (stateDefinition.hasOwnProperty('controller'))
-                            toInsert.views[stateDefinition.name].controller = stateDefinition.controller;
-                    }
-
-                    menus.push(toInsert)
-                };
-
-
-                navigation.getMenuObj = function () {
-                    return menuObj;
-                };
-                navigation.getMenu = function () {
-                    return menus;
-                };
-                navigation.initMenu = function (devicesStates, KramerDevice) {
-                    for (var _state in devicesStates) {
-                        insertInMenu(devicesStates[_state], true);
-
-                        if (devicesStates[_state].hasOwnProperty('views')) {
-                            for (var view in devicesStates[_state].views) {
-                                insertInMenu(devicesStates[_state].views[view], false, devicesStates[_state].description);
-                            }
+                                }]
                         }
                     }
-                    menus.forEach(function (menu) {
-                        menuObj[menu.state] = menu;
 
-                        let resolves =  {};
+                })
 
-                        if(menu.onLoad) {
-                            menu.onLoad.forEach(function (toLoad) {
-                                let newResove = {};
-                                newResove[toLoad] = function () {
-                                    return applicationStarter.initModule(toLoad);
-                                };
-
-                                resolves = Object.assign(resolves, newResove)
-                            });
-                        }
-                        resolves = Object.assign(resolves, {
-                            vm: function(){
-                                return applicationStarter.getViewModel();
-                            }
-                        });
-                        $state.router.stateRegistry.register({
-                            name: menu.id,
-                            url: '/' + menu.url,
-                            parent: menu.parent,
-                            component: menu.state,
-                            resolve: resolves,
-                            redirectTo: menu.redirectTo
+        }])
+    .factory("ViewSettingsFactory", ['$state', '$urlRouter',
+        function ($state, $urlRouter) {
+            var navigation = {};
+            var statePref = "main.";
+            var lastRequestedState = '';
+            var menuObj = {};
+            var menus = [];
 
 
-                            //     menu.onLoad? menu.onLoad.forEach(function(){
-                            //     return [function () {
-                            //       console.log('coucou')
-                            //     }]
-                            // }): null
-                            // RouteResolver[menu.state] || {
-                            //     test: [function () {
-                            //         return {test: false};
-                            //     }]
-                            // }
-                        })
+            navigation.getMenuObj = function () {
+                return menuObj;
+            };
+            navigation.getMenu = function () {
+                return menus;
+            };
 
+
+            function additionalData(state) {
+                let toReturn = {};
+                toReturn.description = state.description;
+                toReturn.icon = state.icon;
+                return toReturn;
+            }
+
+            function routeResolver(onLoad) {
+                let resolves = {};
+                if (onLoad) {
+                    onLoad.forEach(function (toLoad) {
+                        let newResolve = {};
+                        newResolve[toLoad] = function () {
+                            return applicationStarter.initModule(toLoad);
+                        };
+
+                        resolves = Object.assign(resolves, newResolve)
                     });
+                }
+                resolves = Object.assign(resolves, {
+                    vm: function () {
+                        return applicationStarter.getViewModel();
+                    }
+                });
+                return resolves;
+            }
 
-                    $urlRouter.when('', '/'+menus[0].url);
-                    $urlRouter.when('/', '/'+menus[0].url);
-                    $urlRouter.otherwise("/" + menus[0].url);
-                    $urlRouter.sync();
-                    $urlRouter.listen();
-                };
-                navigation.goToFirstMenu = function () {
-                    $state.go(statePref + menus[0].state);
-                };
+            navigation.initMenu = function (devicesStates, KramerDevice) {
+                console.log('initStates');
+                for (var _state in devicesStates) {
+                    menus.push(devicesStates[_state]);
+                    $state.router.stateRegistry.register({
+                        name: devicesStates[_state].id,
+                        url: '/' + devicesStates[_state].url,
+                        parent: devicesStates[_state].parent ? devicesStates[_state].parent : 'main',
+                        component: devicesStates[_state].id,
+                        resolve: function () {
+                            return routeResolver(devicesStates[_state].onLoad);
+                        }(),
+                        redirectTo: devicesStates[_state].redirectTo,
 
-                navigation.isSelected = function (menuItem) {
-                    return $state.current.name.includes(menuItem.state);
-                };
+                        data: function () {
+                            return additionalData(devicesStates[_state]);
+                        }(),
 
-                navigation.cannotLeaveThisPageFlag = false;
-                navigation.askBeforeLeaveThePage = false;
+                        lazyLoad: ($transition$) => {
+                            const $ocLazyLoad = $transition$.injector().get("$ocLazyLoad");
+                            if (devicesStates[_state].id == 'about') {
+                                // return require.ensure([], () => {
+                                    // load whole module
+                                    const module = require("../pages/" + devicesStates[_state].id + "/" + devicesStates[_state].id + ".module");
 
-                navigation.setLastRequestedState = function (stateName) {
-                    lastRequestedState = stateName;
-                };
+                                    return $ocLazyLoad.inject(module.default);
+                                // }, devicesStates[_state].id + ".module");
+                            }
+                        }
+                    })
+                }
 
-                navigation.navigateToSavedState = function () {
-                    $state.go(lastRequestedState, null, {reload: lastRequestedState});
-                };
-                navigation.goToState = function (menuItem) {
-                    return $state.go(statePref + menuItem.state, null, {reload: statePref + menuItem.state})
-                };
-                return navigation;
-            }]);
+                console.log($state.router.stateRegistry.get());
+                $urlRouter.when('', '/' + devicesStates[0].url);
+                $urlRouter.when('/', '/' + devicesStates[0].url);
+                $urlRouter.otherwise("/" + devicesStates[0].url);
+                $urlRouter.sync();
+                $urlRouter.listen();
+            };
+            navigation.goToFirstMenu = function () {
+                $state.go(statePref + menus[0].state);
+            };
+
+            navigation.isSelected = function (menuItem) {
+                return $state.current.name.includes(menuItem.state);
+            };
+
+            navigation.cannotLeaveThisPageFlag = false;
+            navigation.askBeforeLeaveThePage = false;
+
+            navigation.setLastRequestedState = function (stateName) {
+                lastRequestedState = stateName;
+            };
+
+            navigation.navigateToSavedState = function () {
+                $state.go(lastRequestedState, null, {reload: lastRequestedState});
+            };
+            navigation.goToState = function (menuItem) {
+                return $state.go(statePref + menuItem.state, null, {reload: statePref + menuItem.state})
+            };
+            return navigation;
+        }]);
 
 
 // var dependencyResolve = {

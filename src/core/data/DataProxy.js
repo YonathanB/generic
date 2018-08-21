@@ -2,11 +2,9 @@
  * @fileOverview The data module define the access to device data through the web app
  * @module core/data
  * @requires module:core/communication
- * @requires deviceCommands
  * @requires K_Parser
  */
 import K_WebSocket from '../communication/WebSocket';
-import {deviceCommands} from "../data/Commands";
 import {K_Parser} from "../parsers/ParserFactory";
 import DataBackup from "./DataBackup";
 
@@ -184,7 +182,7 @@ function _sendToDevice(dataToSend, idx) {
     var objToSend = {};
     var encodedMsg = K_Parser.encode(dataToSend, idx);
 
-    if (angular.isDefined(_COM_PROPERTIES.translator)) {
+    if (_COM_PROPERTIES.translator) {
         objToSend[_COM_PROPERTIES.translator] = encodedMsg;
     } else objToSend = encodedMsg;
 
@@ -197,7 +195,8 @@ function _sendToDevice(dataToSend, idx) {
 }
 
 function _registerPromiseForCallback(command, promise) {
-    if (angular.isUndefined(_PROMISES_CALLBACKS[command.key]))
+    console.log('_registerPromiseForCallback ', command.key)
+    if (!_PROMISES_CALLBACKS[command.key])
         _PROMISES_CALLBACKS[command.key] = [];
 
     _PROMISES_CALLBACKS[command.key].push({
@@ -233,6 +232,7 @@ function _put(commandToSend) {// TODO - check usage of second param: (forceObjec
 
     }
     _$q.all(promises).then(function (data) {
+        //TODO - ( suggestion ) can check data here and format errors?
         return promise.resolve(data);
     }, function (error) {
         return promise.reject(error);
@@ -260,7 +260,7 @@ function _init() {
     _COMMUNICATION_OBJECT.onMessage(function (msgFromDevice) {
         console.log('message: ', msgFromDevice);
         var decodedMsg;
-        if (angular.isDefined(_COM_PROPERTIES.translator))
+        if (_COM_PROPERTIES.translator)
             try {
                 msgFromDevice = JSON.parse(msgFromDevice)[_COM_PROPERTIES.translator]
             } catch (e) {
@@ -270,20 +270,20 @@ function _init() {
 
 
         try {
-            if (angular.isDefined(decodedMsg)) {
-
+            if (decodedMsg) {
                 _self.model.store(decodedMsg);
-                _releasePromiseIfExist(decodedMsg);
                 _notifyObservers(decodedMsg);
             }
         } catch (e) {
             console.debug("Unknown message " + e)
         }
+        _releasePromiseIfExist(decodedMsg);
+
     });
     _COMMUNICATION_OBJECT.onOpen(function () {
         communicationReady.resolve();
-        _commandsResolver([deviceCommands.MODEL, deviceCommands.NAME].concat(_toSend), communicationReady);
-        _startHeartBeat.call(_self);
+        _commandsResolver(_COM_PROPERTIES.sendOnCommunicationStart, communicationReady);
+        _startHeartBeat.call(_self, _COM_PROPERTIES.handShakeCommand);
     });
     _COMMUNICATION_OBJECT.onError(function (event) {
         console.log('connection Error', event);
@@ -298,7 +298,8 @@ function _init() {
 }
 
 function _releasePromiseIfExist(decodedMsg) {
-    if (angular.isDefined(_PROMISES_CALLBACKS[decodedMsg.cmd.key]) && _PROMISES_CALLBACKS[decodedMsg.cmd.key].length > 0) {
+    if (_PROMISES_CALLBACKS[decodedMsg.cmd.key]
+        && _PROMISES_CALLBACKS[decodedMsg.cmd.key].length > 0) {
         _PROMISES_CALLBACKS[decodedMsg.cmd.key][0].cb.resolve(decodedMsg);
         _PROMISES_CALLBACKS[decodedMsg.cmd.key].shift();
     }
@@ -313,14 +314,14 @@ function _notifyObservers(decodedMsg) {
     }
 }
 
-function _startHeartBeat() {
+function _startHeartBeat(heartBeatCommand) {
     if (!_heartBeatInterval) {
         _missedHeartBeats = 0;
         _heartBeatInterval = setInterval(function () {
             if (_missedHeartBeats)
                 _onConnectionLost.call(_self);
             _missedHeartBeats++;
-            _get([deviceCommands.HAND_SHAKE],1, true)
+            _get([heartBeatCommand],1, true)
                 .then(function (data) {
                     _missedHeartBeats = 0;
                 })

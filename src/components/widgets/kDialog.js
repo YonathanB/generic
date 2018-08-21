@@ -11,7 +11,7 @@ import utils from '../../assets/js/utils';
 
 
     angular.module('components.widgets')
-        .directive("kDialog", function ($timeout) {
+        .directive("kDialog", ['$timeout', function ($timeout) {
             return {
                 restrict: 'E',
                 transclude: true,
@@ -194,8 +194,8 @@ import utils from '../../assets/js/utils';
                     });
                 }
             };
-        })
-        .directive("kMessage", function ($timeout) {
+        }])
+        .directive("kMessage", ['$timeout', function ($timeout) {
 
             var _runProcess = function(data){
                 data.process();
@@ -238,7 +238,7 @@ import utils from '../../assets/js/utils';
                     }
                 }
             };
-        });
+        }]);
 
 
 })();

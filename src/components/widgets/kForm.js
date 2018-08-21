@@ -10,7 +10,8 @@
 
 
 (function () {
-    angular.module('components.widgets').directive("kForm", function ($parse, $compile, $timeout) {
+    'ngInject'
+    angular.module('components.widgets').directive("kForm", ['$parse', '$compile', '$timeout', function ($parse, $compile, $timeout) {
         var multicast_upper_pattern = "239.255.255.255";
         var multicast_lower_pattern = "224.0.0.0";
         var convertToBinary = function (address) {
@@ -196,7 +197,9 @@
         };
 
         var fieldToUpdate = [];
-        var internalViewModel = {};
+        var fieldsInForm = {};
+        var formViewModel = {};
+        var formModel = {};
         return {
             restrict: 'AE',
             require: ['?ngModel'],
@@ -257,80 +260,96 @@
                 fieldToUpdate = [];
                 $scope.submitForm = function () {
                     if ($scope.form.$valid) {
-                        $scope.kOnSubmit(fieldToUpdate);
+                        $scope.kOnSubmit({formViewModel, fieldToUpdate});
                     }
                 };
-                $scope.resetData = function () {
-                    console.log('REVERT CHANGES KFORM');
-                    for (var prop in internalViewModel) {
-                        $scope.dataSource[prop] = internalViewModel[prop];//revert viewModel
-                     }
-                }
+
 
             },
             link: function (scope, $element, attrs) {
 
-                //  detect changes from model
-                scope.$watch('dataSource',
-                    function (newVal, oldVal) {
-                        for (var prop in internalViewModel) {
-                            if (newVal[prop] && oldVal[prop])
-                                if (newVal[prop] != internalViewModel[prop]) {
-                                    DATA_CHANGED_IN_DEVICE = true;
-                                    dataChanged(prop);
-                                }
-                            // else will be detected by input's event listener
-                        }
-                        if(!DATA_CHANGED_IN_DEVICE)
-                            fieldToUpdate = [];
-                        checkIfDataHasChanged();
-                    }, true);
 
+                let onDataChangedInDevice;
 
 
                 scope.internalControl = scope.control || {};
                 var $element = $element;
-                var $inputElements = $element.find('input');
+
 
                 var DATA_CHANGED_IN_DEVICE = true;
 
-                internalViewModel = {};
+                let $inputElements = $element.find('input');
+                fieldsInForm = {}; // declaration outside link function (in directive)
                 for (var input in $inputElements.toArray()) {
-                    var property = $inputElements[input].name;
-                    if(!scope.dataSource.hasOwnProperty(property))
-                        scope.dataSource[property] = '';
-                    internalViewModel[property] = scope.dataSource[property];
-
-                    var $el = angular.element($inputElements[input]);
-
+                    let $el = $inputElements[input];
+                    let property = $el.name;
+                    fieldsInForm[property] = $el;
+                    formModel[property] = scope.dataSource[property] || '';
                     //  detect changes from view
-                    $el.on('keyup blur change', function (event) {//TODO - check why do we need such a lot triggers
+                    angular.element($el).on('keyup blur change', function (event) {//TODO - check why do we need such a lot triggers
                         DATA_CHANGED_IN_DEVICE = false;
                         dataChanged(event.target.name);
+                        $timeout.cancel(onDataChangedInDevice);
                     });
                 }
 
 
+                function dataChanged(property) {
+                    // if (!DATA_CHANGED_IN_DEVICE) {
+                    formViewModel[property] = fieldsInForm[property].value;
+                    if (formViewModel[property] !== formModel[property]) {
+                        if (fieldToUpdate.indexOf(property) === -1)
+                            fieldToUpdate.push(property);
+                    } else if (fieldToUpdate.indexOf(property) > -1)
+                        fieldToUpdate.splice(fieldToUpdate.indexOf(property), 1);
 
 
-
-                function dataChanged(prop) {
-                    if (!DATA_CHANGED_IN_DEVICE) {
-                        $timeout(function () {
-                            checkValidity(prop);
-                            if (prop) {
-                                let changeDetected = (internalViewModel[prop] != scope.form.$$element.find('input#' + prop).val());
-                                if (changeDetected && fieldToUpdate.indexOf(prop) === -1)
-                                    fieldToUpdate.push(prop);
-                                else if (!changeDetected && fieldToUpdate.indexOf(prop) > -1)
-                                    fieldToUpdate.splice(fieldToUpdate.indexOf(prop), 1);
-                            }
-                            checkIfDataHasChanged();
-                        }, 0);
-                        return;
-                    } else fieldToUpdate = [];
+                    // $timeout(function () {
+                    // checkValidity(prop);
+                    // if (prop) {
+                    //     let changeDetected = (fieldsInForm[prop] != scope.form.$$element.find('input[name="' + prop + '"]').val());
+                    //     if (changeDetected && fieldToUpdate.indexOf(prop) === -1)
+                    //         fieldToUpdate.push(prop);
+                    //     else if (!changeDetected && fieldToUpdate.indexOf(prop) > -1)
+                    //         fieldToUpdate.splice(fieldToUpdate.indexOf(prop), 1);
+                    // }
+                    // checkIfDataHasChanged();
+                    // // }, 0);
+                    // return;
+                    // } else fieldToUpdate = [];
                     checkIfDataHasChanged();
+                    scope.$applyAsync();
                 }
+
+
+                //  detect changes from device, other changes will be detected by input's event listener
+                scope.$watch('dataSource',
+                    function (newVal, oldVal) {
+                        onDataChangedInDevice = $timeout(//force scope to be launch with a delay in order to prevent this function to be called on user input
+                            function () {
+                                for (var prop in fieldsInForm) {
+                                    if (newVal[prop] && oldVal[prop])
+                                        if (newVal[prop] !== formViewModel[prop]) {
+                                            formViewModel[prop] = formModel[prop] = newVal[prop];
+                                            DATA_CHANGED_IN_DEVICE = true;
+                                            dataChanged(prop);
+                                        }
+                                }
+                                checkIfDataHasChanged();
+                            }, 200)
+                    }, true);
+
+
+                scope.resetData = function () {
+                    console.log('REVERT CHANGES KFORM');
+                    for (var prop in fieldsInForm) {
+                        if (scope.dataSource.hasOwnProperty(prop))
+                            scope.dataSource[prop] = formModel[prop];
+                        formViewModel[prop] = fieldsInForm[prop].value = formModel[prop];//revert viewModel
+                        dataChanged(prop);
+                    }
+                }
+
 
                 function checkValidity() {
                     if (scope.form.hasOwnProperty('multicast_group_address')) {
@@ -374,36 +393,36 @@
                             validateStreamingRecordingStatus(scope.form.streaming_status.$viewValue, scope.form.recording_status.$viewValue));
                     }
 
-                    if (scope.form.hasOwnProperty('ip')) {
-                        scope.form.ip.$setValidity('ip-localhost', validateIsLocalHost(scope.form.ip.$viewValue));
-                        scope.form.ip.$setValidity('ip-multicast', validateIsMulticastReserved(scope.form.ip.$viewValue));
-                    }
+                    // if (scope.form.hasOwnProperty('ip')) {
+                    //     scope.form.ip.$setValidity('ip-localhost', validateIsLocalHost(scope.form.ip.$viewValue));
+                    //     scope.form.ip.$setValidity('ip-multicast', validateIsMulticastReserved(scope.form.ip.$viewValue));
+                    // }
 
                     if (scope.form.hasOwnProperty('dns_primary')) {
                         scope.form.dns_primary.$setValidity('ip-localhost', validateIsLocalHost(scope.form.dns_primary.$viewValue));
                         //scope.form.dns.$setValidity('ip-multicast', validateIsMulticastReserved(scope.form.dns.$viewValue));
                     }
-                    if (scope.form.hasOwnProperty('mask')) {
-                        scope.form.mask.$setValidity('mask', validateIsMask(scope.form.mask.$viewValue));
-                        if (scope.form.hasOwnProperty('ip')) {
-                            scope.form.ip.$setValidity('ip-network', !validateIsNetwork(scope.form.mask.$viewValue, scope.form.ip.$viewValue));
-                            scope.form.ip.$setValidity('ip-broadcast', !validateIsBroadcast(scope.form.mask.$viewValue, scope.form.ip.$viewValue));
-                        }
-                        if (scope.form.hasOwnProperty('gateway')) {
-                            scope.form.gateway.$setValidity('gateway-network', !validateIsNetwork(scope.form.mask.$viewValue, scope.form.gateway.$viewValue));
-                            scope.form.gateway.$setValidity('gateway-broadcast', !validateIsBroadcast(scope.form.mask.$viewValue, scope.form.gateway.$viewValue));
-                        }
-                        if (scope.form.hasOwnProperty('tcp'))
-                            scope.form.tcp.$setValidity('tcp-empty', function () {
-                                return scope.form.tcp.$viewValue.trim() !== "" && !scope.form.tcp.$viewValue.match(/[a-z]/g)
-                            }());
-
-                        if (scope.form.hasOwnProperty('ip') && scope.form.hasOwnProperty('gateway')) {
-                            scope.form.ip.$setValidity('same-host', !validateSameHostAddress(scope.form.ip.$viewValue, scope.form.gateway.$viewValue, scope.form.mask.$viewValue));
-                            scope.form.gateway.$setValidity('distinct', validateSameIP(scope.form.ip.$viewValue, scope.form.gateway.$viewValue));
-                            scope.form.ip.$setValidity('distinct', validateSameIP(scope.form.ip.$viewValue, scope.form.gateway.$viewValue));
-                        }
-                    }
+                    // if (scope.form.hasOwnProperty('mask')) {
+                    //     scope.form.mask.$setValidity('mask', validateIsMask(scope.form.mask.$viewValue));
+                    //     if (scope.form.hasOwnProperty('ip')) {
+                    //         scope.form.ip.$setValidity('ip-network', !validateIsNetwork(scope.form.mask.$viewValue, scope.form.ip.$viewValue));
+                    //         scope.form.ip.$setValidity('ip-broadcast', !validateIsBroadcast(scope.form.mask.$viewValue, scope.form.ip.$viewValue));
+                    //     }
+                    //     if (scope.form.hasOwnProperty('gateway')) {
+                    //         scope.form.gateway.$setValidity('gateway-network', !validateIsNetwork(scope.form.mask.$viewValue, scope.form.gateway.$viewValue));
+                    //         scope.form.gateway.$setValidity('gateway-broadcast', !validateIsBroadcast(scope.form.mask.$viewValue, scope.form.gateway.$viewValue));
+                    //     }
+                    //     if (scope.form.hasOwnProperty('tcp'))
+                    //         scope.form.tcp.$setValidity('tcp-empty', function () {
+                    //             return scope.form.tcp.$viewValue.trim() !== "" && !scope.form.tcp.$viewValue.match(/[a-z]/g)
+                    //         }());
+                    //
+                    //     if (scope.form.hasOwnProperty('ip') && scope.form.hasOwnProperty('gateway')) {
+                    //         scope.form.ip.$setValidity('same-host', !validateSameHostAddress(scope.form.ip.$viewValue, scope.form.gateway.$viewValue, scope.form.mask.$viewValue));
+                    //         scope.form.gateway.$setValidity('distinct', validateSameIP(scope.form.ip.$viewValue, scope.form.gateway.$viewValue));
+                    //         scope.form.ip.$setValidity('distinct', validateSameIP(scope.form.ip.$viewValue, scope.form.gateway.$viewValue));
+                    //     }
+                    // }
 
 
                     if (scope.form.hasOwnProperty('deviceName')) {
@@ -416,10 +435,10 @@
                             // scope.form.deviceName.$setValidity('device-name-first-char', validateDeviceNameFirstChar(scope.form.deviceName.$viewValue));
                         }
                     }
-
+                    scope.$applyAsync();
                 };
 
-                function checkIfDataHasChanged(){
+                function checkIfDataHasChanged() {
                     scope.formHasChanged = (fieldToUpdate.length > 0);
                 }
 
@@ -644,5 +663,5 @@
                 // init();
             }
         };
-    })
+    }])
 })();

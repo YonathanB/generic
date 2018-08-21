@@ -23,8 +23,8 @@ import NTPSettingsCtrl  from './ntp/ntpSettings.controller';
 import ngMessages from 'angular-messages'; // check if loaded twice
 import $uiRouter from "@uirouter/angularjs";
 
-import styles from './deviceSettings.less';
 
+import './deviceSettings.less';
 
 class factoryResetCtrl{
     constructor() {
@@ -60,11 +60,12 @@ export default require('angular')
     })
     .component('generalSettings', {
         bindings: {vm: '<'},
+        require: {test: '^kramerWeb'},
         template: require('./general/general-settings.html'),
         controller: GeneralDeviceSettingsCtrl
     })
     .component('securitySettings', {
-        bindings: {vm: '<'},
+        bindings: {isAuthenticationEnabled: '<', toggleAuthentication:'<'},
         template: require('./security/security-settings.html'),
         controller: SecuritySettingsCtrl
     })

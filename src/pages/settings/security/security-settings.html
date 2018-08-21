@@ -12,8 +12,12 @@
       <div>
          <h3>
             Security
-            <k-on-off show-value-on-disable="true" init-val="{{$ctrl.vm.data.SECURITY_ENABLE}}"
-                    ng-click="$ctrl.toggleSecurity()" height="30" width="153" enabled="true"></k-on-off>
+             <k-security-toggle
+                     type="toggle"
+                     is-authentication-enabled="$ctrl.isAuthenticationEnabled"
+                     toggle-authentication="$ctrl.toggleAuthentication(data)">
+             </k-security-toggle>
+
          </h3>
       </div>
       <div id="security-properties" ng-show="$ctrl.showSecurityFields">
@@ -21,16 +25,17 @@
           <div class="field">
              <label for="currentPassword">Current Password</label>
              <input type="password" id="currentPassword" name="currentPassword"
-                     ng-model="$ctrl.vm.data.currentPassword">
+                     ng-model="$ctrl.currentPassword">
           </div>
           <div class="field">
              <label for="newPassword">New Password</label>
-             <input type="password" id="newPassword" name="newPassword" ng-model="$ctrl.vm.data.newPassword">
+             <input type="password" id="newPassword" name="newPassword"
+                     ng-model="$ctrl.newPassword">
           </div>
           <div class="field">
          <label for="confirmPassword">Confirm Password</label>
          <input type="password" id="confirmPassword" name="confirmPassword"
-                 ng-model="$ctrl.vm.data.confirmPassword">
+                 ng-model="$ctrl.confirmPassword">
       </div>
       </div>
 

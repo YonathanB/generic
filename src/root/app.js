@@ -1,4 +1,3 @@
-import $uiRouter from "@uirouter/angularjs/lib/index";
 import {applicationStarter} from "../model/applicationStarter";
 
 
@@ -16,42 +15,30 @@ import {applicationStarter} from "../model/applicationStarter";
  *
  */
 angular.module('kramerWeb')
-    .run(['$http',
-        '$rootScope',
-        '$q',
-        '$uiRouter',
-        'Commands',
-        'ViewSettingsFactory',
-        '$timeout',
-        function ($http, $rootScope, $q, $uiRouter, Commands, ViewSettingsFactory, $timeout) {
-
-            // deviceModel.start().then(function (infoFile) {
-            //     ViewSettingsFactory.initMenu(infoFile.states, deviceModel);
-            //     $timeout(function () {
-            //         document.getElementsByTagName("body")[0].style.display = 'block';
-            //     }, 0)
-            //     // Features.init();
-            //     // })
-            //     // })
-            // });
-
-        }])
+    .run([function () {
+        console.log('run function')
+    }])
 
 
     .controller('appCtrl', [
         '$scope',
         '$rootScope',
         'ViewSettingsFactory',
-        // 'Authentication', TODO add
+        '$timeout',
         '$state',
         'MessageService',
         'MainService',
-        function ($scope, $rootScope, ViewSettingsFactory, $state, MessageService, MainService) {
+        '$log',
+        function ($scope, $rootScope, ViewSettingsFactory, $timeout, $state, MessageService, MainService, $log) {
 
-            MainService.then(function () {
-                $scope.vm = applicationStarter.getViewModel()
-            });
-            $scope.deviceStatus = applicationStarter.STATUS;
+            // MainService.then(function () {
+
+
+                $scope.vm = applicationStarter.getViewModel();
+
+
+            // });
+            // $scope.deviceStatus = applicationStarter.STATUS;
 
 
             MessageService.subscribe(function (data) {
@@ -132,23 +119,23 @@ angular.module('kramerWeb')
             }
 
 
-            $rootScope.$on('$stateChangeStart',
-                function (event, toState, toParams, fromState, fromParams) {
-                    $scope.enableLocalLoader();
-                }
-            )
-            $rootScope.$on('$stateChangeError',
-                function (event, toState, toParams, fromState, fromParams) {
-                    event.preventDefault();
-                    console.log('State error');
-                    $scope.disableLocalLoader();
-                }
-            )
-            $rootScope.$on('$stateChangeSuccess',
-                function (event, toState, toParams, fromState, fromParams) {
-                    $rootScope.pageTitle = toState.data.pageTitle;
-                    $scope.disableLocalLoader();
-                });
+            // $rootScope.$on('$stateChangeStart',
+            //     function (event, toState, toParams, fromState, fromParams) {
+            //         $scope.enableLocalLoader();
+            //     }
+            // )
+            // $rootScope.$on('$stateChangeError',
+            //     function (event, toState, toParams, fromState, fromParams) {
+            //         event.preventDefault();
+            //         console.log('State error');
+            //         $scope.disableLocalLoader();
+            //     }
+            // )
+            // $rootScope.$on('$stateChangeSuccess',
+            //     function (event, toState, toParams, fromState, fromParams) {
+            //         $rootScope.pageTitle = toState.data.pageTitle;
+            //         $scope.disableLocalLoader();
+            //     });
             // MessageService.subscribe(function (data) {
             //     if (angular.isUndefined($scope.messageData) || data == null) {
             //         $scope.messageData = data;
@@ -157,22 +144,6 @@ angular.module('kramerWeb')
             $scope.fileSystemEnable = function () {
                 return !(/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
             };
-
-            $rootScope.stateExist = function (state) {
-                if ($state.href(state))
-                    return true;
-                else
-                    return false;
-
-            }
-        }])
-    .controller('mainContentCtrl', [
-        '$scope',
-        '$log',
-        '$rootScope',
-        '$timeout',
-        function ($scope, $log, $rootScope, $timeout) {
-
 
             // httpCommunicationServiceFactory.queriesGroupManager.addGroup("app", true);
             // //When device startup
@@ -284,6 +255,129 @@ angular.module('kramerWeb')
                 })
             };
 
-        }]);
+        }])
 
-// })();
+//
+//
+//
+//     .controller('mainContentCtrl', [
+//         '$scope',
+//         '$log',
+//         '$rootScope',
+//         '$timeout',
+//         function ($scope, $log, $rootScope, $timeout) {
+//
+//
+//             // httpCommunicationServiceFactory.queriesGroupManager.addGroup("app", true);
+//             // //When device startup
+//             // httpCommunicationServiceFactory.queriesGroupManager.addQueryToGroup("app", ["^~[0-9]+@coldstart"], function (reply) {
+//             //     communicationJsonManagerServiceFactory.unSyncDeviceStatus();
+//             //     $scope.deviceConnected = true;
+//             //     $scope.changeTemplateURLTab($scope.mainViewConfig.selectedTab);
+//             //     $rootScope.$broadcast('templateUrlBroadcast', $scope.viewConfigurationJson.menus[$scope.mainViewConfig.selectedTab].templateURL);
+//             // });
+//             //
+//
+//             $scope.mainViewConfig.isLocalHost = false;
+//             $scope.mainViewConfig.selectedTab = 1;
+//             $scope.mainViewConfig.TemplateURLTab = 1;
+//             $scope.mainViewConfig.isTabFinishLoadingTemplate = false;
+//             $scope.mainViewConfig.firmwareUpgradeRunning = false;
+//             $rootScope.clearCacheDialogShow = false;
+//
+//             $scope.activeCallbacks = [];
+//
+//             $scope.changeTemplateURLTab = function (index) {
+//                 $scope.mainViewConfig.isTabFinishLoadingTemplate = false;
+//                 $scope.mainViewConfig.transactionError = false;
+//                 $scope.mainViewConfig.TemplateURLTab = null;
+//                 $timeout(function () {
+//                     if (isDebug) {
+//                         $scope.mainViewConfig.TemplateURLTab = "partials/html/" + $scope.viewConfigurationJson.menus[index].templateURL;
+//                     } else {
+//                         $scope.mainViewConfig.TemplateURLTab = $scope.viewConfigurationJson.menus[index].templateURL;
+//                     }
+//                     $scope.mainViewConfig.templateTitle = $scope.viewConfigurationJson.menus[index].description;
+//                 });
+//             };
+//
+//             $scope.deviceConnected = true;
+//
+//             // httpCommunicationServiceFactory.connectionLostHandler = function () {
+//             //     $log.debug("connection lost", $rootScope.debugLogEnable);
+//             //     communicationJsonManagerServiceFactory.unSyncDeviceStatus();
+//             //     $scope.deviceConnected = false;
+//             // };
+//             // httpCommunicationServiceFactory.connectionRecoverHandler = function () {
+//             //     $log.debug("connection Recover", $rootScope.debugLogEnable);
+//             //     $scope.changeTemplateURLTab($scope.mainViewConfig.selectedTab);
+//             //     $rootScope.$broadcast('templateUrlBroadcast', $scope.viewConfigurationJson.menus[$scope.mainViewConfig.selectedTab].templateURL);
+//             //     $scope.deviceConnected = true;
+//             // };
+//
+//             // httpTransactionFactory.setHandlersTo('menu');
+//             // httpTransactionFactory.handlers['menu'].transactionStartHandler = function (numOfCommands) {
+//             //     $log.debug("transactionStartHandler", $rootScope.debugLogEnable);
+//             //     if (numOfCommands > 0) {
+//             //         $scope.mainViewConfig.isLoading = true;
+//             //     }
+//             // };
+//             //
+//             // httpTransactionFactory.handlers['menu'].transactionFinishHandler = function () {
+//             //     $log.debug("transactionFinishHandler", $rootScope.debugLogEnable);
+//             //     $timeout(function () {
+//             //         $scope.mainViewConfig.isLoading = false;
+//             //     }, 500);
+//             // };
+//             //
+//             // httpTransactionFactory.handlers['menu'].transactionTimeoutHandler = function () {
+//             //     $log.debug("transactionTimeoutHandler", $rootScope.debugLogEnable);
+//             //     $scope.mainViewConfig.isLoading = false;
+//             //     $scope.mainViewConfig.transactionError = true;
+//             // };
+//
+//             $rootScope.refreshTheTab = function () {
+//                 window.location.reload();
+//                 //$scope.changeTemplateURLTab($scope.mainViewConfig.selectedTab);
+//                 //$rootScope.$broadcast('templateUrlBroadcast', $scope.viewConfigurationJson.menus[$scope.mainViewConfig.selectedTab].templateURL);
+//             };
+//             $scope.closeErrorMessage = function (userChoice) {
+//                 if (userChoice) {
+//                     if ($scope.error.onClose)
+//                         $scope.error.onClose();
+//                 }
+//                 else {
+//                     if ($scope.error.onCloseNot)
+//                         $scope.error.onCloseNot();
+//                 }
+//                 $scope.error = null;
+//             };
+//
+//             $rootScope.$watch('errors', function (val) {
+//                 if (val)
+//                     if (val.msg) $scope.error = val;
+//             });
+//             $scope.loadingConfig = false;
+//             $scope.savingConfig = false;
+//             $scope.saveConfig = function () {
+//                 $scope.savingConfig = true;
+//                 $rootScope.saveKCD().finally(function () {
+//                     $scope.savingConfig = false;
+//                 })
+//             };
+//             $scope.loadConfig = function () {
+//                 $timeout(function () {
+//                     angular.element('input#load-config-hidden').click();
+//                 }, 0);
+//             };
+//             $scope.loadConfigFile = function (el) {
+//                 $scope.loadingConfig = true;
+//                 $rootScope.loadKCD(el).finally(function () {
+//                     location.reload();
+//                     $scope.loadingConfig = false;
+//                 })
+//             };
+//
+//         }]);
+//
+// // })();

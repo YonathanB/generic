@@ -14,7 +14,7 @@
  * @requires angular - angular is used in order to provide its Promises implementation
  */
 
-
+//
 import {deviceCommands} from "../core/data/Commands";
 import K_DataProxy from "../core/data/DataProxy";
 
@@ -47,7 +47,7 @@ let _Commands = deviceCommands;
  * @property {Object} _DataProxy - Access to data through the DataProxy object
  */
 let _DataProxy;
-let _DeviceViewModel;
+
 let _$rootScope,
     _$http,
     _$q;
@@ -65,19 +65,73 @@ let _$rootScope,
 
 
 class DeviceViewModel {
-    constructor(){
+    constructor(deviceActions) {
         // this.dataProxy = dataProxy;
         this.data = {};
-        this.actions = {};
+        this.actions = deviceActions;
     }
-    updateViewModel(data){
-        this.data = Object.assign(this.data, data);
-        if($('body'))//notify view
-            setTimeout(function() {
-                $('body').scope().$digest()
+
+    updateViewModel(updatedData, cmdField) {
+
+
+        //notify view only if it's not an handshake
+        // TODO - we can add a timeout to prevent digest loop every time on load
+        if ($('body') && cmdField.cmd.key !== deviceCommands.HAND_SHAKE.key) {
+            this.data = Object.assign(this.data, updatedData);
+            setTimeout(function () {
+                $('body').scope().$applyAsync()
             }, 0);
+        }
     }
 }
+
+
+
+const deviceActions = {
+    updateData: function(){
+        console.log('updateData');
+    },
+
+
+    updateCredentials: function() {
+        console.log('updateCredentials');
+    },
+    upgradeDevice: function(){
+        console.log('upgradeDevice');
+    },
+    toggleSecurity: function(data){
+        var toSend = deviceCommands.SECURITY_ENABLE;
+        if(data && data.params) {
+            toSend.params = [0];
+            toSend.value = data.params.join(',');
+        } else{
+            toSend.value = 1;
+            toSend.params = null;
+        }
+        return _DataProxy.put([toSend]);
+    },
+    factoryReset: function(){
+        console.log('factoryReset');
+    },
+    restartDevice: function(){
+        console.log('restartDevice');
+    },
+    updateMatrixRoute: function(){
+        console.log('updateMatrixRoute');
+    },
+    loadConfig: function(){
+        console.log('updateMatrixRoute');
+    },
+    saveConfig: function(){
+        console.log('updateMatrixRoute');
+    }
+
+};
+
+
+
+let _DeviceViewModel = new DeviceViewModel(deviceActions);
+
 class ApplicationStarter {
     constructor($rootScope, $http, $q) {
         _$rootScope = $rootScope;
@@ -91,7 +145,9 @@ class ApplicationStarter {
             'url': location.hostname,
             'translator': 'p3k',
             'timeout': 0,
-            'connectionAttempts': 3
+            'connectionAttempts': 3,
+            'handShakeCommand': deviceCommands.HAND_SHAKE,
+            'sendOnCommunicationStart': [deviceCommands.MODEL, deviceCommands.NAME, deviceCommands.SECURITY_ENABLE]
         };// contains device definition
         this.STATUS = null;
         this.modules = {};
@@ -106,14 +162,14 @@ class ApplicationStarter {
      */
     start() {
 
-        // TODO - _self.STATUS = _APP_STATES.CONNECTING;
+        // TODO -
+        _self.STATUS = _APP_STATES.CONNECTING;
         let defer = _$q.defer();
         _$http.get('info')
             .then(function (deviceMetadata) {
                 let tmpInfoFile = deviceMetadata.data;
                 tmpInfoFile.communication = Object.assign(_self.infoFile.communication, tmpInfoFile.communication);
 
-                _DeviceViewModel = new DeviceViewModel();
                 _DataProxy = new K_DataProxy(_$q, tmpInfoFile.communication, {
                     'onConnectionLost': _onConnectionLost,
                     'onDataUpdated': _DeviceViewModel.updateViewModel.bind(_DeviceViewModel)
@@ -140,8 +196,8 @@ class ApplicationStarter {
         return defer.promise;
     }
 
-    getData() {
-        return _DeviceViewModel.data;
+    getViewModel() {
+        return _DeviceViewModel;
     }
 
     initModule(module) {
@@ -183,8 +239,6 @@ function _buildModuleCommands(commands) {
 
 function _createModules() {
     let _self = this;
-    _setUpInitModule.call(_self);
-    _setUpGlobalModule();
     let modules = _self.infoFile.modules;
     for (var _mod in modules) {
         _self.modules[_mod] = {
@@ -192,17 +246,6 @@ function _createModules() {
             'commands': _buildModuleCommands(modules[_mod].commands)
         }
     }
-}
-
-function _setUpInitModule() {
-    // TODO
-    _DataProxy.get(_buildModuleCommands( _self.infoFile["communication"].onInit))
-    // this.modules['INIT'] = K_ModuleFactory.createModule('INIT', {"commands": _infoFile["communication"].onInit});
-}
-
-function _setUpGlobalModule() {
-    console.log("TODO - implement the global module, it will define all the command with particular callbacks: factory|reset|dhcp|IP|PASSWORD ...")
-    console.log("Need to be instantiate on main state")
 }
 
 function _connectToDevice() {

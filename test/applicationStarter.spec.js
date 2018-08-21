@@ -29,5 +29,23 @@ describe('ApplicationStarter', function () {
             })
         }
 
+    });
+
+    describe('Start function', function () {
+
+
+        it('should have a start function ', function () {
+            expect(applicationStarter.start).to.be.a('function');
+        })
+
+        it('Start function should returns a promise', (done) => {
+            $.get('/base/test/resources/info', function(data){
+                done();
+            })
+                .fail(done)
+
+        })
+
     })
+
 })

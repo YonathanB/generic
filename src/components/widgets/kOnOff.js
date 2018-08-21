@@ -7,7 +7,7 @@
  ***********************************************/
 (function ()
 {
-    angular.module('components.widgets').directive("kOnOff", function ($timeout)
+    angular.module('components.widgets').directive("kOnOff", function ()
     {
         return {
             restrict: 'E',
@@ -87,21 +87,21 @@
                     angular.element(event.target).trigger('change');
                 };
 
-                scope.$watch('valueToListen', function (newValue, oldValue) {
-                    var classText = '.kOnOff-text-';
-
-                    // prevent launching a click trigger on init
-                    if (oldValue !== true && oldValue !== false && newValue !== true && newValue !== false) {
-                        if (newValue === '0')
-                            classText += 'off';
-                        else
-                            classText += 'on';
-                        $timeout(function () {
-                           if(scope.valueToListen != scope.initVal)
-                               $elem.find(classText).trigger('click')
-                        }, 700);
-                    }
-                });
+                // scope.$watch('valueToListen', function (newValue, oldValue) {
+                //     var classText = '.kOnOff-text-';
+                //
+                //     // prevent launching a click trigger on init
+                //     if (oldValue !== true && oldValue !== false && newValue !== true && newValue !== false) {
+                //         if (newValue === '0')
+                //             classText += 'off';
+                //         else
+                //             classText += 'on';
+                //         $timeout(function () {
+                //            if(scope.valueToListen != scope.initVal)
+                //                $elem.find(classText).trigger('click')
+                //         }, 700);
+                //     }
+                // });
 
                 scope.$watch('initVal', function (val)
                 {

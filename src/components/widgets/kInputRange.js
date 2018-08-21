@@ -5,6 +5,9 @@
  * Last Modified: 13/04/2015
  * Modified by: Fassous
  ***********************************************/
+import utils from '../../assets/js/utils';
+
+
 (function () {
     angular.module('components.widgets').directive("kInputRange", ['$timeout', '$interval', function ($timeout, $interval) {
         return {

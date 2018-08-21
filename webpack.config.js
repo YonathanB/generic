@@ -2,11 +2,12 @@ const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const WebpackShellPlugin = require('webpack-shell-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+var ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 // var ExtractTextPlugin = require("extract-text-webpack-plugin");
 // const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 // const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 
 var outputPath;
@@ -15,15 +16,16 @@ if (process.env.path_for_build)
 else
     outputPath = path.resolve(__dirname, 'dist');
 
-console.log(outputPath);
 const config = {
+    devtool: 'source-map',
     entry: {
         root: [path.resolve(__dirname, 'src/index.js')]
+        // pages: [path.resolve(__dirname, 'src/pages/about/about.module.js')]
     },
     output: {
-        filename: '[name].main.js',
+        filename: '[name].js',
         path: outputPath,
-        chunkFilename: "[name].main.js"
+        chunkFilename: "[name].js"
     },
     optimization: {
 
@@ -46,7 +48,6 @@ const config = {
     },
     devServer: {
         contentBase: path.join(__dirname, 'devices')
-        // publicPath: '/some/sub-path/'
     },
     module: {
         rules: [
@@ -59,9 +60,6 @@ const config = {
             },
             {
                 test: /\.less$/,
-                // loader: "style-loader!css-loader!less-loader"
-                // use: extractLess.extract({autoprefixer-loader
-                //     fallback: 'style-loader',
                 use: [{
                     loader: MiniCssExtractPlugin.loader//('style-loader' // creates style nodes from JS strings
                 }, {
@@ -90,7 +88,10 @@ const config = {
             },
             {
                 test: /\.js$/,
-                loader: 'babel-loader',
+                use: [
+                    { loader: 'ng-annotate-loader' },
+                    { loader: 'babel-loader' },
+                ],
                 include:[path.join(__dirname, 'test')],
                 exclude: /node_modules/
             },
@@ -114,29 +115,27 @@ const config = {
             }
         ]
     },
-    // optimization: {
-    //     splitChunks: {
-    //         cacheGroups: {
-    //             commons: {
-    //                 test: /[\\/]node_modules[\\/]/,
-    //                 name: 'vendor',
-    //                 chunks: 'all'
-    //             }
-    //         }
-    //     }
-    // },
     plugins: [
-        // new BundleAnalyzerPlugin(),
-        new WebpackShellPlugin({onBuildStart: ['echo "Webpack Start"'], onBuildEnd: ['echo "Webpack End"']}),//'copy "devices\\VS-88UT\\index.html" "devices\\VS-88UT\\dist"']}),
-        new MiniCssExtractPlugin({
-            filename: "[name].css",
-        }),
-        new webpack.ProvidePlugin({
-            'window.jQuery': 'jquery',
-            // Promise: 'es6-promise-promise',
-            _: 'underscore'
-        })
-
+        new MiniCssExtractPlugin({  filename: "[name].css" }),
+        new webpack.ProvidePlugin({ 'window.jQuery': 'jquery', _: 'underscore' })
     ]
 };
+
+
+
+console.log(process.env.NODE_ENV);
+// if (process.env.NODE_ENV == 'prod') {
+//
+//     config.plugins.push(  new ngAnnotatePlugin({
+//         add: true,
+//         // other ng-annotate options here
+//     }));
+//     config.plugins.push(new WebpackShellPlugin({onBuildStart: ['echo "Webpack Start"'], onBuildEnd: ['echo "Webpack End"']}));
+//         //'copy "devices\\VS-88UT\\index.html" "devices\\VS-88UT\\dist"']})
+// }
+if(process.env.NODE_ENV == 'dev'){
+    config.plugins.push(new BundleAnalyzerPlugin());
+}
+
+
 module.exports = config;

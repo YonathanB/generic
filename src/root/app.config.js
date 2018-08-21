@@ -1,5 +1,6 @@
 
-(function () {
+// (function () {
+
     angular.module('kramerWeb')
         .config([
         // 'ngQuickDateDefaultsProvider',
@@ -110,4 +111,4 @@
 
         }]);
 
-})();
+// })();

@@ -1,0 +1,55 @@
+<k-on-off ng-if="$ctrl.type=='toggle'" show-value-on-disable="true" init-val="{{$ctrl.isAuthenticationEnabled}}"
+        ng-click="$ctrl.toggleSecurity()"
+        ng-attr-title="Security  {{$ctrl.isAuthenticationEnabled ? 'enabled' : 'disabled'}}" height="30" width="153"
+        enabled="true"></k-on-off>
+
+<i ng-if="$ctrl.type=='icon'" ng-click="$ctrl.toggleSecurity()" id="security-icon-area" style="cursor:pointer"
+        ng-attr-title="Security {{$ctrl.isAuthenticationEnabled ? 'enabled' : 'disabled'}}"
+        ng-class="{'icon-lock': $ctrl.isAuthenticationEnabled == 1,'icon-unlocked': $ctrl.isAuthenticationEnabled == 0 }"></i>
+
+
+<div ng-if="$ctrl.isSecurityDialogVisible" style="position: absolute; top:0; left:0; height:100vh; width:100vw">
+
+  <div class="dialog-box">
+            <div class="dialog flip-in-x ng-enter">
+              <form name="toggleSec">
+                <div class="header">
+                 <h3>Would you like to disable security?</h3>
+                </div>
+
+                <div class="body">
+                  <label for="authentication">Enter password to disable authentication</label>
+                <br>
+                    <input type="password"
+                            id="authentication"
+                            placeholder="password"
+                            ng-model="$ctrl.pwd" style="margin-top: 10px">
+
+              </div>
+                  <div class="security-toggle-error" style=" height:35px;">
+                  <div  ng-if="$ctrl.wrongPassword" style="
+                  color: #fff;
+                  background-color: #b71c1c;
+                  font-size: 15px;
+                   padding-left: 20px;
+
+                   padding-top: 10px;
+                   padding-bottom: 10px;">
+                        <span>Password is incorrect!</span>
+                </div>
+                      </div>
+              <div class="footer">
+                     <div class="flex-container between">
+                        <button ng-click="$ctrl.toggleSecurityDialog()" class="btn flat"
+                                style="min-width: 110px">Cancel</button>
+                        <button class="btn blue selected" style="min-width: 110px"
+                                ng-click="$ctrl.sendCommand(false)">Save</button>
+                    </div>
+              </div>
+            </form>
+
+            </div>
+  </div>
+
+
+</div>

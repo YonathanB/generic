@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%" class="kMatrix"
+        ng-app="kramerWeb" ng-controller="appCtrl">
+<head>
+  <meta charset="UTF-8">
+  <title>{{vm.data.MODEL}}</title>
+     <link rel="stylesheet" href="root.css">
+     <link rel="stylesheet" href="components.css">
+</head>
+<body  >
+{{vm.data}}
+
+<kramer-web device-name="vm.data.NAME">
+</kramer-web>
+
+
+<script src="vendors.js"></script>
+<script src="components.js"></script>
+<script src="root.js"></script>
+<!--<script src="main.js"></script>-->
+</body>
+</html>

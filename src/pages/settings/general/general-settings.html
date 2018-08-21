@@ -8,12 +8,12 @@
     }
 </style>
 
-<k-form ng-model="$ctrl.vm.data" k-on-submit="$ctrl.update">
+<k-form ng-model="$ctrl.vm" k-on-submit="$ctrl.update">
     <!--call-on-before-saved="UpdateAuthentication()" >-->
     <!-->
         <!--exclude-from-compare="[$ctrl.vm.data.PROG_BTN_MOD]"-->
     <section>
-         <div class="field" ng-if="$ctrl.vm.data.hasOwnProperty('LOCK_FP')">
+         <div class="field" ng-if="$ctrl.vm.hasOwnProperty('LOCK_FP')">
             <label >Front Panel</label>
             <k-on-off show-value-on-disable="true" active-text="Locked" inactive-text="Un-locked"
                     init-val="{{$ctrl.vm.data['LOCK-FP']}}" value-to-listen="$ctrl.vm.data['LOCK-FP']"
@@ -21,22 +21,22 @@
         </div>
         <div class="field">
             <label for="NAME">Device Name</label>
-            <input device-name
+            <input k-device-name
                     id="NAME"
                     type="text"
-                    ng-model="$ctrl.vm.data.NAME"
-                    name="NAME" >
+                    ng-model="$ctrl.vm.deviceName"
+                    name="deviceName" >
         </div>
         <div class="field" style="margin-top: 15px">
             <label>Model</label>
-            <span class="answer">{{::$ctrl.vm.data.MODEL}}</span>
+            <span class="answer" style="font-weight: bold; font-size: larger;">{{::$ctrl.vm.deviceModel}}</span>
         </div>
     </section>
     <hr class="horizontal-separator" ng-class="{'hidden': !fileSystemEnable()}"/>
     <section ng-class="{'hidden': !fileSystemEnable()}">
         <div class="field">
             <label>Firmware version</label>
-            <label class="answer">{{::$ctrl.vm.data.VERSION}}</label>
+            <label class="answer">{{::$ctrl.vm.firmwareVersion}}</label>
         </div>
     </section>
     <section ng-if="$ctrl.vm.data.hasOwnProperty('PROG_BTN_MOD')">
@@ -48,7 +48,10 @@
         </div>
     </section>
     <hr class="horizontal-separator"/>
-    <security-settings vm="$ctrl.vm"></security-settings>
+    <security-settings
+            is-authentication-enabled="$ctrl.vm.isAuthenticationEnabled"
+            toggle-authentication="$ctrl.vm.actions.toggleSecurity"
+    ></security-settings>
 
 
 </k-form>

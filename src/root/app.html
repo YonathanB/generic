@@ -1,0 +1,53 @@
+<div>
+<k-splash-screen></k-splash-screen>
+<k-header is-authentication-enabled="MainCtrl.vm.data.SECURITY_ENABLE"
+        device-model="MainCtrl.vm.data.MODEL"
+        toggle-authentication="MainCtrl.vm.actions.toggleSecurity"></k-header>
+<div id="app-content">
+    <k-vertical-side-menu icons="close"
+            enabled="!(mainViewConfig.isLoading || mainViewConfig.deviceInProcess) && ( model['transitionTBar'] == undefined || model['transitionTBar'] == 0)">
+        <div id="menuDiv_{{$index}}" ng-repeat="menu in MainCtrl.menuItems | filter:{'parent': '!'} track by menu.id"
+                ng-if="menu.state == 'room' ? $root.hasRoomController: menu.state == 'maestro' ? $root.hasMaestroPanel || $root.hasMaestro: true">
+            <div class="menuItem" ui-sref-active="selected" ui-sref="{{menu.id}}({{menu.params}})">
+                <span class="icon {{menu.icon}}"></span>
+                <span class="menu-title">{{menu.description}}</span>
+            </div>
+        </div>
+        <div id="menuDiv_load" ng-class="{'hidden': !fileSystemEnable()}" ng-click="loadConfig()">
+
+        <div class="menuItem">
+        <span class="loader-btn" ng-if="loadingConfig"></span>
+        <span class="icon icon-folder-upload"></span>
+        <span class="menu-title">Load Config.</span>
+        </div>
+
+        </div>
+         <a id="menuDiv_save" ng-class="{'hidden': !fileSystemEnable()}" href="{{kcdConfigPath}}"
+                 download="{{$root.model+'_configuration.bin'}}">
+        <div class="menuItem">
+        <span class="loader-btn" ng-if="savingConfig"></span>
+        <span class="icon icon-folder-download"></span>
+        <span class="menu-title">Save Config.</span>
+        </div>
+        </a>
+    </k-vertical-side-menu>
+     <input id='load-config-hidden' type='file' fileread='fileText' file-read-type='text'
+             onchange='angular.element(this).scope().loadConfigFile(this)'>
+    <div k-loader="kLoader"
+            style="width: 100vw; padding: 2vh 0 2vh 35px; overflow-y: auto; overflow-x:hidden; height: 90vh;"
+            class="app-content-background-color">
+        <div ui-view="mainView" class="my-fade-animation main-view">
+        </div>
+    </div>
+</div>
+<k-dialog visible="mainViewConfig.globalInfo" show-shadow="false" is-animate="true" middle-visible="false"
+        left-visible="false" right-visible="false" no-border="true" hide-background="true" show-buttons-section="false"
+        show-title-section="false" allow-drag="false">
+    <h2>{{mainViewConfig.msg}}</h2>
+    <h4 style="text-align: center">{{mainViewConfig.counter}}</h4>
+</k-dialog>
+<k-message data="messageData"></k-message>
+<script>
+    document.getElementsByTagName("body")[0].style.display = 'none';
+</script>
+</div>

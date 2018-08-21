@@ -9,7 +9,7 @@
 //TODO add warning for special characters (SRS)
 
     angular.module('components.widgets')
-        .directive('deviceName', function () {
+        .directive('kDeviceName', function () {
             return {
                 link: function (scope, element, attrs) {
                     var $elem = element;

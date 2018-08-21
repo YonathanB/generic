@@ -13,70 +13,18 @@
     </div>
     <div style="margin-top: 12px;">
     <div class="setting-tab-section">
-        <div class="setting-tab" ng-if="$root.stateExist('generalSettings')" ui-sref-active="selected"
-                ui-sref="generalSettings">
+        <div ng-repeat="state in $ctrl.subStates track by $index"
+                class="setting-tab"  ui-sref-active="selected"
+                ui-sref="{{state.name}}">
             <div class="tab-title">
-                <i class="icon-cog"></i><span>General</span>
+                <i class="{{state.data.icon}}"></i><span>{{state.data.description}}</span>
             </div>
         </div>
-        <div class="setting-tab" ng-if="$root.stateExist('networkSettings')" ui-sref-active="selected"
-                ui-sref="networkSettings">
-            <div class="tab-title">
-                <i class="icon-network-settings"></i>
-                <span>Communication</span>
-            </div>
-        </div>
-        <div class="setting-tab" ng-if="$root.stateExist('upgrade')" ui-sref-active="selected"
-                ng-class="{'hidden': !$ctrl.fileSystemEnable()}" ui-sref="upgrade">
-            <div class="tab-title">
-                <i class="icon-firmware-upgrade"></i>
-                <span>Upgrade</span>
-            </div>
-        </div>
-        <div class="setting-tab" ng-if="$root.stateExist('ntp')" ui-sref-active="selected"
-                ng-class="{'disabled': tabNotReady}" ui-sref="ntp">
-            <div class="tab-title">
-                <i class="icon-calendar"></i>
-                <span>Time And Date</span>
-            </div>
-        </div>
+
     </div>
         <div ui-view></div>
     </div>
-        <form ng-show="$ctrl.disableSecurityDialogVisible" class="dialog-box"
-                ng-submit="closeDisableSecurityDialogBox(true)">
-            <div class="dialog flip-in-x" ng-if="disableSecurityDialogVisible">
-                <div class="body">
-                    <h2>Would you like to disable security?</h2>
-                    <p>Type the password to disable authentication.</p>
-                    <input type="password" placeholder="password" ng-model="securityDialog.pwd"
-                            style="margin-top: 10px">
-                    <div class="error " ng-show="passwordOK">
-                        <p>Password is incorrect!</p>
-                    </div>
-                    <div style="margin-top: 15px; text-align: right">
-                        <button ng-click="closeDisableSecurityDialogBox(false)" class="btn flat">cancel</button>
-                        <button class="btn blue selected" ng-click="closeDisableSecurityDialogBox(true)">Save</button>
-                    </div>
-                </div>
-            </div>
-        </form>
-        <div ng-show="$ctrl.enableSecurityDialogVisible" class="dialog-box">
-            <div class="dialog flip-in-x" ng-if="enableSecurityDialogVisible">
-                <div class="body">
-                    <h2>Would you like to enable security?</h2>
-                    <div class="flex-container">
-                        <div class="kMessageBox-icon icon_MBwarning" style="margin-right: 15px;"></div>
-                        <p>This action will enable the authentication.</p>
-                    </div>
-                    <div style="margin-top: 15px; text-align: right">
-                        <button ng-click="closeEnableSecurityDialogBox(false)" class="btn flat">cancel</button>
-                        <button class="btn blue selected" ng-click="closeEnableSecurityDialogBox(true)">Ok</button>
-                    </div>
-                </div>
-            </div>
 
-        </div>
 
 
 
@@ -84,7 +32,6 @@
         ng-if="$ctrl.factoryReset"
         on-cancel="$ctrl.toggleFactoryReset()"
         on-factory-reset="$ctrl.ProceedFactoryReset()">
-
     </factory-reset-dialog>
 
         <k-dialog show-shadow="false" middle-visible="false" right-visible="false" left-visible="false"

@@ -1,38 +1,25 @@
 var webpackConfig = require('./webpack.config');
 const merge = require('deepmerge');
-// delete webpackConfig.entry;
-// var path = require('path');
-// var entry = path.resolve(webpackConfig.context, webpackConfig.entry.root[0]);
-// var preprocessors = {};
-// preprocessors[entry] = ['webpack'];
+
 module.exports = function(config) {
     config.set({
-        browsers:   ['Chrome'],
+        browsers:   [ 'Chrome'],//TODO - to use 'PhantomJS' we may need to include es-6 polyfills
         frameworks: ['mocha'],
         reporters:  ['mocha', 'coverage'],
 
         logLevel: config.LOG_INFO,
         autoWatch: true,
-        singleRun: false,
+        singleRun: true,
         colors: true,
         port: 9876,
 
         basePath: '',
         files: [
             'webpack.karma.context.js',
-            // './dist/vendors.main.js',
-            // './dist/components.main.js',
-            // './dist/root.main.js',
-            // './node_modules/chai/chai.js',
-            // './node_modules/angular-mocks/angular-mocks.js'
-            // './test/*.spec.js'
+            {pattern : './test/resources/info', served: true, included: false}
         ],
         preprocessors: {
-            'webpack.karma.context.js': ['webpack', 'coverage'],
-            // './dist/vendors.main.js': ['webpack'],,
-            // './dist/components.main.js': ['webpack'],
-            // './dist/root.main.js': ['webpack'],
-            // './test/*.spec.js': ['webpack']
+            'webpack.karma.context.js': ['webpack', 'coverage']
         },
         coverageReporter: {
             type : 'html',
@@ -40,13 +27,7 @@ module.exports = function(config) {
         },
         exclude: [],
         webpack: { ...webpackConfig, optimization: undefined },
-        // webpack: webpackConfig,
-        //     merge(webpackConfig, {
-        //     optimization: {
-        //         splitChunks: false,
-        //         runtimeChunk: false
-        //     }
-        // }),
+
         webpackMiddleware: {
             noInfo: true
         }

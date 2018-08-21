@@ -7,7 +7,7 @@ class P3K_Parser{
     constructor(){}
     static handledByProtocol (msg) {
         var matches = msg.match(_opCodePattern);
-        if (matches && angular.isDefined(deviceCommands.commandsByOpCode[matches[1]]))
+        if (matches && deviceCommands.commandsByOpCode[matches[1]])
             return matches && (deviceCommands.commandsByOpCode[matches[1]].type === deviceCommands.COMMAND_TYPE_P3000);
         else
             return false;
@@ -27,24 +27,24 @@ class P3K_Parser{
             commandId = '0' + idx + '@';
         var res = '#' + commandId + commandOpCode;
         if (write) {
-            if (angular.isArray(params))
+            if (Array.isArray(params))
                 res += ' ' + params.join(',') + ',';
 
-            if (angular.isArray(value))
+            if (Array.isArray(value))
                 res += '[' + value.join(',') + ']';
             else {
                 var last = res[res.length - 1];
                 if (last != ' ' && last != ',') {
                     res += ' '
                 }
-                if(value)
+                if(value  !== undefined)
                     res += value.toString();
             }
         }
         else {
             if (commandOpCode.trim())// don't append ? on handshake command
                 res += '? ';
-            if (angular.isArray(params))
+            if (Array.isArray(params))
                 res += params.join(',');
         }
         return res + '\r';
@@ -70,7 +70,7 @@ class P3K_Parser{
         if (msg.match(_T_Err_Suffix)) {
             var errCode = msg.lastIndexOf('ERR') + 3;
             var msgString = msg.substring(errCode);
-            if (angular.isArray(command.params) && angular.isDefined(command[value.split(' ')[0]])) {
+            if (Array.isArray(command.params) && command[value.split(' ')[0]]) {
                 value = value.split(' ');
                 command = command[value[0]];
             }
@@ -83,7 +83,7 @@ class P3K_Parser{
         } else {
             try {
                 if (command) {
-                    if (angular.isArray(command.params)) {
+                    if (Array.isArray(command.params)) {
                         value = value.split(',');
                         if (value[1] !== undefined) {
                             params = value.shift();

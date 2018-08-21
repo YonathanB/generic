@@ -1,6 +1,8 @@
+
 const $ = require("jquery");
 window.$ = $;
 window.jQuery = $;
+
 
 import ngMessages from 'angular-messages'
 export default require('angular')

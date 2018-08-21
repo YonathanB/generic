@@ -1,0 +1,404 @@
+{
+ "communication": {
+     "url": "192.168.54.88",
+     "onInit": ["HTTP-AUTH-ENABLE"]
+   },
+  "starter": {
+    "onLoad": []
+  },
+  "modules": {
+    "presets": {
+      "commands": [
+        "PRST-LIST"
+      ]
+    },
+    "loadConfig": {},
+    "saveConfig": {},
+    "NTP": {
+      "commands": [
+        "TIME",
+        "TIME-SRV",
+        "TIME-LOC"
+      ]
+    },
+    "global": {
+      "commands": [
+        "GLOBAL-MUTE",
+        "GLOBAL-POE"
+      ]
+    },
+    "networkProperties": {
+      "commands": [
+        "NET-DHCP",
+        "NET-GATE",
+        "NET-IP",
+        "NET-MASK",
+        "NET-MAC",
+        "ETH-PORT TCP"
+      ],
+      "onlyGetCommands": [
+        "NET-GATE",
+        "NET-IP",
+        "NET-MASK"
+      ]
+    },
+    "deviceProperties": {
+      "commands": [
+        "NAME",
+        "MODEL",
+        "VERSION",
+        "SN",
+        "BUILD-DATE"
+      ]
+    },
+    "timeouts": {
+      "commands": [
+        "AV-SW-TIMEOUT 0",
+        "AV-SW-TIMEOUT 1",
+        "AV-SW-TIMEOUT 4",
+        "AV-SW-TIMEOUT 5",
+        "AV-SW-TIMEOUT 7"
+      ]
+    },
+    "matrix": {
+      "commands": [
+        "MATRIX-STATUS",
+         "X-PORT-SELECT-LIST",
+         "PORTS-LIST",
+         "X-ROUTE"
+      ],
+      "onlyGetCommands": null,
+      "retryAttemptsOnFailed": 3,
+      "noRouting": {
+        "OUT.IR.5": [
+          "IN.IR.5",
+          "IN.IR.6",
+          "IN.IR.7",
+          "IN.IR.8",
+          "OUT.HDBT.6"
+        ],
+        "OUT.IR.6": [
+          "IN.IR.5",
+          "IN.IR.6",
+          "IN.IR.7",
+          "IN.IR.8",
+          "OUT.HDBT.5"
+        ],
+        "IN.HDBT.5": [
+          "IN.IR.6",
+          "IN.IR.7",
+          "IN.IR.8"
+        ],
+        "IN.HDBT.6": [
+          "IN.IR.5",
+          "IN.IR.7",
+          "IN.IR.8"
+        ],
+        "IN.HDBT.7": [
+          "IN.IR.5",
+          "IN.IR.6",
+          "IN.IR.8"
+        ],
+        "IN.HDBT.8": [
+          "IN.IR.5",
+          "IN.IR.6",
+          "IN.IR.7"
+        ],
+        "BOTH.RS232.1": [
+          "BOTH.RS232.1"
+        ]
+      },
+      "bothPortsDirection": {
+        "input": [
+          "OUT.IR.5",
+          "OUT.IR.6",
+          "BOTH.USB_B.1",
+          "BOTH.USB_B.2"
+        ],
+        "output": [
+          "IN.IR.5",
+          "IN.IR.6",
+          "IN.IR.7",
+          "IN.IR.8",
+          "BOTH.USB_A.1",
+          "BOTH.USB_A.2"
+        ]
+      },
+      "overviewDataToLoad": {
+        "IN": {
+          "HDMI": {
+            "VIDEO": [
+              "SIGNAL",
+              "HDCP-STAT",
+              "X-MUTE",
+              "PROG-ACTION"
+            ]
+          },
+          "HDBT": {
+            "VIDEO": [
+              "SIGNAL",
+              "HDCP-STAT",
+              "X-MUTE",
+              "PROG-ACTION"
+            ],
+            "AUDIO": [
+              "X-MUTE"
+            ]
+          },
+          "ANALOG_AUDIO": [
+            "X-MUTE"
+          ],
+          "MIC": [
+            "X-MUTE"
+          ],
+          "RS232": [],
+          "USB": [],
+          "IR": []
+        },
+        "OUT": {
+          "HDMI": {
+            "VIDEO": [
+              "HDCP-STAT",
+              "DISPLAY",
+              "X-AFV",
+              "X-MUTE",
+              "X-5V"
+            ],
+            "AUDIO": [
+              "X-MUTE"
+            ]
+          },
+          "HDBT": {
+            "VIDEO": [
+              "HDCP-STAT",
+              "DISPLAY",
+              "X-AFV",
+              "X-MUTE",
+              "X-5V"
+            ],
+            "AUDIO": [
+              "X-MUTE"
+            ]
+          },
+          "ANALOG_AUDIO": [
+            "X-MUTE"
+          ],
+          "AMPLIFIED_AUDIO": [
+            "X-MUTE"
+          ],
+          "RS232": [],
+          "USB": [],
+          "IR": []
+        }
+      },
+      "detailDataToLoad": {
+        "OUT": {
+          "HDMI": {
+            "VIDEO": [
+              "X-LABEL",
+              "X-PRIORITY",
+              "X-AV-SW-MODE",
+              "X-PATTERN",
+              "X-AUD-ONLY",
+              "X-LONG-REACH"
+            ]
+          },
+          "HDBT": {
+            "VIDEO": [
+              "X-LABEL",
+              "X-PRIORITY",
+              "X-AV-SW-MODE",
+              "X-PATTERN",
+              "X-AUD-ONLY",
+              "X-LONG-REACH"
+            ]
+          },
+          "ANALOG_AUDIO": [
+            "X-LABEL",
+            "X-AUD-LVL",
+            "X-AUD-LVL-RANGE"
+          ],
+          "AMPLIFIED_AUDIO": [
+            "X-LABEL",
+            "X-AUD-LVL",
+            "X-AUD-LVL-RANGE"
+          ],
+          "RS232": [
+            "X-LABEL"
+          ],
+          "USB_A": [
+            "X-LABEL"
+          ],
+          "USB_B": [
+            "X-LABEL"
+          ],
+          "IR": [
+            "X-LABEL"
+          ]
+        },
+        "IN": {
+          "HDMI": {
+            "VIDEO": [
+              "X-LABEL",
+              "EDID-CS",
+              "EDID-AUDIO",
+              "X-SET-FOLLOWERS",
+              "HDCP-MOD",
+              "X-LONG-REACH",
+              "REMOTE-INFO"
+            ]
+          },
+          "HDBT": {
+            "VIDEO": [
+              "X-LABEL",
+              "EDID-CS",
+              "EDID-AUDIO",
+              "X-SET-FOLLOWERS",
+              "HDCP-MOD",
+              "X-LONG-REACH",
+              "REMOTE-INFO"
+            ]
+          },
+          "ANALOG_AUDIO": [
+            "X-LABEL",
+            "X-AUD-LVL",
+            "X-MIC-TYPE",
+            "X-AUD-LVL-RANGE"
+          ],
+          "MIC": [
+            "X-LABEL",
+            "X-AUD-LVL",
+            "X-MIC-TYPE",
+            "X-AUD-LVL-RANGE"
+          ],
+          "RS232": [
+            "X-LABEL"
+          ],
+          "USB_A": [
+            "X-LABEL"
+          ],
+          "USB_B": [
+            "X-LABEL"
+          ],
+          "IR": [
+            "X-LABEL"
+          ]
+        }
+      }
+    }
+  },
+  "states": [
+    {
+      "id": "routing",
+      "name": "routing",
+      "controller": "routingCtrl",
+      "url": "routing",
+      "template": "routing.html",
+      "description": "Routing Settings",
+      "icon": "icon-tree",
+      "onLoad": [
+        "matrix"
+      ]
+    },
+     {
+      "id": "edid",
+      "name": "edid",
+      "controller": "edidCtrl",
+      "url": "edid-management",
+      "template": "edid.html",
+      "description": "EDID Management",
+      "icon": "icon-edid",
+      "onLoad": [
+        "edidObj"
+      ]
+    },
+     {
+      "id": "room",
+      "name": "room",
+      "controller": "roomCtrl",
+      "url": "room",
+      "template": "roomController.html",
+      "description": "Controller",
+      "icon": "icon-equalizer2",
+      "onLoad": [
+        "UniBuilder"
+      ]
+    },
+     {
+      "id": "remoteControl",
+      "name": "maestro",
+      "url": "{view:automation|actionPanel|maestro}",
+      "description": "Automation",
+      "params": {
+        "view": "automation"
+      },
+      "icon": "icon-maestro-icon"
+    },
+
+     {
+      "id": "deviceSettings",
+      "name": "deviceSettings",
+      "controller": "deviceSettingsCtrl",
+      "url": "device-settings",
+      "template": "deviceSettings.html",
+      "description": "Settings",
+      "icon": "icon-cogs",
+      "redirectTo": "generalSettings",
+      "onLoad": ["deviceProperties"]
+    },
+    {
+      "id": "generalSettings",
+      "name": "general",
+      "parent": "deviceSettings",
+      "url": "general",
+      "template": "generalSettings.html",
+      "description": "General",
+      "icon": "icon-cog"
+    },
+     {
+          "id": "networkSettings",
+          "parent": "deviceSettings",
+          "name": "network",
+          "controller": "networkCtrl",
+          "url": "communication",
+          "template": "networkSettings.html",
+          "description": "Communication",
+          "icon": "icon-sphere",
+          "onLoad": [
+            "networkProperties"
+          ]
+        },
+     {
+      "id": "upgrade",
+      "name": "upgrade",
+      "url": "upgrade",
+      "parent": "deviceSettings",
+      "template": "firmwareUpgrade.html",
+      "description": "Upgrade",
+      "icon": "icon-forward"
+    },
+    {
+      "id": "ntp",
+      "name": "timeAndDate",
+      "controller": "timeAndDateCtrl",
+      "url": "ntp",
+      "parent": "deviceSettings",
+      "template": "timeAndDate.html",
+      "description": "Time and date",
+      "icon": "icon-calendar",
+      "onLoad": [
+        "NTP"
+      ]
+    },
+     {
+      "id": "about",
+      "name": "about",
+      "controller": "aboutCtrl",
+      "url": "about",
+      "template": "about.html",
+      "description": "About",
+      "onLoad": ["deviceProperties", "timeouts", "global", "NTP", "networkProperties", "matrix"],
+      "icon": "icon-info"
+    }
+  ]
+}
