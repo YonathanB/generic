@@ -1,4 +1,4 @@
-import $model from '../../model/model.module';
+import $model from '../../services/model.module';
 // import $widgets from '../../components/widgets/widgets.module';
 
 

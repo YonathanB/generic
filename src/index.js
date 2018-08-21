@@ -35,7 +35,7 @@
 
 import angular from 'angular';
 // import Promise from 'babel-polyfill'
-import kramerWeb from './root/app.module';
+import kramerWeb from './app/app.module';
 
 import './assets/styles/app.less';
 

@@ -9,7 +9,7 @@
     "build-VS-88UT": "cross-env path_for_build=devices/VS-88UT/dist webpack --mode production",
     "dev": "cross-env NODE_ENV=dev webpack-dev-server --mode development --open --watch",
     "gendoc": "node ./node_modules/jsdoc/jsdoc.js -c jsdoc.json -r src ",
-    "mocha": "mocha --require babel-register  ./test/applicationStarter.spec.js -r jsdom-global/register",
+    "mocha": "mocha --require babel-register  ./test/applicationService.spec.js -r jsdom-global/register",
     "karma": "karma start  ./karma.conf.js"
   },
   "author": "Yonathan Benitah",

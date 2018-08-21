@@ -1,6 +1,6 @@
-import {applicationStarter} from "../model/applicationStarter";
+import {deviceModel} from "../core/model/applicationService";
 
-
+console.log(deviceModel);
 // (function () {
 'use strict';
 /**
@@ -31,14 +31,11 @@ angular.module('kramerWeb')
         '$log',
         function ($scope, $rootScope, ViewSettingsFactory, $timeout, $state, MessageService, MainService, $log) {
 
-            // MainService.then(function () {
-
-
-                $scope.vm = applicationStarter.getViewModel();
-
+            $scope.DEVICE_MODEL = deviceModel;
+            console.log($scope.DEVICE_MODEL)
 
             // });
-            // $scope.deviceStatus = applicationStarter.STATUS;
+            // $scope.deviceStatus = applicationService.STATUS;
 
 
             MessageService.subscribe(function (data) {

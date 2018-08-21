@@ -3,14 +3,14 @@
         ng-app="kramerWeb" ng-controller="appCtrl">
 <head>
   <meta charset="UTF-8">
-  <title>{{vm.data.MODEL}}</title>
+  <title>{{DEVICE_MODEL.data.MODEL}}</title>
      <link rel="stylesheet" href="root.css">
      <link rel="stylesheet" href="components.css">
 </head>
 <body  >
-{{vm.data}}
+{{DEVICE_MODEL}}
 
-<kramer-web device-name="vm.data.NAME">
+<kramer-web  model="DEVICE_MODEL">
 </kramer-web>
 
 

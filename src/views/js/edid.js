@@ -20,7 +20,7 @@
         '$filter',
         'deviceModel',
         'K_Port',
-        function ($http, $q, edidReaderServiceFactory, $filter, applicationStarter, K_Port) {
+        function ($http, $q, edidReaderServiceFactory, $filter, applicationService, K_Port) {
             var NUMBER_OF_INPUT = $filter('filter')(($filter('toArray')(deviceModel.portsList.getMatrixPorts().input)), {'masterSignal': 'VIDEO','selectedPort': true}).length;
             var NUMBER_OF_OUTPUT = $filter('filter')(($filter('toArray')(deviceModel.portsList.getMatrixPorts().output)), {'masterSignal': 'VIDEO','selectedPort': true}).length;
 
@@ -141,7 +141,7 @@
                   edidReaderServiceFactory,
                   fileTransferServiceFactory,
                   edidCollectorServiceFactory,
-                  $log, EDID_Obj, $http, applicationStarter, Commands, K_Proxy, MessageService, $filter) {
+                  $log, EDID_Obj, $http, applicationService, Commands, K_Proxy, MessageService, $filter) {
             $scope.accordionVisible = [];
             $scope.openAccordion = function (index) {
                 for (var i = 0; i < $scope.accordionVisible.length; i++) {
@@ -556,7 +556,7 @@
         'deviceModel',
         'EDID_Obj',
         '$exceptionHandler',
-        function (applicationStarter, EDID_Obj, $exceptionHandler) {
+        function (applicationService, EDID_Obj, $exceptionHandler) {
             return {
                 restrict: 'E',
                 scope: {

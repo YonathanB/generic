@@ -1,7 +1,7 @@
 let expect = require('chai').expect;
 
 
-import {applicationStarter} from '../src/model/applicationStarter';
+import {applicationService} from '../src/core/model/applicationService';
 
 let test_infoFile = [
     'type',
@@ -12,20 +12,20 @@ let test_infoFile = [
     'connectionAttempts'
 ];
 
-describe('ApplicationStarter', function () {
+describe('ApplicationService', function () {
 
     describe('infoFile', function () {
 
-        it(`ApplicationStarter Should have a property infoFile`, function () {
-            expect(applicationStarter).to.have.own.property('infoFile');
+        it(`ApplicationService Should have a property infoFile`, function () {
+            expect(applicationService).to.have.own.property('infoFile');
         });
         it(`infoFile Should have a property communication`, function () {
-            expect(applicationStarter.infoFile).to.have.own.property('communication');
+            expect(applicationService.infoFile).to.have.own.property('communication');
         });
 
         for (let i = 0; i < test_infoFile.length; i++) {
             it(`communication property in infoFile Should have a property ${test_infoFile[i]}`, function () {
-                expect(applicationStarter.infoFile.communication).to.have.own.property(test_infoFile[i]);
+                expect(applicationService.infoFile.communication).to.have.own.property(test_infoFile[i]);
             })
         }
 
@@ -35,7 +35,7 @@ describe('ApplicationStarter', function () {
 
 
         it('should have a start function ', function () {
-            expect(applicationStarter.start).to.be.a('function');
+            expect(applicationService.start).to.be.a('function');
         })
 
         it('Start function should returns a promise', (done) => {

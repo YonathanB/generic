@@ -14,7 +14,7 @@
         'DeviceModel',
         'Commands',
         '$timeout',
-        function ($rootScope, $scope, networkProperties, applicationStarter, Commands, $timeout) {
+        function ($rootScope, $scope, networkProperties, applicationService, Commands, $timeout) {
            
             $scope.resetDHCP = function(){
                 $timeout(function(){

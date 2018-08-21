@@ -1,31 +1,8 @@
 import {deviceCommands} from "../../../core/data/Commands";
-
+import AbstractPageCtrl from '../../abstractPage.controller'
 
 // let $ctrl = this;
-class MainCtrl {
-    constructor($scope, properties) {
-        this.vm = {};
-        this.scope = $scope;
-        this.properties = properties;
-    }
-        $onChanges(changes) {
-            for(let prop in this.properties) {
-                this.vm[prop] = this.test.vm.data[this.properties[prop]];
-            }
-        };
 
-        $onInit() {
-            for(let prop in this.properties) {
-                this.scope.$watch(() => this.test.vm.data[this.properties[prop]],
-                    (newValue, oldValue) => {
-                        if (newValue !== oldValue) {
-                            this.vm[prop] = this.test.vm.data[this.properties[prop]];
-                        }
-                    });
-            }
-        };
-
-}
 
 
 
@@ -36,7 +13,7 @@ let _generalProperties = {
     'isAuthenticationEnabled': deviceCommands.SECURITY_ENABLE.key
 };
 
-export default class GeneralDeviceSettingsCtrl extends MainCtrl{
+export default class GeneralDeviceSettingsCtrl extends AbstractPageCtrl{
     constructor($scope) {
         super($scope, _generalProperties);
         let $ctrl = this;

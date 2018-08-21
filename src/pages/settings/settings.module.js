@@ -54,13 +54,13 @@ export default require('angular')
     })
 
     .component('deviceSettings', {
-        bindings: { vm: '<', },
+        bindings: { model: '<', },
         template: require('./device-settings.html'),
         controller: DeviceSettingsCtrl
     })
     .component('generalSettings', {
-        bindings: {vm: '<'},
-        require: {test: '^kramerWeb'},
+        bindings: {model: '<'},
+        require: {app: '^kramerWeb'},
         template: require('./general/general-settings.html'),
         controller: GeneralDeviceSettingsCtrl
     })
@@ -70,17 +70,17 @@ export default require('angular')
         controller: SecuritySettingsCtrl
     })
     .component('networkSettings', {
-        bindings: {vm: '<'},
+        bindings: {model: '<'},
         template: require('./network/networkSettings.html'),
         controller: NetworkSettingsCtrl
     })
     .component('upgrade', {
-        bindings: {vm: '<'},
+        bindings: {model: '<'},
         template: require('./upgrade/firmwareUpgrade.html'),
         controller: UpgradeCtrl
     })
     .component('ntp', {
-        bindings: {vm: '<'},
+        bindings: {model: '<'},
         template: require('./ntp/timeAndDate.html'),
         controller: NTPSettingsCtrl
     })

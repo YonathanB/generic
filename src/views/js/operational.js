@@ -11,7 +11,7 @@
         'operationalConfiguration',
         // 'authentication',
         '$timeout',
-        function ($scope, applicationStarter, Commands, model, $timeout) {
+        function ($scope, applicationService, Commands, model, $timeout) {
             $scope.errorUpdateMessage = "";
             $scope.showErrorOnUpdate = false;
             $scope.warningMode = '';
@@ -199,7 +199,7 @@
         'streamingOperationalGeneralSettings',
         // 'authentication',
         '$timeout',
-        function ($scope, applicationStarter, Commands, model, $timeout) {
+        function ($scope, applicationService, Commands, model, $timeout) {
 
             $scope.recording_operational_statuses =
                 {0: {name:"Running"},
@@ -292,7 +292,7 @@
         // 'authentication',
         '$timeout',
 
-        function ($scope, applicationStarter, Commands, model, $timeout) {
+        function ($scope, applicationService, Commands, model, $timeout) {
             var streaming_protocols = [{id:1, name:"RTSP"}];
             var streaming_methods = [{id:1, name:"Unicast"},{id:2, name:"Multicast"}];
             $scope.streaming_methods = [{id:0, name:"Disable"},{id:1, name:"Enable"}];
@@ -381,7 +381,7 @@
         // 'authentication',
         '$timeout',
         '$filter',
-        function ($scope, applicationStarter, Commands, model, $timeout, $filter) {
+        function ($scope, applicationService, Commands, model, $timeout, $filter) {
             $scope.excludeFromCompare = ['RECORDING_STATUS'];
 
             $scope.recording_operational_statuses =
@@ -731,7 +731,7 @@
         // 'authentication',
         '$timeout',
         '$sce',
-        function ($scope, applicationStarter, Commands, model, $timeout, $sce) {
+        function ($scope, applicationService, Commands, model, $timeout, $sce) {
             var urlPrefix = isDebug ? debugURL + "Partials/html/" : "/";
             $scope.url = $sce.trustAsResourceUrl(urlPrefix + 'tunnelingActiveClients.html');
             $scope.ioPortSelectedIndex = 0;

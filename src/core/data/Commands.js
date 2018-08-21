@@ -1893,7 +1893,7 @@ function CommandsFactory() {
     return commandObj;
 }
 
-let deviceCommands = new CommandsFactory();
+const deviceCommands = new CommandsFactory();
 
 export {
     Connectors,

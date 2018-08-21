@@ -1,7 +1,9 @@
-import {applicationStarter} from "../model/applicationStarter";
-console.log(applicationStarter);
+import {applicationService, deviceModel} from "../core/model/applicationService";
 // import $oclazyLoad from 'oclazyload';
+
+
 let isDebug = (process.env.NODE_ENV === 'development');
+
 angular.module('kramerWeb')
     .config(['$stateProvider',
         function ($stateProvider) {
@@ -16,12 +18,11 @@ angular.module('kramerWeb')
                             controller: ['$rootScope', '$scope', '$timeout', '$http', '$q', 'MainService', '$transitions',
                                 function ($rootScope, $scope, $timeout, $http, $q, MainService, $transitions) {
 
-                                    MainService.then(function () {
-                                        $scope.vm = applicationStarter.getViewModel()
-                                    });
+                                    // MainService.then(function () {
+                                    //     $scope.vm = applicationService.getModel()
+                                    // });
 
                                     $transitions.onStart({}, function (transition) {
-                                        console.log('transition', transition)
                                         if (transition.to().name === 'unreachable') {
                                             return false;
                                         }
@@ -128,51 +129,20 @@ angular.module('kramerWeb')
         }])
     .factory("ViewSettingsFactory", ['$state', '$urlRouter',
         function ($state, $urlRouter) {
-            var navigation = {};
-            var statePref = "main.";
-            var lastRequestedState = '';
-            var menuObj = {};
-            var menus = [];
+            let menus = [];
 
-
-            navigation.getMenuObj = function () {
-                return menuObj;
+            return {
+                initMenu: initMenu,
+                getMenu: getMenu
             };
-            navigation.getMenu = function () {
+
+
+            function getMenu() {
                 return menus;
-            };
-
-
-            function additionalData(state) {
-                let toReturn = {};
-                toReturn.description = state.description;
-                toReturn.icon = state.icon;
-                return toReturn;
             }
 
-            function routeResolver(onLoad) {
-                let resolves = {};
-                if (onLoad) {
-                    onLoad.forEach(function (toLoad) {
-                        let newResolve = {};
-                        newResolve[toLoad] = function () {
-                            return applicationStarter.initModule(toLoad);
-                        };
-
-                        resolves = Object.assign(resolves, newResolve)
-                    });
-                }
-                resolves = Object.assign(resolves, {
-                    vm: function () {
-                        return applicationStarter.getViewModel();
-                    }
-                });
-                return resolves;
-            }
-
-            navigation.initMenu = function (devicesStates, KramerDevice) {
-                console.log('initStates');
-                for (var _state in devicesStates) {
+            function initMenu(devicesStates) {
+                for (let _state in devicesStates) {
                     menus.push(devicesStates[_state]);
                     $state.router.stateRegistry.register({
                         name: devicesStates[_state].id,
@@ -180,187 +150,59 @@ angular.module('kramerWeb')
                         parent: devicesStates[_state].parent ? devicesStates[_state].parent : 'main',
                         component: devicesStates[_state].id,
                         resolve: function () {
-                            return routeResolver(devicesStates[_state].onLoad);
+                            return _routeResolver(devicesStates[_state].onLoad);
                         }(),
                         redirectTo: devicesStates[_state].redirectTo,
 
                         data: function () {
-                            return additionalData(devicesStates[_state]);
+                            return _additionalData(devicesStates[_state]);
                         }(),
 
                         lazyLoad: ($transition$) => {
                             const $ocLazyLoad = $transition$.injector().get("$ocLazyLoad");
                             if (devicesStates[_state].id == 'about') {
                                 // return require.ensure([], () => {
-                                    // load whole module
-                                    const module = require("../pages/" + devicesStates[_state].id + "/" + devicesStates[_state].id + ".module");
+                                // load whole module
+                                const module = require("../pages/" + devicesStates[_state].id + "/" + devicesStates[_state].id + ".module");
 
-                                    return $ocLazyLoad.inject(module.default);
+                                return $ocLazyLoad.inject(module.default);
                                 // }, devicesStates[_state].id + ".module");
                             }
                         }
                     })
                 }
 
-                console.log($state.router.stateRegistry.get());
                 $urlRouter.when('', '/' + devicesStates[0].url);
                 $urlRouter.when('/', '/' + devicesStates[0].url);
                 $urlRouter.otherwise("/" + devicesStates[0].url);
                 $urlRouter.sync();
                 $urlRouter.listen();
-            };
-            navigation.goToFirstMenu = function () {
-                $state.go(statePref + menus[0].state);
-            };
-
-            navigation.isSelected = function (menuItem) {
-                return $state.current.name.includes(menuItem.state);
-            };
-
-            navigation.cannotLeaveThisPageFlag = false;
-            navigation.askBeforeLeaveThePage = false;
-
-            navigation.setLastRequestedState = function (stateName) {
-                lastRequestedState = stateName;
-            };
-
-            navigation.navigateToSavedState = function () {
-                $state.go(lastRequestedState, null, {reload: lastRequestedState});
-            };
-            navigation.goToState = function (menuItem) {
-                return $state.go(statePref + menuItem.state, null, {reload: statePref + menuItem.state})
-            };
-            return navigation;
+            }
         }]);
 
 
-// var dependencyResolve = {
-//     POE: ['DeviceModel', function () {
-//         return DeviceModel.modules['POE'].init();
-//     }],
-//     streamingOperationalGeneralSettings: ['DeviceModel', function (DeviceModel) {
-//         return DeviceModel.modules['operationalGeneralSettings'].init();
-//     }],
-//     operationalConfiguration: ['DeviceModel', function (DeviceModel) {
-//         return DeviceModel.modules['operationalConfiguration'].init();
-//     }],
-//     streamingOperationalRecording: ['DeviceModel', function (DeviceModel) {
-//         return DeviceModel.modules['operationalRecording'].init();
-//     }],
-//     operationalStreaming: ['DeviceModel', function (DeviceModel) {
-//         return DeviceModel.modules['operationalStreaming'].init();
-//     }],
-//     operationalTunnelingSettings: ['DeviceModel', function (DeviceModel) {
-//         return DeviceModel.modules['operationalTunnelingSettings'].init();
-//     }],
-//     videoPatterns: ['DeviceModel', 'Commands',
-//         function (DeviceModel) {
-//             return DeviceModel.modules['videoPatterns'].init();
-//             // if (!VideoService.patternInitialized())
-//             //     VideoService.initPatterns();
-//         }],
-//     timeouts: ['DeviceModel', function (DeviceModel) {
-//         return DeviceModel.modules['timeouts'].init();
-//     }],
-//     about: ['$ocLazyLoad', '$q', function ($ocLazyLoad, $q) {
-//         return $q((resolve) => {
-//             require(['../components/about/about.module'], (module) => {
-//                 resolve($ocLazyLoad.load({name: module.default}))
-//             });
-//         });
-//     }],
-//     // callbackOnUpdate:['DeviceModel', function(DeviceModel){
-//     //   return DeviceModel.onUpdate(msg);
-//     // }],
-//     matrix: ['DeviceModel', '$ocLazyLoad', '$q',
-//         function (DeviceModel, $ocLazyLoad, $q) {
-//             return DeviceModel.initModule('matrix')
-//                 .then(function () {
-//                     return $q((resolve) => {
-//                         require(['../components/matrix/matrix.module'], (module) => {
-//                             resolve($ocLazyLoad.load({name: module.default}).then(function () {
-//                                 return DeviceModel.modules['matrix'].model;
-//                             }));
-//                         });
-//                     });
-//                 })
-//         }],
-//
-//     globalMute: [function () {
-//         if (DeviceModel.modules['globalMute'].initialized)
-//             return DeviceModel.modules['globalMute'].data;
-//         else
-//             return DeviceModel.modules['globalMute'].init();
-//     }],
-//     presets: ['DeviceModel', function (DeviceModel) {
-//         if (DeviceModel.modules['presets'])
-//             if (DeviceModel.modules['presets'].initialized)
-//                 return DeviceModel.modules['presets'].data;
-//             else
-//                 DeviceModel.modules['presets'].init()
-//         else return {};
-//     }],
-//     edidObj: ['EDID_Obj', function (EDID_Obj) {
-//         if (!EDID_Obj.EdidReady) {
-//             return EDID_Obj.init();
-//         }
-//     }],
-//     UniBuilder: ['$http', function ($http) {
-//         return $http.get(location.origin + ":8082/")
-//             .then(function () {
-//                 return true
-//             })
-//             .catch(function () {
-//                 return false
-//             })
-//     }],
-//     // MatrixRoutes: ['DeviceModel', 'K_Port',
-//     //     function (DeviceModel, K_Port) {
-//     //         return DeviceModel.get_stateModel('matrix')
-//     //             .then(function(data){
-//     //                 console.log(data);
-//     //             })
-//     //         // if (DeviceModel.modules['matrix'].initialized)
-//     //         //     return DeviceModel.modules['matrix'];
-//     //         // else {
-//     //         //     DeviceModel.modules['matrix'].inputs = K_Port.getMatrixPorts().input;
-//     //         //     DeviceModel.modules['matrix'].outputs = K_Port.getMatrixPorts().output;
-//     //         //     // get the matrix-status for routes
-//     //         //     return DeviceModel.modules['matrix'].init();
-//     //
-//     //     }],
-//     deviceProperties: ['DeviceModel', function (DeviceModel) {
-//         return DeviceModel.modules['deviceProperties'].init();
-//     }],
-//
-//     NTP: ['DeviceModel', function (DeviceModel) {
-//         if (!DeviceModel['NTP'].initialized)
-//             return DeviceModel['NTP'].init();
-//         else
-//             return DeviceModel['NTP']
-//     }],
-//     networkProperties: ['DeviceModel', function (DeviceModel) {
-//         return DeviceModel.modules['networkProperties'].init();
-//     }],
-//     TimeZoneList: ['DeviceModel', 'Commands', function (DeviceModel, Commands) {
-//         return DeviceModel.send([Commands.TIME_ZONE_LIST])
-//             .then(function (data) {
-//                 if (data[0].value)
-//                     DeviceModel.TimeZoneList = (data[0].value.replace(/^\s+/, "")).split('\n');
-//                 return DeviceModel.TimeZoneList;
-//             });
-//     }],
-//     DevicePorts: ['DeviceModel', 'Matrix',
-//         function (DeviceModel, Matrix) {
-//             if (DeviceModel.modules['matrix'].initialized)
-//                 return DeviceModel.modules['matrix'];
-//             else {
-//                 Matrix.addPort(1, 'HDMI', 1, 'output');
-//                 Matrix.addPort(2, 'HDMI', 2, 'output');
-//                 return DeviceModel.portsList.initPortsOverview().then(function () {
-//                     return DeviceModel.portsList.getMatrixPorts();
-//                 })
-//             }
-//         }]
-//
-// };
+function _routeResolver(onLoad) {
+    let resolves = {};
+    if (onLoad) {
+        onLoad.forEach(function (toLoad) {
+            let newResolve = {};
+            newResolve[toLoad] = function () {
+                return applicationService.initModule(toLoad);
+            };
+
+            resolves = Object.assign(resolves, newResolve)
+        });
+    }
+    resolves = Object.assign(resolves, {
+        model: function () {
+            return deviceModel;
+        }
+    });
+    return resolves;
+}
+function _additionalData(state) {
+    let toReturn = {};
+    toReturn.description = state.description;
+    toReturn.icon = state.icon;
+    return toReturn;
+}

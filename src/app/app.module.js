@@ -1,5 +1,5 @@
 import angular from 'angular';
-import $model from '../model/model.module';
+import $services from '../services/services.module';
 
 
 import $header from '../components/header/header.module';
@@ -14,19 +14,16 @@ import $components from '../components/components.module';
 import $uiRouter from '@uirouter/angularjs';
 
 import $oclazyLoad from 'oclazyload';
-import DeviceSettingsCtrl from "../pages/settings/deviceSettings";
-// import $data from '../core/data/data.module';
 
 
-import appCtrl from './app.controller'
+import AppCtrl from './app.controller'
 
 export default angular
-    .module('kramerWeb', [$uiRouter, $oclazyLoad, $header, $components, $model, $settings])
+    .module('kramerWeb', [$uiRouter, $oclazyLoad, $header, $components, $services, $settings])
     .component('kramerWeb', {
-        bindings: { deviceName: '<', },
+        bindings: {model:'<'},
         template: require('./app.html'),
-        controller: appCtrl,
-        controllerAs: 'MainCtrl'
+        controller: AppCtrl
     })
     .name;
 

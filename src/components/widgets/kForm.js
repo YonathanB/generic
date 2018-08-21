@@ -336,7 +336,7 @@
                                         }
                                 }
                                 checkIfDataHasChanged();
-                            }, 200)
+                            }, 800)
                     }, true);
 
 

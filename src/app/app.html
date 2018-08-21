@@ -1,12 +1,13 @@
 <div>
 <k-splash-screen></k-splash-screen>
-<k-header is-authentication-enabled="MainCtrl.vm.data.SECURITY_ENABLE"
-        device-model="MainCtrl.vm.data.MODEL"
-        toggle-authentication="MainCtrl.vm.actions.toggleSecurity"></k-header>
+<k-header is-authentication-enabled="$ctrl.vm.isAuthenticationEnabled"
+        device-model="$ctrl.vm.deviceModel"
+        toggle-authentication="$ctrl.vm.actions.toggleSecurity"></k-header>
+    {{$ctrl.vm}}
 <div id="app-content">
     <k-vertical-side-menu icons="close"
             enabled="!(mainViewConfig.isLoading || mainViewConfig.deviceInProcess) && ( model['transitionTBar'] == undefined || model['transitionTBar'] == 0)">
-        <div id="menuDiv_{{$index}}" ng-repeat="menu in MainCtrl.menuItems | filter:{'parent': '!'} track by menu.id"
+        <div id="menuDiv_{{$index}}" ng-repeat="menu in $ctrl.menuItems | filter:{'parent': '!'} track by menu.id"
                 ng-if="menu.state == 'room' ? $root.hasRoomController: menu.state == 'maestro' ? $root.hasMaestroPanel || $root.hasMaestro: true">
             <div class="menuItem" ui-sref-active="selected" ui-sref="{{menu.id}}({{menu.params}})">
                 <span class="icon {{menu.icon}}"></span>

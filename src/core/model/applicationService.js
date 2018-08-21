@@ -15,8 +15,10 @@
  */
 
 //
-import {deviceCommands} from "../core/data/Commands";
-import K_DataProxy from "../core/data/DataProxy";
+import {deviceCommands} from "../data/Commands";
+import K_DataProxy from "../data/DataProxy";
+import DeviceModel from './deviceModel'
+
 
 
 // needs to import angular for providers - TODO remove when refactoring to native
@@ -53,9 +55,11 @@ let _$rootScope,
     _$q;
 
 
+let deviceModel = new DeviceModel();
+
 /**
  * Class to access data
- * @name ApplicationStarter
+ * @name ApplicationService
  * @module DeviceModel
  * @kind class
  * @param {Object} $rootScope - The angular $rootScope in order to bind data to the view, or interact with view on app status has changed.
@@ -64,75 +68,8 @@ let _$rootScope,
  * */
 
 
-class DeviceViewModel {
-    constructor(deviceActions) {
-        // this.dataProxy = dataProxy;
-        this.data = {};
-        this.actions = deviceActions;
-    }
 
-    updateViewModel(updatedData, cmdField) {
-
-
-        //notify view only if it's not an handshake
-        // TODO - we can add a timeout to prevent digest loop every time on load
-        if ($('body') && cmdField.cmd.key !== deviceCommands.HAND_SHAKE.key) {
-            this.data = Object.assign(this.data, updatedData);
-            setTimeout(function () {
-                $('body').scope().$applyAsync()
-            }, 0);
-        }
-    }
-}
-
-
-
-const deviceActions = {
-    updateData: function(){
-        console.log('updateData');
-    },
-
-
-    updateCredentials: function() {
-        console.log('updateCredentials');
-    },
-    upgradeDevice: function(){
-        console.log('upgradeDevice');
-    },
-    toggleSecurity: function(data){
-        var toSend = deviceCommands.SECURITY_ENABLE;
-        if(data && data.params) {
-            toSend.params = [0];
-            toSend.value = data.params.join(',');
-        } else{
-            toSend.value = 1;
-            toSend.params = null;
-        }
-        return _DataProxy.put([toSend]);
-    },
-    factoryReset: function(){
-        console.log('factoryReset');
-    },
-    restartDevice: function(){
-        console.log('restartDevice');
-    },
-    updateMatrixRoute: function(){
-        console.log('updateMatrixRoute');
-    },
-    loadConfig: function(){
-        console.log('updateMatrixRoute');
-    },
-    saveConfig: function(){
-        console.log('updateMatrixRoute');
-    }
-
-};
-
-
-
-let _DeviceViewModel = new DeviceViewModel(deviceActions);
-
-class ApplicationStarter {
+class ApplicationService {
     constructor($rootScope, $http, $q) {
         _$rootScope = $rootScope;
         _$http = $http;
@@ -172,8 +109,10 @@ class ApplicationStarter {
 
                 _DataProxy = new K_DataProxy(_$q, tmpInfoFile.communication, {
                     'onConnectionLost': _onConnectionLost,
-                    'onDataUpdated': _DeviceViewModel.updateViewModel.bind(_DeviceViewModel)
+                    'onDataUpdated': deviceModel.updateModel.bind(deviceModel)
                 });
+
+                deviceModel.setDataProxy(_DataProxy);
 
 
                 _self.infoFile = tmpInfoFile;
@@ -196,10 +135,6 @@ class ApplicationStarter {
         return defer.promise;
     }
 
-    getViewModel() {
-        return _DeviceViewModel;
-    }
-
     initModule(module) {
         return _DataProxy.get(_self.modules[module].commands)
             .then(function (data) {
@@ -208,14 +143,18 @@ class ApplicationStarter {
             })
     }
 
-
 }
 
-export const applicationStarter = new ApplicationStarter(
+const applicationService = new ApplicationService(
     $injector.get('$rootScope'),
     $injector.get('$http'),
     $injector.get('$q')
 );
+
+export{
+    applicationService,
+    deviceModel
+}
 
 
 function _buildModuleCommands(commands) {
