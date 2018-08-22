@@ -18,8 +18,15 @@ export default class GeneralDeviceSettingsCtrl extends AbstractPageCtrl{
         super($scope, _generalProperties);
         let $ctrl = this;
 
-        $ctrl.update = function(toUpdate) {
-            console.log(toUpdate, $ctrl.vm[toUpdate[0]]);
-        }
+        // $ctrl.update = function(toUpdate) {
+        //     for(let i = 0; i < toUpdate.fieldToUpdate.length; i++){
+        //         $ctrl.vm.actions.updateData({
+        //             cmd: deviceCommands[_generalProperties[toUpdate.fieldToUpdate[i]]],
+        //             value: toUpdate.formViewModel[toUpdate.fieldToUpdate[i]]
+        //         });
+        //     }
+        //
+        //     console.log(toUpdate, $ctrl.vm[toUpdate[0]]);
+        // }
     }
 }

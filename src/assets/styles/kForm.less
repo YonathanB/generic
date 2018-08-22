@@ -1,4 +1,22 @@
 k-form {
+  @-o-keyframes fadeIt {
+    0%   { background-color: transparent; }
+    50%  { background-color: rgba(255, 254, 0, 0.38) }
+    100% { background-color: transparent; }
+  }
+  @keyframes fadeIt {
+    0%   { background-color: transparent; }
+    50%  { background-color: rgba(255, 254, 0, 0.38)  }
+    100% { background-color: transparent; }
+  }
+
+  .field-updated{
+    background-image:none !important;
+    -o-animation: fadeIt 1.5s ease-in-out;
+    animation: fadeIt 1.5s ease-in-out;
+  }
+
+
   input:not([type ='checkbox']) {
     border-color: @app-input-border;
     &.ng-invalid-password-length, &.ng-invalid-confirm-password, &.ng-invalid-device-name, &.ng-invalid-device-name-length, &.ng-invalid-first-device-name {

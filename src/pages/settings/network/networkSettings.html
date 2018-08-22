@@ -1,35 +1,39 @@
 <div class="network-settings">
+    {{$ctrl.vm}}
     <!--<div class="contentBox-title">{{$root.pageTitle}}</div>-->
-    <k-form ng-model="$ctrl.vm.data" control="resetDHCP" call-on-before-saved="checkNetwork(data, before)"
+    <k-form ng-model="$ctrl.vm"
+            control="resetDHCP"
+            k-on-submit="$ctrl.update"
+            call-on-before-saved="checkNetwork(data, before)"
             exclude-from-compare="[$ctrl.properties.data.ETH_PORT_TCP]">
         <section>
             <div class="field" id="dhcp">
                 <label>DHCP</label>
                 <k-on-off show-value-on-disable="true" is-waiting-for-response="false" value-to-listen="dhcpStatus"
-                        init-val="{{$ctrl.vm.data.NET_DHCP}}" name="dhcp" ng-model="dhcpStatus"
+                        init-val="{{$ctrl.vm.dhcp}}" name="dhcp" ng-model="dhcpStatus"
                         on-click="toggleDHCP(insideVal)" height="30" width="153" enabled="true"></k-on-off>
             </div>
             <div class="field">
                 <label>IP Address</label>
-                <k-ip name="ip" ng-model="$ctrl.vm.data.NET_IP" enabled="dhcpStatus == 0"
-                        value="$ctrl.vm.data.NET_IP" init-val="{{$ctrl.vm.data.NET_IP}}"></k-ip>
+                <k-ip name="ip" ng-model="$ctrl.vm.ip" enabled="dhcpStatus == 0"
+                        value="$ctrl.vm.ip" init-val="{{$ctrl.vm.ip}}"></k-ip>
             </div>
             <div class="field">
                 <label>Mask</label>
-                <k-ip name="mask" ng-model="$ctrl.vm.data.NET_MASK" enabled="dhcpStatus == 0"
-                        value="$ctrl.vm.data.NET_MASK" init-val="{{$ctrl.vm.data.NET_MASK}}"></k-ip>
+                <k-ip name="mask" ng-model="$ctrl.vm.mask" enabled="dhcpStatus == 0"
+                        value="$ctrl.vm.mask" init-val="{{$ctrl.vm.mask}}"></k-ip>
             </div>
             <div class="field">
                 <label>Gateway</label>
-                <k-ip name="gateway" ng-model="$ctrl.vm.data.NET_GATE" enabled="dhcpStatus == 0"
-                        value="$ctrl.vm.data.NET_GATE" init-val="{{$ctrl.vm.data.NET_GATE}}"></k-ip>
+                <k-ip name="gateway" ng-model="$ctrl.vm.gateway" enabled="dhcpStatus == 0"
+                        value="$ctrl.vm.gateway" init-val="{{$ctrl.vm.gateway}}"></k-ip>
             </div>
         </section>
         <hr class="horizontal-separator"/>
         <section>
             <div class="field">
                 <label>Mac address</label>
-                <label style="font-size: 14px;">{{$ctrl.vm.data.NET_MAC}}</label>
+                <label style="font-size: 14px;">{{$ctrl.vm.mac}}</label>
             </div>
             <!--<div class="field">-->
             <!--<label>UDP port</label>-->
@@ -37,7 +41,7 @@
             <!--</div>-->
             <div class="field">
                 <label>TCP port</label>
-                <input type="text" ng-model="$ctrl.vm.data.ETH_PORT['TCP']" name="tcp"/>
+                <input type="text" ng-model="$ctrl.vm.port['TCP']" name="tcp"/>
             </div>
         </section>
     </k-form>

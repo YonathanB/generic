@@ -363,7 +363,7 @@
           "url": "communication",
           "template": "networkSettings.html",
           "description": "Communication",
-          "icon": "icon-sphere",
+          "icon": "icon-network-settings",
           "onLoad": [
             "networkProperties"
           ]
@@ -375,7 +375,7 @@
       "parent": "deviceSettings",
       "template": "firmwareUpgrade.html",
       "description": "Upgrade",
-      "icon": "icon-forward"
+      "icon": "icon-firmware-upgrade"
     },
     {
       "id": "ntp",

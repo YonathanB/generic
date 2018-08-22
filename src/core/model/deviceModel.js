@@ -29,8 +29,14 @@ export default class DeviceModel {
 
 
 const deviceActions = {
-    updateData: function(){
-        console.log('updateData');
+    updateData: function(data){
+        if(data.cmd.hasOwnProperty('parserOnSend')) {
+            data.cmd.parserOnSend(data);
+        } else data.cmd.value = data.value;
+
+        console.log('updateData ', data);
+        return _dataProxy.put([data.cmd]);
+
     },
 
 

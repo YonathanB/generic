@@ -63,7 +63,10 @@ function _allFieldsAreFilled() {
     return flag ;
 }
 function _checkPasswordLength() {
-    if(_self.newPassword === '') return true;
+    if(_self.newPassword === '') {
+        _self.securityForm.newPassword.$setValidity('password-length', true);
+        return true;
+    }
     let pwdLength = (_self.newPassword.length < 16 && _self.newPassword.length > 4);
     _self.securityForm.newPassword.$setValidity('password-length', pwdLength);
     return pwdLength;

@@ -200,6 +200,7 @@
         var fieldsInForm = {};
         var formViewModel = {};
         var formModel = {};
+        var $inputElements = [];
         return {
             restrict: 'AE',
             require: ['?ngModel'],
@@ -264,6 +265,7 @@
                     }
                 };
 
+                console.log($inputElements);
 
             },
             link: function (scope, $element, attrs) {
@@ -271,81 +273,100 @@
 
                 let onDataChangedInDevice;
 
-
                 scope.internalControl = scope.control || {};
                 var $element = $element;
 
 
                 var DATA_CHANGED_IN_DEVICE = true;
 
-                let $inputElements = $element.find('input');
-                fieldsInForm = {}; // declaration outside link function (in directive)
-                for (var input in $inputElements.toArray()) {
-                    let $el = $inputElements[input];
-                    let property = $el.name;
-                    fieldsInForm[property] = $el;
-                    formModel[property] = scope.dataSource[property] || '';
-                    //  detect changes from view
-                    angular.element($el).on('keyup blur change', function (event) {//TODO - check why do we need such a lot triggers
-                        DATA_CHANGED_IN_DEVICE = false;
-                        dataChanged(event.target.name);
-                        $timeout.cancel(onDataChangedInDevice);
-                    });
+
+                let fieldBuilder = function (toReturn, element) {
+                    let tmp = element.$$controls.filter(obj => obj.$name !== '');
+                    for (let i = 0; i < tmp.length; i++) {
+                        if (tmp[i].hasOwnProperty('$$controls')) {
+                            fieldBuilder(toReturn, tmp[i]);
+                        } else
+                            toReturn.push(tmp[i]);
+                    }
+                    return toReturn;
+                };
+
+                $inputElements = fieldBuilder([], scope.form);
+
+
+                fieldsInForm = {};
+                scope.internalValues = {};
+                $timeout(function () {
+                    for (let i = 0; i < $inputElements.length; i++) {
+                        fieldsInForm[$inputElements[i].$name] = $inputElements[i].$modelValue;
+                        scope.internalValues[[$inputElements[i].$name]] = fieldsInForm[$inputElements[i].$name];
+
+                       // get changes from user
+                        $inputElements[i].$$element.on('keydown blur change', function (event) {
+                            $timeout.cancel(onDataChangedInDevice);
+                            $timeout(function () {
+                                DATA_CHANGED_IN_DEVICE = false;
+                                dataChanged(event.target.name);
+                            }, 0);
+
+                        });
+
+                        // get changes from device
+                        scope.$watch(function () {
+                                return $inputElements[i].$$element.val();
+                            },
+                            function (newValue, oldValue) {
+                                if (oldValue && oldValue !== newValue) {
+                                    DATA_CHANGED_IN_DEVICE = true;
+                                    //force scope to be launch with a delay in order to prevent this function to be called on user input
+                                    onDataChangedInDevice = $timeout(function () {
+                                        if (DATA_CHANGED_IN_DEVICE) {
+                                            fieldsInForm[$inputElements[i].$name] = newValue;
+                                            $inputElements[i].$$element.toggleClass('field-updated');
+                                            $timeout(function () {
+                                                $inputElements[i].$$element.toggleClass('field-updated');
+                                            }, 3000)
+                                        }
+                                        dataChanged($inputElements[i].$name);
+                                        checkIfDataHasChanged();
+
+                                    }, 100)
+                                }
+                            });
+                    }
+
+
+                });
+
+
+                function retrieveField(property) {
+                    return $inputElements.find(element => element.$name === property)
                 }
 
-
                 function dataChanged(property) {
-                    // if (!DATA_CHANGED_IN_DEVICE) {
-                    formViewModel[property] = fieldsInForm[property].value;
-                    if (formViewModel[property] !== formModel[property]) {
+                    if (fieldsInForm[property] !== retrieveField(property).$viewValue) {
                         if (fieldToUpdate.indexOf(property) === -1)
                             fieldToUpdate.push(property);
                     } else if (fieldToUpdate.indexOf(property) > -1)
                         fieldToUpdate.splice(fieldToUpdate.indexOf(property), 1);
-
-
-                    // $timeout(function () {
-                    // checkValidity(prop);
-                    // if (prop) {
-                    //     let changeDetected = (fieldsInForm[prop] != scope.form.$$element.find('input[name="' + prop + '"]').val());
-                    //     if (changeDetected && fieldToUpdate.indexOf(prop) === -1)
-                    //         fieldToUpdate.push(prop);
-                    //     else if (!changeDetected && fieldToUpdate.indexOf(prop) > -1)
-                    //         fieldToUpdate.splice(fieldToUpdate.indexOf(prop), 1);
-                    // }
-                    // checkIfDataHasChanged();
-                    // // }, 0);
-                    // return;
-                    // } else fieldToUpdate = [];
                     checkIfDataHasChanged();
                     scope.$applyAsync();
                 }
 
 
-                //  detect changes from device, other changes will be detected by input's event listener
-                scope.$watch('dataSource',
-                    function (newVal, oldVal) {
-                        onDataChangedInDevice = $timeout(//force scope to be launch with a delay in order to prevent this function to be called on user input
-                            function () {
-                                for (var prop in fieldsInForm) {
-                                    if (newVal[prop] && oldVal[prop])
-                                        if (newVal[prop] !== formViewModel[prop]) {
-                                            formViewModel[prop] = formModel[prop] = newVal[prop];
-                                            DATA_CHANGED_IN_DEVICE = true;
-                                            dataChanged(prop);
-                                        }
-                                }
-                                checkIfDataHasChanged();
-                            }, 800)
-                    }, true);
 
 
                 scope.resetData = function () {
                     console.log('REVERT CHANGES KFORM');
                     for (var prop in fieldsInForm) {
-                        if (scope.dataSource.hasOwnProperty(prop))
-                            scope.dataSource[prop] = formModel[prop];
-                        formViewModel[prop] = fieldsInForm[prop].value = formModel[prop];//revert viewModel
+                        let $el = retrieveField(prop);
+                        $el.$setViewValue(fieldsInForm[prop]);
+                        $el.$$element.val(fieldsInForm[prop]);
+                        // console.log(a)
+                        //
+                        // if (scope.dataSource.hasOwnProperty(prop))
+                        //     scope.dataSource[prop] = formModel[prop];
+                        // formViewModel[prop] = fieldsInForm[prop].value = formModel[prop];//revert viewModel
                         dataChanged(prop);
                     }
                 }
@@ -661,6 +682,11 @@
                 //
                 // }
                 // init();
+            },
+            postLink: function (scope) {
+                console.log(scope)
+                console.log($inputElements)
+
             }
         };
     }])
